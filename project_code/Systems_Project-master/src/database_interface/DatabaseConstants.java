@@ -13,4 +13,16 @@ public class DatabaseConstants {
             databaseUserPassword = "";
         }
     }
+
+    public String getDatabaseURL() {
+        return databaseURL;
+    }
+
+    public String getDatabaseUser() {
+        return databaseUser;
+    }
+
+    public String getDatabaseUserPassword() {
+        return databaseUserPassword;
+    }
 }
