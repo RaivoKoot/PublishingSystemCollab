@@ -2,6 +2,7 @@ import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.IncompleteInformationException;
 import exceptions.UserAlreadyExistsException;
+import exceptions.UserDoesNotExistException;
 import models.User;
 
 import javax.swing.*;
@@ -38,20 +39,22 @@ public class LogIn extends JFrame{
                     try {
                         boolean success = Session.db.validCredentials(input);
 
-                        if(success){
+                        if (success) {
                             Session.currentUser = input;
-
                             // TODO: Do some UI stuff
 
                         } else {
-                            // TODO: Display some 'invalid login' box to the user
+                            // TODO: Display some 'invalid password or login' box to the user
                         }
-                    //} catch (UserAlreadyExistsException exception){
 
-                    //} catch(IncompleteInformationException exception){
+                    } catch(UserDoesNotExistException exception) {
+                        exception.printStackTrace();
 
+                        // TODO: Display some 'invalid login' box to the user
                     } catch(SQLException exception) {
+                        exception.printStackTrace();
 
+                        // TODO: Display some 'invalid login' box to the user
                     }
 
 
