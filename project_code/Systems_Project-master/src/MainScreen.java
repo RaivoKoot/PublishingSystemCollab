@@ -24,7 +24,5 @@ public class MainScreen extends JFrame{
         setTitle("Main Screen");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-
     }
 }

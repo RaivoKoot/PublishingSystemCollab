@@ -36,7 +36,7 @@ public class SubscribeForm extends JFrame {
                 String sname = textField2.getText();
                 String srole =  textField3.getText();
                 String susername = textField4.getText();
-                String spassword = textField5.getText();
+                char[] spassword = passwordField1.getPassword();
                 String e_mail = textField6.getText();
                 int valueweneed = 1;
 
