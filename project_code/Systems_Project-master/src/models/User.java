@@ -54,7 +54,7 @@ public class User {
 
 	public void setPassword(char[] password)
 	{
-		this.password = password;
+		this.password = String.valueOf(password);
 	}
 
 	public String toString()
