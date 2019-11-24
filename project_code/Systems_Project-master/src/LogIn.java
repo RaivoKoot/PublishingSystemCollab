@@ -42,6 +42,9 @@ public class LogIn extends JFrame{
                         if (success) {
                             Session.currentUser = input;
                             // TODO: Do some UI stuff
+                            MainScreen themainscreen = new MainScreen();
+                            themainscreen.setVisible(true);
+                            dispose();
 
                         } else {
                             // TODO: Display some 'invalid password or login' box to the user
@@ -61,8 +64,6 @@ public class LogIn extends JFrame{
 
 
         }});
-
-
 
         backward.addActionListener(new ActionListener() {
             @Override
