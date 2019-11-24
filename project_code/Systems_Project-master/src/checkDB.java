@@ -63,11 +63,9 @@ public class checkDB {
                     String the_email = Users.getString(1);
                     String forename3 = Users.getString(2);
                     String surname3  = Users.getString(3);
-                    String role3 = Users.getString(4);
-                    String uni = Users.getString(5);
-                    String password3 = Users.getString(6);
-                    int isSuper = Users.getInt(7);
-                    System.out.format("%s, %s, %s, %s, %s, %s, %s\n", the_email, forename3, surname3, role3, uni, password3, isSuper);
+                    String uni = Users.getString(4);
+                    String password3 = Users.getString(5);
+                    System.out.format("%s, %s, %s, %s, %s\n", the_email, forename3, surname3, uni, password3);
                 }
                 ResultSetMetaData rsmd = Users.getMetaData();
                 String name5 = rsmd.getColumnLabel(5);
