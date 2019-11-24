@@ -1,7 +1,3 @@
-import database_interface.DataAccessController;
-import database_interface.DatabaseConstants;
-import exceptions.IncompleteInformationException;
-import exceptions.UserAlreadyExistsException;
 import exceptions.UserDoesNotExistException;
 import models.User;
 
