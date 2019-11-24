@@ -1,3 +1,9 @@
+import exceptions.IncompleteInformationException;
+import exceptions.UserAlreadyExistsException;
+import exceptions.UserDoesNotExistException;
+import models.User;
+import main.SessionData;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -5,19 +11,23 @@ import java.sql.*;
 
 public class SubscribeForm extends JFrame {
     private JPanel SubscribePanel;
+
     private JLabel forename;
     private JLabel surname;
+    private JLabel e_mail;
+    private JLabel university;
+    private JLabel chosen_password;
+
     private JTextField textField1;
     private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JTextField textField5;
-    private JButton registerButton;
-    private JButton backward;
-    private JLabel e_mail;
     private JTextField textField6;
     private JTextField textField7;
     private JPasswordField passwordField1;
+
+    private JButton registerButton;
+    private JButton backward;
+    private JLabel successlabel;
+
     Connection con = null; // a Connection object
     Statement stmt = null;
     Statement stmt2 = null;
@@ -34,64 +44,45 @@ public class SubscribeForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String fname = textField1.getText();
                 String sname = textField2.getText();
-                String srole =  textField3.getText();
-                String susername = textField4.getText();
                 char[] spassword = passwordField1.getPassword();
                 String e_mail = textField6.getText();
-                int valueweneed = 1;
+                String uni = textField7.getText();
 
-               // User newUser = ...;
+                User input = new User();
+                input.setEmail(e_mail);
+                input.setPassword(spassword);
+                input.setUniversity(uni);
+                input.setForenames(fname);
+                input.setSurname(sname);
 
-               // registerUser(newUser);
-                   try {
-                        String DB="jdbc:mysql://stusql.dcs.shef.ac.uk/team035?user=team035&password=5455d7fb";
-                        con = DriverManager.getConnection(DB);
+                try {
+                    boolean success = SessionData.db.registerBaseUser(input);
 
-                    try {
-                        if (srole.equals("editor")) {
-                            stmt = con.createStatement();
-                            int inUsers = stmt.executeUpdate("INSERT INTO Users " + "VALUES (" + "'" + e_mail + "'" + ", " + "'" + fname + "'" + ", " + "'" +
-                                    sname + "'" + ", " + "'" + "Unkwown" + "'" + ", " + "'" + spassword + "'" + "," + "'" + srole + "'" +
-                                    "," + "'" + valueweneed + "'" + ")");
+                    if (success) {
+                        // TODO: Do some UI stuff
+                        successlabel.setText("Correctly Registered!");
+                        textField1.setText("");
+                        textField2.setText("");
+                        textField6.setText("");
+                        textField7.setText("");
+                        passwordField1.setText("");
 
-                            /*stmt2 = con.createStatement();
-                            int inJournalEditors = stmt2.executeUpdate("INSERT INTO JournalEditors " + "VALUES (" + "'" + ISSN + "'" + ", " + "'" + e_mail + "'" + "," + "'"
-                                    + valueweneed + "'" + ")"); */
-
-                            //int [] registerSomeone = stmt.executeBatch();
-
-                        }
-                        else
-                            {
-                            /*stmt = con.createStatement();
-                            int create = stmt.executeUpdate("INSERT INTO authors " + "VALUES (" + "'" + fname + "'" + ", " + "'" + sname + "'" + ", " + "'" +
-                                    srole + "'" + ", " + "'" + susername + "'" + ", " + "'" + spassword + "'" + ")"); */
-                        }
-
-
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    } finally {
-                        if (stmt != null)
-                            stmt.close();
+                    } else {
+                        // TODO: Display some 'Fail' box to the user
+                        JOptionPane.showMessageDialog(null, "Registering failed");
                     }
 
 
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                } catch (UserAlreadyExistsException e1) {
+                    e1.printStackTrace();
+                } catch (IncompleteInformationException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
 
-                } finally {
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    }
-            }
-        });
+
+            }});
 
         backward.addActionListener(new ActionListener() {
             @Override
@@ -102,6 +93,7 @@ public class SubscribeForm extends JFrame {
             }
         });
     }
-
-
 }
+
+
+

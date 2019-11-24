@@ -152,11 +152,6 @@ public class main {
                         "\t\tON DELETE CASCADE\n" +
                         ");\n");
 
-               // stmt.addBatch("INSERT INTO Journals VALUES ('12345678', 'Journal of Computer Science')");
-               // stmt.addBatch("INSERT INTO Journals VALUES ('00001111', 'Journal of Software Engineering')");
-               // stmt.addBatch("INSERT INTO Journals VALUES ('11110000', 'Journal of Artificial Intelligence')");
-
-
                 int [] createDB = stmt.executeBatch();
                 con.commit();
 

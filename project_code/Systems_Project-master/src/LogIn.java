@@ -1,5 +1,6 @@
 import exceptions.UserDoesNotExistException;
 import models.User;
+import main.SessionData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -33,10 +34,10 @@ public class LogIn extends JFrame{
                     input.setPassword(password);
 
                     try {
-                        boolean success = Session.db.validCredentials(input);
+                        boolean success = SessionData.db.validCredentials(input);
 
                         if (success) {
-                            Session.currentUser = input;
+                            SessionData.currentUser = input;
                             // TODO: Do some UI stuff
                             MainScreen themainscreen = new MainScreen();
                             themainscreen.setVisible(true);
