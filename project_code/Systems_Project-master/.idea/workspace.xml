@@ -12,6 +12,12 @@
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/LogIn.class" afterDir="false" />
+<<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/Session.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/database_interface/DataAccessController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/database_interface/DataAccessController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LogIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/LogIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/SessionData.java" afterDir="false" />
+=======
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/MainAuthorArea$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/MainAuthorArea$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/MainAuthorArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/MainAuthorArea.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/PublishEdition.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/PublishEdition.class" afterDir="false" />
@@ -35,6 +41,7 @@
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Systems_Project-master/models/Review.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Systems_Project-master/models/Review.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WelcomeGUI.form" beforeDir="false" afterPath="$PROJECT_DIR$/src/WelcomeGUI.form" afterDir="false" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -74,25 +81,46 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="459">
+              <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+=======
             <state relative-caret-position="146">
               <caret line="68" column="58" lean-forward="true" selection-start-line="68" selection-start-column="58" selection-end-line="68" selection-end-column="58" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/src/database_interface/Testing.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+=======
         <entry file="file://$PROJECT_DIR$/src/WelcomeGUI.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="328">
               <caret line="45" column="14" lean-forward="true" selection-start-line="45" selection-start-column="14" selection-end-line="45" selection-end-column="14" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/src/main/SessionData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+=======
         <entry file="file://$PROJECT_DIR$/src/WelcomeGUI.form">
           <provider selected="true" editor-type-id="ui-designer" />
         </entry>
@@ -111,6 +139,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
               <caret line="46" column="38" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -119,14 +148,23 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/src/models/User.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+=======
         <entry file="file://$PROJECT_DIR$/src/MainScreen.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
               <caret line="27" selection-start-line="27" selection-end-line="27" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+=======
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MainScreen.form">
           <provider selected="true" editor-type-id="ui-designer" />
@@ -137,6 +175,7 @@
           <provider selected="true" editor-type-id="ui-designer" />
         </entry>
       </file>
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -156,6 +195,13 @@
         <option value="$PROJECT_DIR$/src/database_interface/DatabaseConstants.java" />
         <option value="$PROJECT_DIR$/src/database_interface/DatabaseInterface.java" />
         <option value="$PROJECT_DIR$/src/exceptions/UserDoesNotExistException.java" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/src/Session.java" />
+        <option value="$PROJECT_DIR$/src/main/SessionData.java" />
+        <option value="$PROJECT_DIR$/src/LogIn.java" />
+        <option value="$PROJECT_DIR$/src/database_interface/Testing.java" />
+        <option value="$PROJECT_DIR$/src/database_interface/DataAccessController.java" />
+=======
         <option value="$PROJECT_DIR$/src/database_interface/DataAccessController.java" />
         <option value="$PROJECT_DIR$/src/Session.java" />
         <option value="$PROJECT_DIR$/src/WelcomeGUI.form" />
@@ -166,6 +212,7 @@
         <option value="$PROJECT_DIR$/src/MainScreen.java" />
         <option value="$PROJECT_DIR$/src/MainScreen.form" />
         <option value="$PROJECT_DIR$/src/MainAuthorArea.form" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
       </list>
     </option>
   </component>
@@ -183,6 +230,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -199,22 +248,39 @@
               <item name="Systems_Project-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="Systems_Project-master" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
+              <item name="database_interface" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Systems_Project-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Systems_Project-master" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+=======
               <item name="MainAuthorArea" type="e9f4de52:FormNode" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+<<<<<<< HEAD
+=======
       <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="C:/AndroidSDK" />
     <property name="aspect.path.notification.shown" value="true" />
+<<<<<<< HEAD
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1574610614436" />
+=======
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1574611206460" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -242,7 +308,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.main">
+  <component name="RunManager" selected="Application.Testing">
+    <configuration name="Testing" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="database_interface.Testing" />
+      <module name="Systems_Project-master" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="database_interface.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="checkDB" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="checkDB" />
       <module name="Systems_Project-master" />
@@ -263,6 +342,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Testing" />
         <item itemvalue="Application.main" />
         <item itemvalue="Application.checkDB" />
       </list>
@@ -284,13 +364,17 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4120000" />
+    <option name="totallyTimeSpent" value="7518000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="3" y="24" width="1440" height="877" extended-state="6" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16047904" />
+=======
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -308,8 +392,13 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
+<<<<<<< HEAD
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.3296146" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.3296146" />
+=======
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5007153" side_tool="true" weight="0.3299363" />
       <window_info anchor="bottom" id="Messages" order="12" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -356,6 +445,16 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/checkDB.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1523">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+=======
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
     <entry file="file://$PROJECT_DIR$/src/models/AcceptedArticle.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -402,26 +501,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Session.java">
+    <entry file="file://$PROJECT_DIR$/src/models/User.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="96" selection-start-line="6" selection-start-column="96" selection-end-line="6" selection-end-column="96" />
+        <state relative-caret-position="153">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/WelcomeGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SubscribeForm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="53" column="108" lean-forward="true" selection-start-line="53" selection-start-column="108" selection-end-line="53" selection-end-column="108" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SubscribeForm.form">
+      <provider selected="true" editor-type-id="ui-designer" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-629">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/LogIn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/database_interface/Testing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+=======
     <entry file="file://$PROJECT_DIR$/src/database_interface/DataAccessController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="90" column="29" lean-forward="true" selection-start-line="90" selection-start-column="29" selection-end-line="90" selection-end-column="29" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/main/SessionData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+=======
     <entry file="file://$PROJECT_DIR$/src/UserList.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -463,12 +606,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
           <caret line="68" column="58" lean-forward="true" selection-start-line="68" selection-start-column="58" selection-end-line="68" selection-end-column="58" />
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/database_interface/DataAccessController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+        </state>
+      </provider>
+    </entry>
+=======
     <entry file="file://$PROJECT_DIR$/src/LogIn.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -492,6 +645,7 @@
     <entry file="file://$PROJECT_DIR$/src/MainAuthorArea.form">
       <provider selected="true" editor-type-id="ui-designer" />
     </entry>
+>>>>>>> 557fe3afbeadee4c09f214f88948bdcd17694891
   </component>
   <component name="masterDetails">
     <states>
