@@ -113,6 +113,42 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
+    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException {
+        if (!userExists(user))
+            throw new UserDoesNotExistException(user.getEmail());
+
+        if(newPassword.equals(""))
+            throw new IncompleteInformationException();
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "UPDATE Users SET password = ? WHERE\n" +
+                    "    email = ?\n" +
+                    "\tAND\n" +
+                    "\tpassword = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, newPassword);
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getPassword());
+
+
+            int result = statement.executeUpdate();
+
+            if(result > 1)
+                throw new SQLException();
+
+            return result == 1;
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
+    @Override
     public boolean validCredentials(User user) throws SQLException, UserDoesNotExistException {
 
         if(!userExists(user))
