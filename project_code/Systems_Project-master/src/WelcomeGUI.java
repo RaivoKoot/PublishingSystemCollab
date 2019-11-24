@@ -8,7 +8,7 @@ import java.sql.*;
 public class WelcomeGUI extends JFrame{
     private JButton youMaySelfRegisterButton;
     private JPanel rootPanel;
-    private JButton SubmitArticle;
+
     private JButton logInButton;
     private JButton updateContentButton;
     Connection con = null; // a Connection object
@@ -35,7 +35,7 @@ public class WelcomeGUI extends JFrame{
         });
 
 
-        SubmitArticle.addActionListener(new ActionListener() {
+      /*  SubmitArticle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 rootPanel.setVisible(false);
@@ -43,7 +43,7 @@ public class WelcomeGUI extends JFrame{
                 SubmitArticle submitform = new SubmitArticle();
                 submitform.setVisible(true);
             }
-        });
+        }); */
 
         logInButton.addActionListener(new ActionListener() {
             @Override
