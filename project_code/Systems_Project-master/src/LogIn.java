@@ -13,10 +13,10 @@ import java.sql.*;
 public class LogIn extends JFrame{
     private JPanel LogInPanel;
     private JTextField usernameInput;
-    private JTextField psInput;
     private JButton backward;
     private JButton loginButton;
     private JLabel JLabel4;
+    private JPasswordField passwordField1;
 
 
     public LogIn() {
@@ -29,7 +29,7 @@ public class LogIn extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = usernameInput.getText();
-                String password = psInput.getText();
+                char[] password = passwordField1.getPassword();
 
 
                     User input = new User();
@@ -48,16 +48,21 @@ public class LogIn extends JFrame{
 
                         } else {
                             // TODO: Display some 'invalid password or login' box to the user
+                            JOptionPane.showMessageDialog(null, "Invalid Password/E-mail address Combination");
                         }
 
                     } catch(UserDoesNotExistException exception) {
                         exception.printStackTrace();
 
                         // TODO: Display some 'invalid login' box to the user
+                        JOptionPane.showMessageDialog(null, "Login Failed");
+
                     } catch(SQLException exception) {
                         exception.printStackTrace();
 
                         // TODO: Display some 'invalid login' box to the user
+                        JOptionPane.showMessageDialog(null, "Login Failed");
+
                     }
 
 
