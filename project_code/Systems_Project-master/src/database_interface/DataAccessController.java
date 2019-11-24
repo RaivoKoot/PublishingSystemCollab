@@ -202,10 +202,94 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public boolean createJournal(Journal newJournal, JournalEditor chiefEditor) throws UserDoesNotExistException,
+    public boolean createJournal(Journal newJournal, User chiefEditor) throws UserDoesNotExistException,
             InvalidAuthenticationException, UniqueColumnValueAlreadyExists, SQLException {
-        // TODO Auto-generated method stub
-        return false;
+
+        if(!validCredentials(chiefEditor))
+            throw new InvalidAuthenticationException();
+
+        if(!isUniqueJournal(newJournal))
+            throw new UniqueColumnValueAlreadyExists();
+
+
+        PreparedStatement statementTwo = null;
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            // Insert the new journal into the table
+            String sqlQuery = "INSERT INTO Journals (ISSN, name) \n" +
+                    "\tVALUES (?, ?)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, newJournal.getISSN());
+            statement.setString(2, newJournal.getName());
+            int res1 = statement.executeUpdate();
+
+            if(res1 != 1) {
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            // Insert the new editorship into the table with the new journal
+            String sqlQueryTwo = "INSERT INTO JournalEditors (ISSN, email, isChief) \n" +
+                    "\tVALUES (?, ?, true)";
+            statementTwo = connection.prepareStatement(sqlQueryTwo);
+            statementTwo.setString(1, newJournal.getISSN());
+            statementTwo.setString(2, chiefEditor.getEmail());
+            int res2 = statementTwo.executeUpdate();
+
+            if(res2 != 1){
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            connection.commit();
+
+            return res1 == 1 && res2 == 1;
+
+        }  catch(Exception e){
+            connection.rollback();
+            throw e;
+        }
+        finally {
+
+            closeConnection();
+
+            if(statementTwo != null)
+                statementTwo.close();
+        }
+    }
+
+    /*
+    Checks whether a journal with the given issn or name exists in the database
+     */
+    private boolean isUniqueJournal(Journal journal) throws SQLException{
+        ResultSet res = null;
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            String sqlQuery = "SELECT EXISTS(\n" +
+                    "\tSELECT * FROM Journals WHERE \n" +
+                    "\t\tISSN = ? OR\n" +
+                    "\t\tname = ?\n" +
+                    "\t)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+            statement.setString(2, journal.getName());
+
+            res = statement.executeQuery();
+            res.next();
+            int result = res.getInt(1);
+
+            return result == 0;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
     @Override

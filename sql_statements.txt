@@ -13,3 +13,18 @@ WHERE
     email = 'maxime.fontana@orange.fr'
 	AND
 	password = 'bonjour'
+	
+# create a journal entry
+INSERT INTO Journals (ISSN, name) 
+	VALUES ('ABCDHSJKSD', 'Journal of Computer Science')
+	
+# check if journal with issn or name already exists
+SELECT EXISTS(
+	SELECT * FROM Journals WHERE 
+		ISSN = ? OR
+		name = ?
+	)
+	
+# create editorship entry
+INSERT INTO JournalEditors (ISSN, email, isChief) 
+	VALUES ('ABCDHSJKSD', 'victor.hugo@gmail.com', true)
