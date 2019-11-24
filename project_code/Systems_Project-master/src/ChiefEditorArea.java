@@ -36,8 +36,8 @@ public class ChiefEditorArea extends JFrame{
         backward.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WelcomeGUI theGUI = new WelcomeGUI();
-                theGUI.setVisible(true);
+                MainScreen main_screen = new MainScreen();
+                main_screen.setVisible(true);
                 dispose();
             }
         });
