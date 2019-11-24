@@ -1,0 +1,6 @@
+# Check if a user with email and password exists in the database
+SELECT EXISTS(SELECT * FROM Users WHERE email=? AND password=?)
+
+# register a user into the database
+INSERT INTO Users (email, forenames, surname, university, password) 
+	VALUES ('raivo@gmail.com', 'Raivo Eli', 'Koot', 'Sheffield Uni', 'password')

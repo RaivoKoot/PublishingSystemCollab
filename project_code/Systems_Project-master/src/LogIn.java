@@ -1,7 +1,3 @@
-import database_interface.DataAccessController;
-import database_interface.DatabaseConstants;
-import exceptions.IncompleteInformationException;
-import exceptions.UserAlreadyExistsException;
 import exceptions.UserDoesNotExistException;
 import models.User;
 
@@ -9,6 +5,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import main.SessionData;
 
 public class LogIn extends JFrame{
     private JPanel LogInPanel;
@@ -37,10 +34,10 @@ public class LogIn extends JFrame{
                     input.setPassword(password);
 
                     try {
-                        boolean success = Session.db.validCredentials(input);
+                        boolean success = SessionData.db.validCredentials(input);
 
                         if (success) {
-                            Session.currentUser = input;
+                            SessionData.currentUser = input;
                             // TODO: Do some UI stuff
 
                         } else {

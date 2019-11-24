@@ -78,14 +78,44 @@ public class DataAccessController implements DatabaseInterface {
     @Override
     public boolean registerBaseUser(User newUser)
             throws UserAlreadyExistsException, IncompleteInformationException, SQLException {
-        // TODO Auto-generated method stub
-        return false;
+
+        if (userExists(newUser))
+            throw new UserAlreadyExistsException(newUser.getEmail());
+
+        if (newUser.getEmail().equals("") || newUser.getForenames().equals("") || newUser.getSurname().equals("")
+                || newUser.getUniversity().equals("")
+                || newUser.getPassword().equals(""))
+            throw new IncompleteInformationException();
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "INSERT INTO Users (email, forenames, surname, university, password) VALUES (?, ?, ?, ?, ?)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, newUser.getEmail());
+            statement.setString(2, newUser.getForenames());
+            statement.setString(3, newUser.getSurname());
+            statement.setString(4, newUser.getUniversity());
+            statement.setString(5, newUser.getPassword());
+
+
+            int result = statement.executeUpdate();
+
+            return result == 1;
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+
     }
 
     @Override
     public boolean validCredentials(User user) throws SQLException, UserDoesNotExistException {
 
-        if(!userExists(user))
+        if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
 
         ResultSet res = null;
