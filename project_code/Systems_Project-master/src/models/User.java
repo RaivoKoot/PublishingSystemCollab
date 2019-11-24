@@ -57,6 +57,10 @@ public class User {
 		this.password = String.valueOf(password);
 	}
 
+	public void setPassword(String password){
+		this.password = password;
+	}
+
 	public String toString()
 	{
 		return "User " + forenames + " " + surname + " " + email + " from " + university + " with password '"
