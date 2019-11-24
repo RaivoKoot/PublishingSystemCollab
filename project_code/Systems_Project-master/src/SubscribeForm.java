@@ -7,6 +7,7 @@ public class SubscribeForm extends JFrame {
     private JPanel SubscribePanel;
     private JLabel forename;
     private JLabel surname;
+    private JLabel role;
     private JTextField textField1;
     private JTextField textField2;
     private JTextField textField3;
@@ -17,7 +18,6 @@ public class SubscribeForm extends JFrame {
     private JLabel e_mail;
     private JTextField textField6;
     private JTextField textField7;
-    private JPasswordField passwordField1;
     Connection con = null; // a Connection object
     Statement stmt = null;
     Statement stmt2 = null;
@@ -38,6 +38,7 @@ public class SubscribeForm extends JFrame {
                 String susername = textField4.getText();
                 String spassword = textField5.getText();
                 String e_mail = textField6.getText();
+                String ISSN = textField7.getText();
                 int valueweneed = 1;
 
                // User newUser = ...;
@@ -54,18 +55,18 @@ public class SubscribeForm extends JFrame {
                                     sname + "'" + ", " + "'" + "Unkwown" + "'" + ", " + "'" + spassword + "'" + "," + "'" + srole + "'" +
                                     "," + "'" + valueweneed + "'" + ")");
 
-                            /*stmt2 = con.createStatement();
+                            stmt2 = con.createStatement();
                             int inJournalEditors = stmt2.executeUpdate("INSERT INTO JournalEditors " + "VALUES (" + "'" + ISSN + "'" + ", " + "'" + e_mail + "'" + "," + "'"
-                                    + valueweneed + "'" + ")"); */
+                                    + valueweneed + "'" + ")");
 
                             //int [] registerSomeone = stmt.executeBatch();
 
                         }
                         else
                             {
-                            /*stmt = con.createStatement();
+                            stmt = con.createStatement();
                             int create = stmt.executeUpdate("INSERT INTO authors " + "VALUES (" + "'" + fname + "'" + ", " + "'" + sname + "'" + ", " + "'" +
-                                    srole + "'" + ", " + "'" + susername + "'" + ", " + "'" + spassword + "'" + ")"); */
+                                    srole + "'" + ", " + "'" + susername + "'" + ", " + "'" + spassword + "'" + ")");
                         }
 
 

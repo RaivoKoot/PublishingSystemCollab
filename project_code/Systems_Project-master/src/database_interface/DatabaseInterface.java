@@ -38,7 +38,7 @@ public interface DatabaseInterface {
 	 * @param user must include email and password
 	 * @return success or not
 	 */
-	public boolean validCredentials(User user) throws SQLException, UserDoesNotExistException;
+	public boolean validCredentials(User user) throws SQLException;
 
 	/**
 	 * @return a list of all registered journals
