@@ -91,7 +91,7 @@ public interface DatabaseInterface {
      *                                        in use
      * @precondition the user chiefEditor exists
      */
-    public boolean createJournal(Journal newJournal, JournalEditor chiefEditor)
+    public boolean createJournal(Journal newJournal, User chiefEditor)
             throws UserDoesNotExistException, InvalidAuthenticationException, UniqueColumnValueAlreadyExists, SQLException;
 
     /**
