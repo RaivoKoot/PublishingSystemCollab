@@ -357,6 +357,7 @@ public class DataAccessController implements DatabaseInterface {
         }
 
         PreparedStatement statementTwo = null;
+        ResultSet rs = null;
         try {
             openConnection();
             connection.setAutoCommit(false);
@@ -375,7 +376,7 @@ public class DataAccessController implements DatabaseInterface {
                 throw new SQLException();
             }
 
-            ResultSet rs = statement.getGeneratedKeys();
+            rs = statement.getGeneratedKeys();
             if (rs.next()) {
                 int newId = rs.getInt(1);
                 submission.setSubmissionID(newId);
@@ -411,6 +412,9 @@ public class DataAccessController implements DatabaseInterface {
 
             if (statementTwo != null)
                 statementTwo.close();
+
+            if(rs != null)
+                rs.close();
         }
     }
 
