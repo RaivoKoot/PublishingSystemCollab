@@ -153,7 +153,7 @@ public interface DatabaseInterface {
      * the database
      */
     public Submission submitArticle(Submission submission, User author)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException;
 
     /**
      * Using the credentials of mainAuthor, appoints newAuthor as a co-author to the
