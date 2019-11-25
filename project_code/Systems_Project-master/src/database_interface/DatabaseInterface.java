@@ -107,7 +107,7 @@ public interface DatabaseInterface {
      * be a chief editor of the journal in newEditor
      */
     public boolean promoteUserToEditor(JournalEditor newEditor, JournalEditor journalChief)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException;
 
     /**
      * Using the credentials of editor, creates a new volume with the next in line
