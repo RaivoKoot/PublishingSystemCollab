@@ -11,6 +11,7 @@ import org.junit.*;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataAccessControllerTest {
 
@@ -19,6 +20,9 @@ public class DataAccessControllerTest {
 
     static User chiefEditor;
     static User user;
+    static User nonexistentUser;
+    static User incompleteInfo;
+    static User badPasswordUser;
     static Journal journal;
 
 
@@ -48,6 +52,17 @@ public class DataAccessControllerTest {
         journal.setName("Computer Science Journal");
         journal.setISSN("CSJ");
 
+        incompleteInfo = new User();
+        incompleteInfo.setEmail("incomplete@gmail.com");
+
+        nonexistentUser = new User();
+        nonexistentUser.setEmail("nonexisting@gmail.com");
+        nonexistentUser.setPassword("blabla");
+
+        badPasswordUser = new User();
+        badPasswordUser.setEmail("user@gmail.com");
+        badPasswordUser.setPassword("wrong");
+
     }
 
     @AfterClass
@@ -58,22 +73,74 @@ public class DataAccessControllerTest {
     @Test
     public void registerBaseUser() throws SQLException, UserAlreadyExistsException, IncompleteInformationException {
 
-            assertTrue(db.registerBaseUser(chiefEditor));
-            assertTrue(db.registerBaseUser(user));
+        assertTrue(db.registerBaseUser(chiefEditor));
+        assertTrue(db.registerBaseUser(user));
+
+        assertThrows(UserAlreadyExistsException.class, () -> {
+            db.registerBaseUser(user);
+        });
+
+        assertThrows(IncompleteInformationException.class, () -> {
+            db.registerBaseUser(incompleteInfo);
+        });
+
+        incompleteInfo.setPassword("Hi");
+        assertThrows(IncompleteInformationException.class, () -> {
+            db.registerBaseUser(incompleteInfo);
+        });
+
+        incompleteInfo.setPassword("");
+
+        assertThrows(IncompleteInformationException.class, () -> {
+            db.registerBaseUser(incompleteInfo);
+        });
+    }
+
+    @Test
+    public void changePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+        assertTrue(db.changePassword(user, "pswd"));
+
+        assertThrows(IncompleteInformationException.class, () -> {
+            db.changePassword(incompleteInfo, "");
+        });
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.changePassword(nonexistentUser, "new");
+        });
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.changePassword(badPasswordUser, "new");
+        });
 
     }
 
     @Test
-    public void changePassword() {
-    }
+    public void validCredentials() throws SQLException, UserDoesNotExistException {
+        assertTrue(db.validCredentials(user));
 
-    @Test
-    public void validCredentials() {
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.validCredentials(nonexistentUser);
+        });
+
+        assertFalse(db.validCredentials(badPasswordUser));
     }
 
     @Test
     public void createJournal() throws SQLException, UniqueColumnValueAlreadyExists, UserDoesNotExistException, InvalidAuthenticationException {
-        db.createJournal(journal, chiefEditor);
+        assertTrue(db.createJournal(journal, chiefEditor));
+
+        assertThrows(UniqueColumnValueAlreadyExists.class, () -> {
+            db.createJournal(journal, chiefEditor);
+        });
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.createJournal(journal, nonexistentUser);
+        });
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.createJournal(journal, badPasswordUser);
+        });
+
     }
 
     @Test
@@ -83,8 +150,29 @@ public class DataAccessControllerTest {
         newEditor.setChief(false);
         newEditor.setIssn(journal.getISSN());
 
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.promoteUserToEditor(newEditor, chief);
+        });
+
         chief.setIssn(journal.getISSN());
 
-        db.promoteUserToEditor(newEditor, chief);
+        assertTrue(db.promoteUserToEditor(newEditor, chief));
+
+        JournalEditor nonexistentChief = new JournalEditor(nonexistentUser);
+        nonexistentChief.setIssn(journal.getISSN());
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.promoteUserToEditor(newEditor, nonexistentChief);
+        });
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.promoteUserToEditor(nonexistentChief, chief);
+        });
+
+        JournalEditor badpasswordChief = new JournalEditor(badPasswordUser);
+        badpasswordChief.setIssn(journal.getISSN());
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.promoteUserToEditor(newEditor, badpasswordChief);
+        });
     }
 }

@@ -76,7 +76,10 @@ public class DataAccessController implements DatabaseInterface {
         if (userExists(newUser))
             throw new UserAlreadyExistsException(newUser.getEmail());
 
-        if (newUser.getEmail().equals("") || newUser.getForenames().equals("") || newUser.getSurname().equals("")
+        if (newUser.getEmail() == null || newUser.getForenames() == null || newUser.getSurname() == null
+                || newUser.getUniversity() == null
+                || newUser.getPassword() == null
+                || newUser.getEmail().equals("") || newUser.getForenames().equals("") || newUser.getSurname().equals("")
                 || newUser.getUniversity().equals("")
                 || newUser.getPassword().equals(""))
             throw new IncompleteInformationException();
@@ -108,11 +111,12 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException {
+        if (newPassword.equals(""))
+            throw new IncompleteInformationException();
+
         if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
 
-        if (newPassword.equals(""))
-            throw new IncompleteInformationException();
 
         ResultSet res = null;
         try {
@@ -132,6 +136,9 @@ public class DataAccessController implements DatabaseInterface {
 
             if (result > 1)
                 throw new SQLException();
+
+            if(result == 0)
+                throw new InvalidAuthenticationException();
 
             return result == 1;
         } finally {
@@ -292,7 +299,7 @@ public class DataAccessController implements DatabaseInterface {
             if (!newEditor.getIssn().equals(journalChief.getIssn())) {
                 throw new InvalidAuthenticationException();
             }
-        } catch(NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             throw new IncompleteInformationException();
         }
