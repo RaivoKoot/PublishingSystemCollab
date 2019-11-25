@@ -74,6 +74,8 @@ public class Test {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IncompleteInformationException e) {
+            e.printStackTrace();
         }
 
     }

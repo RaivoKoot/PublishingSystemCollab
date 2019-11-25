@@ -1,0 +1,10 @@
+DROP TABLE Critiques;
+DROP TABLE Reviews;
+DROP TABLE Authorships;
+DROP TABLE AcceptedArticles;
+DROP TABLE Submissions;
+DROP TABLE Editions;
+DROP TABLE Volumes;
+DROP TABLE JournalEditors;
+DROP TABLE Journals;
+DROP TABLE Users;

@@ -28,3 +28,8 @@ SELECT EXISTS(
 # create editorship entry
 INSERT INTO JournalEditors (ISSN, email, isChief) 
 	VALUES ('ABCDHSJKSD', 'victor.hugo@gmail.com', true)
+	
+# check if a user has an editorship of a journal
+SELECT isChief FROM JournalEditors WHERE
+                    tISSN = ? AND
+                    temail = ?

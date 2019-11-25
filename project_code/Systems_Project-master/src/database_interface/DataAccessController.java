@@ -286,10 +286,15 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean promoteUserToEditor(JournalEditor newEditor, JournalEditor journalChief)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException {
 
-        if(!newEditor.getIssn().equals(journalChief.getIssn())){
-            throw new InvalidAuthenticationException();
+        try {
+            if (!newEditor.getIssn().equals(journalChief.getIssn())) {
+                throw new InvalidAuthenticationException();
+            }
+        } catch(NullPointerException e){
+            e.printStackTrace();
+            throw new IncompleteInformationException();
         }
 
         if (!userExists(newEditor)) {
@@ -298,7 +303,7 @@ public class DataAccessController implements DatabaseInterface {
 
         journalChief = getEditorship(journalChief);
 
-        if(journalChief == null || !journalChief.isChief()){
+        if (journalChief == null || !journalChief.isChief()) {
             throw new InvalidAuthenticationException();
         }
 
@@ -315,15 +320,15 @@ public class DataAccessController implements DatabaseInterface {
 
             int res = statement.executeUpdate();
 
-            return res==1;
+            return res == 1;
 
         } finally {
             closeConnection();
         }
     }
 
-    private JournalEditor getEditorship(JournalEditor editor) throws UserDoesNotExistException, SQLException{
-        if(!userExists(editor))
+    private JournalEditor getEditorship(JournalEditor editor) throws UserDoesNotExistException, SQLException {
+        if (!userExists(editor))
             throw new UserDoesNotExistException(editor.getEmail());
 
         ResultSet res = null;
@@ -338,13 +343,13 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(2, editor.getEmail());
 
             res = statement.executeQuery();
-            if(!res.next()){
+            if (!res.next()) {
                 // editorship does not exist
                 return null;
             }
 
             int isChief = res.getInt(1);
-            editor.setChief(isChief==1);
+            editor.setChief(isChief == 1);
 
             return editor;
 
