@@ -5,6 +5,7 @@ import database_interface.DatabaseConstants;
 import exceptions.*;
 import models.Journal;
 import models.JournalEditor;
+import models.Submission;
 import models.User;
 import org.junit.*;
 
@@ -24,6 +25,8 @@ public class DataAccessControllerTest {
     static User incompleteInfo;
     static User badPasswordUser;
     static Journal journal;
+
+    static Submission submission;
 
 
     @BeforeClass
@@ -62,6 +65,11 @@ public class DataAccessControllerTest {
         badPasswordUser = new User();
         badPasswordUser.setEmail("user@gmail.com");
         badPasswordUser.setPassword("wrong");
+
+        submission = new Submission();
+        submission.setArticleContent("www.url.com");
+        submission.setSummary("summary");
+        submission.setTitle("Title Paper");
 
     }
 
@@ -174,5 +182,37 @@ public class DataAccessControllerTest {
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.promoteUserToEditor(newEditor, badpasswordChief);
         });
+    }
+
+    @Test
+    public void submitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+        assertTrue(1 == db.submitArticle(submission, user).getSubmissionID());
+        assertTrue(2 == db.submitArticle(submission, user).getSubmissionID());
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.submitArticle(submission, badPasswordUser);
+        });
+
+        submission.setSummary("");
+        assertThrows(IncompleteInformationException.class, () -> {
+            db.submitArticle(submission, user);
+        });
+        submission.setSummary("Summary");
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.submitArticle(submission, nonexistentUser);
+        });
+
+        // too long title
+        submission.setArticleContent("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        assertThrows(SQLException.class, () -> {
+            db.submitArticle(submission, user);
+        });
+
+
     }
 }

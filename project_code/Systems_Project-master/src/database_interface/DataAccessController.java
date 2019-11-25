@@ -1,10 +1,6 @@
 package database_interface;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 import exceptions.IncompleteInformationException;
@@ -178,31 +174,6 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public ArrayList<Journal> getAllJournals() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ArrayList<Volume> getAllJournalVolumes(Journal journal) throws ObjectDoesNotExistException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws ObjectDoesNotExistException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ArrayList<AcceptedArticle> getallEditionArticles(Edition edition)
-            throws ObjectDoesNotExistException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public boolean createJournal(Journal newJournal, User chiefEditor) throws UserDoesNotExistException,
             InvalidAuthenticationException, UniqueColumnValueAlreadyExists, SQLException {
 
@@ -239,14 +210,15 @@ public class DataAccessController implements DatabaseInterface {
             statementTwo.setString(2, chiefEditor.getEmail());
             int res2 = statementTwo.executeUpdate();
 
-            if (res2 != 1) {
-                connection.rollback();
-                throw new SQLException();
-            }
 
             connection.commit();
 
-            return res1 == 1 && res2 == 1;
+            if(res1 == 1 && res2 == 1)
+                return true;
+            else{
+                connection.rollback();
+                return false;
+            }
 
         } catch (Exception e) {
             connection.rollback();
@@ -369,6 +341,91 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
+    public Submission submitArticle(Submission submission, User author)
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException {
+
+        if (!validCredentials(author))
+            throw new InvalidAuthenticationException();
+
+        try{
+            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getArticleContent().isEmpty()){
+                throw new IncompleteInformationException();
+            }
+        } catch(NullPointerException e){
+            e.printStackTrace();
+            throw new IncompleteInformationException();
+        }
+
+        PreparedStatement statementTwo = null;
+        ResultSet rs = null;
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            // Insert the new submission into the table
+            String sqlQuery = "INSERT INTO Submissions (title, abstract, draftLink) VALUES\n" +
+                    "\t(?, ?, ?)";
+            statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, submission.getTitle());
+            statement.setString(2, submission.getSummary());
+            statement.setString(3, submission.getArticleContent());
+            int res1 = statement.executeUpdate();
+
+            if (res1 != 1) {
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                int newId = rs.getInt(1);
+                submission.setSubmissionID(newId);
+            }else{
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            // Insert the new authorship into the table with the new submission
+            String sqlQueryTwo = "INSERT INTO Authorships (email, submissionID, isMain) VALUES\n" +
+                    "\t(?,?,?)";
+            statementTwo = connection.prepareStatement(sqlQueryTwo);
+            statementTwo.setString(1, author.getEmail());
+            statementTwo.setInt(2, submission.getSubmissionID());
+            statementTwo.setBoolean(3,true);
+            int res2 = statementTwo.executeUpdate();
+
+            connection.commit();
+
+            if(res1 == 1 && res2 == 1){
+                return submission;
+            } else {
+                connection.rollback();
+                return null;
+            }
+
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+
+            closeConnection();
+
+            if (statementTwo != null)
+                statementTwo.close();
+
+            if(rs != null)
+                rs.close();
+        }
+    }
+
+    @Override
+    public boolean addCoAuthor(Submission submission, Authorship newAuthor, Authorship mainAuthor)
+            throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public Volume createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
         // TODO Auto-generated method stub
@@ -383,17 +440,28 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public Submission submitArticle(Submission submission, User author)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
+    public ArrayList<Journal> getAllJournals() throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public boolean addCoAuthor(Submission submission, Authorship newAuthor, Authorship mainAuthor)
-            throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
+    public ArrayList<Volume> getAllJournalVolumes(Journal journal) throws ObjectDoesNotExistException, SQLException {
         // TODO Auto-generated method stub
-        return false;
+        return null;
+    }
+
+    @Override
+    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws ObjectDoesNotExistException, SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ArrayList<AcceptedArticle> getallEditionArticles(Edition edition)
+            throws ObjectDoesNotExistException, SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -33,3 +33,11 @@ INSERT INTO JournalEditors (ISSN, email, isChief)
 SELECT isChief FROM JournalEditors WHERE
                     tISSN = ? AND
                     temail = ?
+					
+# Create a submission
+INSERT INTO Submissions (title, abstract, draftLink) VALUES
+	(?, ?, ?)
+	
+# Create authorship
+INSERT INTO Authorships (email, submissionID, isMain) VALUES
+	(?,?,?)
