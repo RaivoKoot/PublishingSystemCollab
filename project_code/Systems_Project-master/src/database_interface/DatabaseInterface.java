@@ -34,7 +34,7 @@ public interface DatabaseInterface {
     /**
      * attempts to change the password of the given user
      *
-     * @param  must include email and old password
+     * @param user must include email and old password
      * @param newPassword
      * @return success or not
      * @precondition the user exists in the system
