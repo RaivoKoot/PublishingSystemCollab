@@ -47,12 +47,6 @@ public class DataAccessController implements DatabaseInterface {
             statement.close();
     }
 
-    public void test() throws SQLException {
-        openConnection();
-        closeConnection();
-        closeConnection();
-    }
-
     private boolean userExists(User user) throws SQLException {
         ResultSet res = null;
         try {
@@ -117,7 +111,7 @@ public class DataAccessController implements DatabaseInterface {
         if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
 
-        if(newPassword.equals(""))
+        if (newPassword.equals(""))
             throw new IncompleteInformationException();
 
         ResultSet res = null;
@@ -136,7 +130,7 @@ public class DataAccessController implements DatabaseInterface {
 
             int result = statement.executeUpdate();
 
-            if(result > 1)
+            if (result > 1)
                 throw new SQLException();
 
             return result == 1;
@@ -151,7 +145,7 @@ public class DataAccessController implements DatabaseInterface {
     @Override
     public boolean validCredentials(User user) throws SQLException, UserDoesNotExistException {
 
-        if(!userExists(user))
+        if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
 
         ResultSet res = null;
@@ -205,10 +199,10 @@ public class DataAccessController implements DatabaseInterface {
     public boolean createJournal(Journal newJournal, User chiefEditor) throws UserDoesNotExistException,
             InvalidAuthenticationException, UniqueColumnValueAlreadyExists, SQLException {
 
-        if(!validCredentials(chiefEditor))
+        if (!validCredentials(chiefEditor))
             throw new InvalidAuthenticationException();
 
-        if(!isUniqueJournal(newJournal))
+        if (!isUniqueJournal(newJournal))
             throw new UniqueColumnValueAlreadyExists();
 
 
@@ -225,7 +219,7 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(2, newJournal.getName());
             int res1 = statement.executeUpdate();
 
-            if(res1 != 1) {
+            if (res1 != 1) {
                 connection.rollback();
                 throw new SQLException();
             }
@@ -238,7 +232,7 @@ public class DataAccessController implements DatabaseInterface {
             statementTwo.setString(2, chiefEditor.getEmail());
             int res2 = statementTwo.executeUpdate();
 
-            if(res2 != 1){
+            if (res2 != 1) {
                 connection.rollback();
                 throw new SQLException();
             }
@@ -247,15 +241,14 @@ public class DataAccessController implements DatabaseInterface {
 
             return res1 == 1 && res2 == 1;
 
-        }  catch(Exception e){
+        } catch (Exception e) {
             connection.rollback();
             throw e;
-        }
-        finally {
+        } finally {
 
             closeConnection();
 
-            if(statementTwo != null)
+            if (statementTwo != null)
                 statementTwo.close();
         }
     }
@@ -263,11 +256,10 @@ public class DataAccessController implements DatabaseInterface {
     /*
     Checks whether a journal with the given issn or name exists in the database
      */
-    private boolean isUniqueJournal(Journal journal) throws SQLException{
+    private boolean isUniqueJournal(Journal journal) throws SQLException {
         ResultSet res = null;
         try {
             openConnection();
-            connection.setAutoCommit(false);
 
             String sqlQuery = "SELECT EXISTS(\n" +
                     "\tSELECT * FROM Journals WHERE \n" +
@@ -295,8 +287,73 @@ public class DataAccessController implements DatabaseInterface {
     @Override
     public boolean promoteUserToEditor(JournalEditor newEditor, JournalEditor journalChief)
             throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
-        // TODO Auto-generated method stub
-        return false;
+
+        if(!newEditor.getIssn().equals(journalChief.getIssn())){
+            throw new InvalidAuthenticationException();
+        }
+
+        if (!userExists(newEditor)) {
+            throw new UserDoesNotExistException(newEditor.getEmail());
+        }
+
+        journalChief = getEditorship(journalChief);
+
+        if(journalChief == null || !journalChief.isChief()){
+            throw new InvalidAuthenticationException();
+        }
+
+
+        try {
+            openConnection();
+
+            String sqlQuery = "INSERT INTO JournalEditors (ISSN, email, isChief) VALUES\n" +
+                    "\t(?,?,?)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, newEditor.getIssn());
+            statement.setString(2, newEditor.getEmail());
+            statement.setBoolean(3, newEditor.isChief());
+
+            int res = statement.executeUpdate();
+
+            return res==1;
+
+        } finally {
+            closeConnection();
+        }
+    }
+
+    private JournalEditor getEditorship(JournalEditor editor) throws UserDoesNotExistException, SQLException{
+        if(!userExists(editor))
+            throw new UserDoesNotExistException(editor.getEmail());
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT isChief FROM JournalEditors WHERE\n" +
+                    "\tISSN = ? AND\n" +
+                    "\temail = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, editor.getIssn());
+            statement.setString(2, editor.getEmail());
+
+            res = statement.executeQuery();
+            if(!res.next()){
+                // editorship does not exist
+                return null;
+            }
+
+            int isChief = res.getInt(1);
+            editor.setChief(isChief==1);
+
+            return editor;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
     @Override

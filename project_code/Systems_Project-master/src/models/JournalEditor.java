@@ -2,7 +2,7 @@ package models;
 
 public class JournalEditor extends User{
 	private boolean isChief;
-	private Journal journal;
+	private String issn;
 	
 	public JournalEditor() {
 		super();
@@ -26,17 +26,15 @@ public class JournalEditor extends User{
 		this.isChief = isChief;
 	}
 
-	public Journal getJournal()
-	{
-		return journal;
+	public String getIssn() {
+		return issn;
 	}
 
-	public void setJournal(Journal journal)
-	{
-		this.journal = journal;
+	public void setIssn(String issn) {
+		this.issn = issn;
 	}
-	
+
 	public String toString() {
-		return "Editor for journal '" +journal.getName()+"' with chief="+isChief+" and user info: " + super.toString();
+		return "Editor for journal '" +issn+"' with chief="+isChief+" and user info: " + super.toString();
 	}
 }

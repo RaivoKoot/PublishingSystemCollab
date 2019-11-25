@@ -7,6 +7,7 @@ import exceptions.UniqueColumnValueAlreadyExists;
 import exceptions.UserDoesNotExistException;
 import main.SessionData;
 import models.Journal;
+import models.JournalEditor;
 import models.User;
 
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ public class Test {
         char[] psw = {'h','a','c','k','e','d'};
         user.setPassword(psw);
 
+        /*
         boolean result = false;
         try {
             result = SessionData.db.changePassword(user, "hacked");
@@ -49,6 +51,26 @@ public class Test {
         } catch (InvalidAuthenticationException e) {
             e.printStackTrace();
         } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        */
+
+        // PROMOTING SOMEONE TO EDITOR
+        JournalEditor user2 = new JournalEditor();
+        user2.setEmail("toot@gmail.com");
+        user2.setIssn("ABCDHSJKSD");
+        user2.setChief(false);
+
+        JournalEditor chief = new JournalEditor(user);
+        chief.setIssn("ABCDHSJKSD");
+
+        try {
+            System.out.println(SessionData.db.promoteUserToEditor(user2, chief));
+        } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+        } catch (InvalidAuthenticationException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
