@@ -38,27 +38,22 @@ public class LogIn extends JFrame{
 
                         if (success) {
                             SessionData.currentUser = input;
-                            // TODO: Do some UI stuff
+
                             MainScreen themainscreen = new MainScreen();
                             themainscreen.setVisible(true);
                             dispose();
 
                         } else {
-                            // TODO: Display some 'invalid password or login' box to the user
-                            JOptionPane.showMessageDialog(null, "Invalid Password/E-mail address Combination");
+                            JOptionPane.showMessageDialog(null, "The password you have entered is incorrect");
                         }
 
                     } catch(UserDoesNotExistException exception) {
                         exception.printStackTrace();
-
-                        // TODO: Display some 'invalid login' box to the user
-                        JOptionPane.showMessageDialog(null, "Login Failed");
+                        JOptionPane.showMessageDialog(null, "A user with that email does not exist");
 
                     } catch(SQLException exception) {
                         exception.printStackTrace();
-
-                        // TODO: Display some 'invalid login' box to the user
-                        JOptionPane.showMessageDialog(null, "Login Failed");
+                        JOptionPane.showMessageDialog(null, "Something went wrong. Please try again or contact an administrator");
 
                     }
 
