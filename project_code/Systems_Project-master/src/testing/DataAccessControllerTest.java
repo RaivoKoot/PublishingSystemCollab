@@ -8,12 +8,18 @@ import models.JournalEditor;
 import models.Submission;
 import models.User;
 import org.junit.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.runners.MethodSorters;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DataAccessControllerTest {
 
     static DatabaseTestingSetup dbSetup;
@@ -79,7 +85,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void registerBaseUser() throws SQLException, UserAlreadyExistsException, IncompleteInformationException {
+    public void test1RegisterBaseUser() throws SQLException, UserAlreadyExistsException, IncompleteInformationException {
 
         assertTrue(db.registerBaseUser(chiefEditor));
         assertTrue(db.registerBaseUser(user));
@@ -102,10 +108,13 @@ public class DataAccessControllerTest {
         assertThrows(IncompleteInformationException.class, () -> {
             db.registerBaseUser(incompleteInfo);
         });
+
+
     }
 
     @Test
-    public void changePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test2ChangePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+
         assertTrue(db.changePassword(user, "pswd"));
 
         assertThrows(IncompleteInformationException.class, () -> {
@@ -123,7 +132,8 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void validCredentials() throws SQLException, UserDoesNotExistException {
+    public void test3ValidCredentials() throws SQLException, UserDoesNotExistException {
+
         assertTrue(db.validCredentials(user));
 
         assertThrows(UserDoesNotExistException.class, () -> {
@@ -131,10 +141,13 @@ public class DataAccessControllerTest {
         });
 
         assertFalse(db.validCredentials(badPasswordUser));
+
+
     }
 
     @Test
-    public void createJournal() throws SQLException, UniqueColumnValueAlreadyExists, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test4CreateJournalAndGetJournals() throws SQLException, UniqueColumnValueAlreadyExists, UserDoesNotExistException, InvalidAuthenticationException {
+
         assertTrue(db.createJournal(journal, chiefEditor));
 
         assertThrows(UniqueColumnValueAlreadyExists.class, () -> {
@@ -152,7 +165,9 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void promoteUserToEditor() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
+    public void test5PromoteUserToEditor() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
+
+
         JournalEditor newEditor = new JournalEditor(user);
         JournalEditor chief = new JournalEditor(chiefEditor);
         newEditor.setChief(false);
@@ -182,10 +197,12 @@ public class DataAccessControllerTest {
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.promoteUserToEditor(newEditor, badpasswordChief);
         });
+
     }
 
     @Test
-    public void submitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+
         assertTrue(1 == db.submitArticle(submission, user).getSubmissionID());
         assertTrue(2 == db.submitArticle(submission, user).getSubmissionID());
 
@@ -212,6 +229,13 @@ public class DataAccessControllerTest {
         assertThrows(SQLException.class, () -> {
             db.submitArticle(submission, user);
         });
+
+    }
+
+    @Test
+    public void test7GetAllJournals() throws SQLException {
+        ArrayList<Journal> journals = db.getAllJournals();
+        assertEquals(1, journals.size());
 
 
     }
