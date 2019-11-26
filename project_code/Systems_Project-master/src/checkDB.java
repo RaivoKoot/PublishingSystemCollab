@@ -26,8 +26,6 @@ public class checkDB {
                 stmt5 = con.createStatement();
                 stmt6 = con.createStatement();
 
-
-
                 //int dropit = stmt.executeUpdate("DROP TABLE editors");
 
                 ResultSet Journals = stmt.executeQuery("SELECT * FROM Journals");

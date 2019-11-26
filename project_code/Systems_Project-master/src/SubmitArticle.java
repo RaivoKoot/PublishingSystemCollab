@@ -3,25 +3,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+import exceptions.IncompleteInformationException;
+import exceptions.InvalidAuthenticationException;
+import exceptions.UserDoesNotExistException;
+import models.Submission;
+import database_interface.DataAccessController;
+import main.SessionData;
+
 public class SubmitArticle extends JFrame {
     private JPanel SubmitArticle;
     private JTextField abstracte;
     private JTextField pdflink;
-    private JTextField e_maile;
-    private JTextField forenameI;
     private JButton backward;
-    private JTextField chosen_password;
-    private JTextField surnameI;
-    private JLabel surname;
-    private JLabel forename;
     private JButton submitButton;
     private JTextField Titre;
+    private JComboBox comboBox1;
     Connection con = null; // a Connection object
     Statement stmt = null;
     Statement stmt2 = null;
     Statement stmt3 = null;
-    int valueweneed = 3;
-    int n = 5;
 
 
     public SubmitArticle() {
@@ -30,6 +30,18 @@ public class SubmitArticle extends JFrame {
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        String[] journal_list = {"awdawd","awdawdeee"};
+        for(int i = 0; i<= journal_list.length-1 ; i++) {
+            comboBox1.addItem(journal_list[i]);
+        }
+
+        comboBox1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    JComboBox cb = (JComboBox)e.getSource();
+                    String selection = (String)cb.getSelectedItem();
+            }
+        });
 
         backward.addActionListener(new ActionListener() {
             @Override
@@ -43,60 +55,43 @@ public class SubmitArticle extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = Titre.getText();
-                String fname = forenameI.getText();
-                String sname = surnameI.getText();
-                String pdflinke = pdflink.getText();
-                String password = chosen_password.getText();
-                String e_mail = e_maile.getText();
-                String abstracter = abstracte.getText();
-                n++;
+               String title = Titre.getText();
+               String abs = abstracte.getText();
+               String pdfLink = pdflink.getText();
 
+               Submission sub = new Submission();
+               sub.setTitle(title);
+               sub.setSummary(abs);
+               sub.setArticleContent(pdfLink);
 
-                try {
-                    String DB = "jdbc:mysql://stusql.dcs.shef.ac.uk/team035?user=team035&password=5455d7fb";
-                    con = DriverManager.getConnection(DB);
-
-                    try {
-                        stmt = con.createStatement();
-                        int inUsers = stmt.executeUpdate("INSERT INTO Users " + "VALUES (" + "'" + e_mail + "'" + ", " + "'" + fname + "'" + ", " + "'" +
-                                sname + "'" + ", " + "'" + "Unkwown" + "'" + ", " + "'" + password + "'" + "," + "'author'" +
-                                "," + "'" + valueweneed + "'" + ")");
-
-                        stmt3 = con.createStatement();
-                        int inSubmissions = stmt3.executeUpdate("INSERT INTO Submissions " + "VALUES (" + "'" + n + "'" + ", '" + title + "'" + "," +
-                                "'" + abstracter + "'" + ", '" + pdflinke +  "')");
-
-                        stmt2 = con.createStatement();
-                        int inAuthors = stmt2.executeUpdate("INSERT INTO Authorships " + "VALUES (" + "'" + e_mail + "'" + ", '" + n + "'" + "," +
-                                "'" + 1 + "'" + ")");
-
-
-                        //int [] registerSomeone = stmt.executeBatch();
-
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    } finally {
-                        if (stmt != null)
-                            stmt.close();
+               try{
+                    Submission success = SessionData.db.submitArticle(sub, SessionData.currentUser);
+                    if (success != null){
+                        JOptionPane.showMessageDialog(null,"Submission successful");
+                        Titre.setText("");
+                        abstracte.setText("");
+                        pdflink.setText("");
                     }
-
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-
-                } finally {
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
+                    else{
+                        JOptionPane.showMessageDialog(null,"Submission not successfull");
                     }
-                }
+               } catch (UserDoesNotExistException e1) {
+                   JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+                   e1.printStackTrace();
+               } catch (InvalidAuthenticationException e1) {
+                   JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+                   e1.printStackTrace();
+               } catch (IncompleteInformationException e1) {
+                   JOptionPane.showMessageDialog(null,"Make sure you fill in the form correctly");
+                   e1.printStackTrace();
+               } catch (SQLException e1) {
+                   JOptionPane.showMessageDialog(null,"Sorry, something went wrong. Please try again or contact an admin");
+                   e1.printStackTrace();
+               }
             }
         });
+
+
 
 
     }

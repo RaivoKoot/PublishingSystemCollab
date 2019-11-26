@@ -1,4 +1,4 @@
-import com.mysql.cj.Session;
+//import com.mysql.cj.Session;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.IncompleteInformationException;
