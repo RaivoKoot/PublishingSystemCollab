@@ -1,4 +1,7 @@
 import javax.swing.*;
+
+import exceptions.InvalidAuthenticationException;
+import exceptions.UniqueColumnValueAlreadyExists;
 import exceptions.UserDoesNotExistException;
 import models.User;
 import main.SessionData;
@@ -13,6 +16,7 @@ public class JournalForm extends JFrame{
     private JTextField textField1;
     private JTextField textField2;
     private JButton backward;
+    private JButton createButton;
 
     public JournalForm(){
         add(JournalPanel);
@@ -20,12 +24,39 @@ public class JournalForm extends JFrame{
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        String name = textField1.getText();
-        String ISSN = textField2.getText();
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = textField1.getText();
+                String ISSN = textField2.getText();
 
-        Journal target = new Journal();
-        target.setName(name);
-        target.setISSN(ISSN);
+                Journal target = new Journal();
+                target.setName(name);
+                target.setISSN(ISSN);
+
+                try {
+                    boolean success = SessionData.db.createJournal(target, SessionData.currentUser);
+                    if (success) {
+                        JOptionPane.showMessageDialog(null, "Journal created!");
+                        textField1.setText("");
+                        textField2.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Journal not created!");
+                    }
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Your user details are incorrect");
+                } catch (UniqueColumnValueAlreadyExists uniqueColumnValueAlreadyExists) {
+                    JOptionPane.showMessageDialog(null, "A Journal with that name or ISSN already exists!");
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Your user details do not exist");
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Something went wrong!");
+                }
+            }
+            });
 
         backward.addActionListener(new ActionListener() {
             @Override

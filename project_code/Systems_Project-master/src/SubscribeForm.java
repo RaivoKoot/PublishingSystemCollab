@@ -75,14 +75,19 @@ public class SubscribeForm extends JFrame {
 
                 } catch (UserAlreadyExistsException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "That email is already in use");
                 } catch (IncompleteInformationException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Please fill out the boxes correctly");
                 } catch (SQLException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Something went wrong. " +
+                            "Please try again or contact and administrator");
                 }
 
 
-            }});
+            }
+        });
 
         backward.addActionListener(new ActionListener() {
             @Override

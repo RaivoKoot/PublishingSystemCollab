@@ -54,14 +54,20 @@ public class MainScreen extends JFrame{
 
                     } catch (UserDoesNotExistException e1) {
                         e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null,"A user with your email does not exist anymore");
                     } catch (InvalidAuthenticationException e1) {
                         e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null,"The password you have entered is incorrect");
                     } catch (IncompleteInformationException e1) {
                         e1.printStackTrace();
                         JOptionPane.showMessageDialog(null,"Make sure you fill in the form correctly");
                     } catch (SQLException e1) {
                         e1.printStackTrace();
+                        JOptionPane.showMessageDialog(null,"Something went wrong. Please try again or contact an administrator");
                     }
+                }
+                else {
+                    JOptionPane.showMessageDialog(null,"The new passwords you entered do not match");
                 }
 
 
