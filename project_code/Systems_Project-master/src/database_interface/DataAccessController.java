@@ -441,8 +441,33 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Journal> getAllJournals() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Journals";
+            statement = connection.prepareStatement(sqlQuery);
+
+            res = statement.executeQuery();
+
+            ArrayList<Journal> journals = new ArrayList<>();
+
+            while(res.next()) {
+                Journal journal = new Journal();
+                journal.setISSN(res.getString(1));
+                journal.setName(res.getString(2));
+
+                journals.add(journal);
+            }
+
+            return journals;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
     @Override
