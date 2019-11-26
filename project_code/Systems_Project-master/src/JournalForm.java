@@ -45,12 +45,15 @@ public class JournalForm extends JFrame{
                     }
                 } catch (InvalidAuthenticationException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Your user details are incorrect");
                 } catch (UniqueColumnValueAlreadyExists uniqueColumnValueAlreadyExists) {
-                    uniqueColumnValueAlreadyExists.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "A Journal with that name or ISSN already exists!");
                 } catch (UserDoesNotExistException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Your user details do not exist");
                 } catch (SQLException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Something went wrong!");
                 }
             }
             });
