@@ -75,6 +75,7 @@ public class DataAccessControllerTest {
         submission.setContent("www.url.com");
         submission.setSummary("summary");
         submission.setTitle("Title Paper");
+        submission.setIssn(journal.getISSN());
 
     }
 
@@ -209,11 +210,11 @@ public class DataAccessControllerTest {
             db.submitArticle(submission, badPasswordUser);
         });
 
-        submission.setSummary("");
+        submission.setIssn("");
         assertThrows(IncompleteInformationException.class, () -> {
             db.submitArticle(submission, user);
         });
-        submission.setSummary("Summary");
+        submission.setIssn("CSJ");
 
         assertThrows(UserDoesNotExistException.class, () -> {
             db.submitArticle(submission, nonexistentUser);

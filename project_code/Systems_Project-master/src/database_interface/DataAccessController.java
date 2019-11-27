@@ -343,7 +343,8 @@ public class DataAccessController implements DatabaseInterface {
             throw new InvalidAuthenticationException();
 
         try{
-            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getContent().isEmpty()){
+            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getContent().isEmpty()
+                || submission.getIssn().isEmpty()){
                 throw new IncompleteInformationException();
             }
         } catch(NullPointerException e){
@@ -358,12 +359,13 @@ public class DataAccessController implements DatabaseInterface {
             connection.setAutoCommit(false);
 
             // Insert the new submission into the table
-            String sqlQuery = "INSERT INTO Submissions (title, abstract, draftLink) VALUES\n" +
-                    "\t(?, ?, ?)";
+            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN) VALUES\n" +
+                    "\t(?,?,?,?);";
             statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, submission.getTitle());
             statement.setString(2, submission.getSummary());
             statement.setString(3, submission.getContent());
+            statement.setString(4, submission.getIssn());
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -381,7 +383,7 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             // Insert the new authorship into the table with the new submission
-            String sqlQueryTwo = "INSERT INTO Authorships (email, submissionID, isMain) VALUES\n" +
+            String sqlQueryTwo = "INSERT INTO Authorships (email, articleID, isMain) VALUES\n" +
                     "\t(?,?,?)";
             statementTwo = connection.prepareStatement(sqlQueryTwo);
             statementTwo.setString(1, author.getEmail());
