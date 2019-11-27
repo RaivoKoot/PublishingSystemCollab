@@ -3,12 +3,7 @@ package database_interface;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.UniqueColumnValueAlreadyExists;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.*;
 
 public interface DatabaseInterface {
@@ -129,7 +124,7 @@ public interface DatabaseInterface {
      * @precondition editor and volume must exist
      */
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException;
 
     /**
      * Using the credentials of author, creates a new submission and appoints thi
