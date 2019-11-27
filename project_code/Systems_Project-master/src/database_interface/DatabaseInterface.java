@@ -9,14 +9,7 @@ import exceptions.UniqueColumnValueAlreadyExists;
 import exceptions.ObjectDoesNotExistException;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserDoesNotExistException;
-import models.AcceptedArticle;
-import models.Authorship;
-import models.Edition;
-import models.Journal;
-import models.JournalEditor;
-import models.Submission;
-import models.User;
-import models.Volume;
+import models.*;
 
 public interface DatabaseInterface {
 
@@ -77,7 +70,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @precondition the given edition exists
      */
-    public ArrayList<AcceptedArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException;
+    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException;
 
     /**
      * Creates a new journal and appoints chiefEditor as the main and first editor
@@ -152,14 +145,14 @@ public interface DatabaseInterface {
      * @postcondition a new submission with the given values has been inserted into
      * the database
      */
-    public Submission submitArticle(Submission submission, User author)
+    public Article submitArticle(Article submission, User author)
             throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException;
 
     /**
      * Using the credentials of mainAuthor, appoints newAuthor as a co-author to the
      * submission
      *
-     * @param submission only needs to include submissionID
+     * @param article only needs to include articleID
      * @param newAuthor  only needs to include email
      * @param mainAuthor only needs to include email and password
      * @return successful or not
@@ -170,7 +163,7 @@ public interface DatabaseInterface {
      * @postcondition the newAuthor user has been registered as a co author for that
      * submission
      */
-    public boolean addCoAuthor(Submission submission, Authorship newAuthor, Authorship mainAuthor)
+    public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor)
             throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
 
 }

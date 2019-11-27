@@ -9,14 +9,7 @@ import exceptions.ObjectDoesNotExistException;
 import exceptions.UniqueColumnValueAlreadyExists;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserDoesNotExistException;
-import models.AcceptedArticle;
-import models.Authorship;
-import models.Edition;
-import models.Journal;
-import models.JournalEditor;
-import models.Submission;
-import models.User;
-import models.Volume;
+import models.*;
 
 public class DataAccessController implements DatabaseInterface {
 
@@ -73,10 +66,10 @@ public class DataAccessController implements DatabaseInterface {
             throw new UserAlreadyExistsException(newUser.getEmail());
 
         if (newUser.getEmail() == null || newUser.getForenames() == null || newUser.getSurname() == null
-                || newUser.getUniversity() == null
+                || newUser.getUniversity() == null || newUser.getTitle() == null
                 || newUser.getPassword() == null
                 || newUser.getEmail().equals("") || newUser.getForenames().equals("") || newUser.getSurname().equals("")
-                || newUser.getUniversity().equals("")
+                || newUser.getUniversity().equals("") || newUser.getTitle().equals("")
                 || newUser.getPassword().equals(""))
             throw new IncompleteInformationException();
 
@@ -84,13 +77,15 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "INSERT INTO Users (email, forenames, surname, university, password) VALUES (?, ?, ?, ?, ?)";
+            String sqlQuery = "INSERT INTO Users (email, title, forenames, surname, university, password) \n" +
+                    "\tVALUES (?, ?, ?, ?, ?, ?)\n";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, newUser.getEmail());
-            statement.setString(2, newUser.getForenames());
-            statement.setString(3, newUser.getSurname());
-            statement.setString(4, newUser.getUniversity());
-            statement.setString(5, newUser.getPassword());
+            statement.setString(2, newUser.getTitle());
+            statement.setString(3, newUser.getForenames());
+            statement.setString(4, newUser.getSurname());
+            statement.setString(5, newUser.getUniversity());
+            statement.setString(6, newUser.getPassword());
 
 
             int result = statement.executeUpdate();
@@ -341,14 +336,15 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public Submission submitArticle(Submission submission, User author)
+    public Article submitArticle(Article submission, User author)
             throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException {
 
         if (!validCredentials(author))
             throw new InvalidAuthenticationException();
 
         try{
-            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getArticleContent().isEmpty()){
+            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getContent().isEmpty()
+                || submission.getIssn().isEmpty()){
                 throw new IncompleteInformationException();
             }
         } catch(NullPointerException e){
@@ -363,12 +359,13 @@ public class DataAccessController implements DatabaseInterface {
             connection.setAutoCommit(false);
 
             // Insert the new submission into the table
-            String sqlQuery = "INSERT INTO Submissions (title, abstract, draftLink) VALUES\n" +
-                    "\t(?, ?, ?)";
+            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN) VALUES\n" +
+                    "\t(?,?,?,?);";
             statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, submission.getTitle());
             statement.setString(2, submission.getSummary());
-            statement.setString(3, submission.getArticleContent());
+            statement.setString(3, submission.getContent());
+            statement.setString(4, submission.getIssn());
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -379,18 +376,18 @@ public class DataAccessController implements DatabaseInterface {
             rs = statement.getGeneratedKeys();
             if (rs.next()) {
                 int newId = rs.getInt(1);
-                submission.setSubmissionID(newId);
+                submission.setArticleID(newId);
             }else{
                 connection.rollback();
                 throw new SQLException();
             }
 
             // Insert the new authorship into the table with the new submission
-            String sqlQueryTwo = "INSERT INTO Authorships (email, submissionID, isMain) VALUES\n" +
+            String sqlQueryTwo = "INSERT INTO Authorships (email, articleID, isMain) VALUES\n" +
                     "\t(?,?,?)";
             statementTwo = connection.prepareStatement(sqlQueryTwo);
             statementTwo.setString(1, author.getEmail());
-            statementTwo.setInt(2, submission.getSubmissionID());
+            statementTwo.setInt(2, submission.getArticleID());
             statementTwo.setBoolean(3,true);
             int res2 = statementTwo.executeUpdate();
 
@@ -419,11 +416,11 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public boolean addCoAuthor(Submission submission, Authorship newAuthor, Authorship mainAuthor)
-            throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
+    public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor) throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
         // TODO Auto-generated method stub
         return false;
     }
+
 
     @Override
     public Volume createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
@@ -483,7 +480,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public ArrayList<AcceptedArticle> getallEditionArticles(Edition edition)
+    public ArrayList<EditionArticle> getallEditionArticles(Edition edition)
             throws ObjectDoesNotExistException, SQLException {
         // TODO Auto-generated method stub
         return null;

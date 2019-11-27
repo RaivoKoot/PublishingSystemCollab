@@ -3,10 +3,7 @@ package testing;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.*;
-import models.Journal;
-import models.JournalEditor;
-import models.Submission;
-import models.User;
+import models.*;
 import org.junit.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -32,7 +29,7 @@ public class DataAccessControllerTest {
     static User badPasswordUser;
     static Journal journal;
 
-    static Submission submission;
+    static Article submission;
 
 
     @BeforeClass
@@ -50,12 +47,14 @@ public class DataAccessControllerTest {
         chiefEditor.setSurname("Chief");
         chiefEditor.setForenames("Chiefo");
         chiefEditor.setUniversity("Sheffield");
+        chiefEditor.setTitle("DR");
 
         user.setEmail("user@gmail.com");
         user.setPassword("pswd");
         user.setSurname("user");
         user.setForenames("usero");
         user.setUniversity("Sheffield");
+        user.setTitle("Mr");
 
         journal = new Journal();
         journal.setName("Computer Science Journal");
@@ -72,10 +71,11 @@ public class DataAccessControllerTest {
         badPasswordUser.setEmail("user@gmail.com");
         badPasswordUser.setPassword("wrong");
 
-        submission = new Submission();
-        submission.setArticleContent("www.url.com");
+        submission = new Article();
+        submission.setContent("www.url.com");
         submission.setSummary("summary");
         submission.setTitle("Title Paper");
+        submission.setIssn(journal.getISSN());
 
     }
 
@@ -203,25 +203,25 @@ public class DataAccessControllerTest {
     @Test
     public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
 
-        assertTrue(1 == db.submitArticle(submission, user).getSubmissionID());
-        assertTrue(2 == db.submitArticle(submission, user).getSubmissionID());
+        assertTrue(1 == db.submitArticle(submission, user).getArticleID());
+        assertTrue(2 == db.submitArticle(submission, user).getArticleID());
 
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.submitArticle(submission, badPasswordUser);
         });
 
-        submission.setSummary("");
+        submission.setIssn("");
         assertThrows(IncompleteInformationException.class, () -> {
             db.submitArticle(submission, user);
         });
-        submission.setSummary("Summary");
+        submission.setIssn("CSJ");
 
         assertThrows(UserDoesNotExistException.class, () -> {
             db.submitArticle(submission, nonexistentUser);
         });
 
         // too long title
-        submission.setArticleContent("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+        submission.setContent("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +

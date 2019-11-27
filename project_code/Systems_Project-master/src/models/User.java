@@ -2,6 +2,7 @@ package models;
 
 public class User {
 	private String email;
+	private String title;
 	private String forenames;
 	private String surname;
 	private String university;
@@ -65,5 +66,13 @@ public class User {
 	{
 		return "User " + forenames + " " + surname + " " + email + " from " + university + " with password '"
 				+ password;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

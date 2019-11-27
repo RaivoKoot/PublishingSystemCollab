@@ -25,6 +25,7 @@ CREATE TABLE Editions (
 
 CREATE TABLE Users (
 	email VARCHAR(80) PRIMARY KEY,
+	title VARCHAR(4), 
 	forenames VARCHAR(150),
 	surname VARCHAR(120),
 	university VARCHAR(100),
@@ -37,55 +38,63 @@ CREATE TABLE JournalEditors (
 	isChief BOOL NOT NULL DEFAULT FALSE,
 	PRIMARY KEY(ISSN, email),
 	FOREIGN KEY(email) REFERENCES Users(email)
-		ON DELETE CASCADE,
+		ON DELETE NO ACTION,
 	FOREIGN KEY(ISSN) REFERENCES Journals(ISSN)
 		ON DELETE CASCADE
 );
 
-CREATE TABLE Submissions (
-	submissionID INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Articles (
+	articleID INT PRIMARY KEY AUTO_INCREMENT,
 	title VARCHAR(1000) NOT NULL,
 	abstract VARCHAR(2000) NOT NULL,
-	draftLink VARCHAR(400) NOT NULL
+	content VARCHAR(400) NOT NULL,
+	isFinal BOOL DEFAULT FALSE,
+	isAccepted BOOL DEFAULT FALSE,
+	ISSN VARCHAR(20),
+	
+	FOREIGN KEY(ISSN) REFERENCES Journals(ISSN)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE Authorships (
 	email VARCHAR(80),
-	submissionID INT,
+	articleID INT,
 	isMain BOOL NOT NULL DEFAULT FALSE,
-	PRIMARY KEY(email, submissionID),
+	PRIMARY KEY(email, articleID),
 	FOREIGN KEY(email) REFERENCES Users(email)
 		ON DELETE NO ACTION,
-	FOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)
+	FOREIGN KEY(articleID) REFERENCES Articles(articleID)
 		ON DELETE CASCADE
 );
 
-CREATE TABLE AcceptedArticles (
-	articleID INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE EditionArticles (
+	editionArticleID INT PRIMARY KEY AUTO_INCREMENT,
+	articleID INT NOT NULL,
+	editionID INT NOT NULL,
 	startingPage INT UNSIGNED,
 	endingPage INT UNSIGNED,
-	articleFile MEDIUMBLOB NOT NULL,
-	editionID INT,
-	submissionID INT NOT NULL,
-	FOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)
+	FOREIGN KEY(articleID) REFERENCES Articles(articleID)
 		ON DELETE CASCADE,
 	FOREIGN KEY(editionID) REFERENCES Editions(editionID)
-		ON DELETE SET NULL
+		ON DELETE CASCADE
 );
 
 CREATE TABLE Reviews (
 	reviewID INT PRIMARY KEY AUTO_INCREMENT,
+	
 	summary VARCHAR(2000) NOT NULL,
 	verdict VARCHAR(20) NOT NULL,
-	submissionID INT NOT NULL,
-	reviewerEmail VARCHAR(80) NOT NULL,
-	articleOfReviewer INT,
+	isFinal BOOL DEFAULT FALSE,
 	
-	FOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)
+	submissionID INT NOT NULL,
+	articleOfReviewerID INT,
+	reviewerEmail VARCHAR(80) NOT NULL,
+	
+	FOREIGN KEY(submissionID) REFERENCES Articles(articleID)
 		ON DELETE CASCADE,
 	FOREIGN KEY(reviewerEmail) REFERENCES Users(email)
-		ON DELETE CASCADE,
-	FOREIGN KEY(articleOfReviewer) REFERENCES Submissions(submissionID)
+		ON DELETE NO ACTION,
+	FOREIGN KEY(articleOfReviewerID) REFERENCES Articles(articleID)
 		ON DELETE SET NULL
 );
 
