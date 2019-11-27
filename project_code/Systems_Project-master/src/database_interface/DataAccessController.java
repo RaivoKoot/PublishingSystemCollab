@@ -128,7 +128,7 @@ public class DataAccessController implements DatabaseInterface {
             if (result > 1)
                 throw new SQLException();
 
-            if(result == 0)
+            if (result == 0)
                 throw new InvalidAuthenticationException();
 
             return result == 1;
@@ -208,9 +208,9 @@ public class DataAccessController implements DatabaseInterface {
 
             connection.commit();
 
-            if(res1 == 1 && res2 == 1)
+            if (res1 == 1 && res2 == 1)
                 return true;
-            else{
+            else {
                 connection.rollback();
                 return false;
             }
@@ -342,12 +342,12 @@ public class DataAccessController implements DatabaseInterface {
         if (!validCredentials(author))
             throw new InvalidAuthenticationException();
 
-        try{
-            if(submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getContent().isEmpty()
-                || submission.getIssn().isEmpty()){
+        try {
+            if (submission.getTitle().isEmpty() || submission.getSummary().isEmpty() || submission.getContent().isEmpty()
+                    || submission.getIssn().isEmpty()) {
                 throw new IncompleteInformationException();
             }
-        } catch(NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             throw new IncompleteInformationException();
         }
@@ -377,7 +377,7 @@ public class DataAccessController implements DatabaseInterface {
             if (rs.next()) {
                 int newId = rs.getInt(1);
                 submission.setArticleID(newId);
-            }else{
+            } else {
                 connection.rollback();
                 throw new SQLException();
             }
@@ -388,12 +388,12 @@ public class DataAccessController implements DatabaseInterface {
             statementTwo = connection.prepareStatement(sqlQueryTwo);
             statementTwo.setString(1, author.getEmail());
             statementTwo.setInt(2, submission.getArticleID());
-            statementTwo.setBoolean(3,true);
+            statementTwo.setBoolean(3, true);
             int res2 = statementTwo.executeUpdate();
 
             connection.commit();
 
-            if(res1 == 1 && res2 == 1){
+            if (res1 == 1 && res2 == 1) {
                 return submission;
             } else {
                 connection.rollback();
@@ -410,7 +410,7 @@ public class DataAccessController implements DatabaseInterface {
             if (statementTwo != null)
                 statementTwo.close();
 
-            if(rs != null)
+            if (rs != null)
                 rs.close();
         }
     }
@@ -423,10 +423,45 @@ public class DataAccessController implements DatabaseInterface {
 
 
     @Override
-    public Volume createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
+    public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
+
+        JournalEditor editorCheck;
+        try {
+            editorCheck = getEditorship(editor);
+        } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+            throw new InvalidAuthenticationException();
+        }
+
+        if (editorCheck == null || !editorCheck.isChief()) {
+            throw new InvalidAuthenticationException();
+        }
+
+        try {
+            openConnection();
+
+            String sqlQuery = "BEGIN;\n" +
+                    "SELECT @id := IFNULL(MAX(volumeNum),0) + 1 FROM Volumes WHERE issn = ? FOR UPDATE;\n" +
+                    "INSERT INTO Volumes\n" +
+                    "     (volumeNum, issn, publicationYear)\n" +
+                    "     VALUES\n" +
+                    "     (@id, ?, ?);\n" +
+                    "COMMIT;";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+            statement.setString(2, journal.getISSN());
+            statement.setInt(3, publicationYear);
+            statement.execute();
+
+
+            return true;
+
+        } finally {
+
+            closeConnection();
+        }
     }
 
     @Override
@@ -449,7 +484,7 @@ public class DataAccessController implements DatabaseInterface {
 
             ArrayList<Journal> journals = new ArrayList<>();
 
-            while(res.next()) {
+            while (res.next()) {
                 Journal journal = new Journal();
                 journal.setISSN(res.getString(1));
                 journal.setName(res.getString(2));
@@ -468,13 +503,40 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public ArrayList<Volume> getAllJournalVolumes(Journal journal) throws ObjectDoesNotExistException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    public ArrayList<Volume> getAllJournalVolumes(Journal journal) throws SQLException {
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Volumes WHERE ISSN=?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+
+            res = statement.executeQuery();
+
+            ArrayList<Volume> volumes = new ArrayList<>();
+
+            while (res.next()) {
+                Volume volume = new Volume();
+                volume.setVolNum(res.getInt(1));
+                volume.setISSN(res.getString(2));
+                volume.setPublicationYear(res.getInt(3));
+
+                volumes.add(volume);
+            }
+
+            return volumes;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
     @Override
-    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws ObjectDoesNotExistException, SQLException {
+    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }

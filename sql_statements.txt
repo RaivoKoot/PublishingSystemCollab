@@ -44,3 +44,24 @@ INSERT INTO Authorships (email, articleID, isMain) VALUES
 	
 # Get all Journals
 SELECT * FROM Journals
+
+# Create a new volume for a journal with the next possible volume number
+BEGIN;
+SELECT @id := IFNULL(MAX(volumeNum),0) + 1 FROM Volumes WHERE issn = 'no' FOR UPDATE;
+INSERT INTO Volumes
+     (volumeNum, issn, publicationYear)
+     VALUES
+     (@id, 'no', 2015);
+COMMIT;
+
+# Get all Volumes of a Journal
+SELECT * FROM Volumes WHERE ISSN='issn'
+
+# Create a new Edition of a volume with the next possible edition number
+BEGIN;
+SELECT @editionNum := IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = 'issn' AND volumeNum = 1 FOR UPDATE;
+INSERT INTO Editions
+     (editionNum, publicationMonth, volumeNum, ISSN)
+     VALUES
+     (@editionNum, 11, 1, 'issn');
+COMMIT;

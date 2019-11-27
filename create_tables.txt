@@ -5,7 +5,7 @@ CREATE TABLE Journals (
 );
 
 CREATE TABLE Volumes (
-	volumeNum INT AUTO_INCREMENT,
+	volumeNum INT,
 	ISSN VARCHAR(20),
 	publicationYear SMALLINT,
 	PRIMARY KEY (volumeNum, ISSN),
@@ -18,9 +18,12 @@ CREATE TABLE Editions (
 	editionNum TINYINT,
 	publicationMonth TINYINT,
 	volumeNum INT,
+	isPublic BOOLEAN DEFAULT FALSE,
 	ISSN VARCHAR(20),
 	FOREIGN KEY (volumeNum, ISSN) REFERENCES Volumes(volumeNum, ISSN)
-		ON DELETE CASCADE
+		ON DELETE CASCADE,
+		
+	CHECK (editionNum < 7)
 );
 
 CREATE TABLE Users (

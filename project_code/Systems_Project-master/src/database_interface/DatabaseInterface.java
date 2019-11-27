@@ -62,7 +62,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @precondition the given volume exists
      */
-    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws ObjectDoesNotExistException, SQLException;
+    public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws SQLException;
 
     /**
      * @param edition must include volumeNum and editionNum
@@ -113,7 +113,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @throws InvalidAuthenticationException
      */
-    public Volume createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
+    public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
 
     /**

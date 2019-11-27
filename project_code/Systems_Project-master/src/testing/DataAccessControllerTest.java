@@ -29,6 +29,10 @@ public class DataAccessControllerTest {
     static User badPasswordUser;
     static Journal journal;
 
+    static JournalEditor chief;
+    static JournalEditor newEditor;
+
+
     static Article submission;
 
 
@@ -76,6 +80,11 @@ public class DataAccessControllerTest {
         submission.setSummary("summary");
         submission.setTitle("Title Paper");
         submission.setIssn(journal.getISSN());
+
+        newEditor = new JournalEditor(user);
+        chief = new JournalEditor(chiefEditor);
+        newEditor.setChief(false);
+        newEditor.setIssn(journal.getISSN());
 
     }
 
@@ -168,11 +177,6 @@ public class DataAccessControllerTest {
     public void test5PromoteUserToEditor() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
 
 
-        JournalEditor newEditor = new JournalEditor(user);
-        JournalEditor chief = new JournalEditor(chiefEditor);
-        newEditor.setChief(false);
-        newEditor.setIssn(journal.getISSN());
-
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.promoteUserToEditor(newEditor, chief);
         });
@@ -237,6 +241,35 @@ public class DataAccessControllerTest {
         ArrayList<Journal> journals = db.getAllJournals();
         assertEquals(1, journals.size());
 
+
+    }
+
+    @Test
+    public void test8CreateNextVolume() throws SQLException, ObjectDoesNotExistException, InvalidAuthenticationException {
+
+        boolean success = db.createNextVolume(journal, chief, 2012);
+
+        assertTrue(success);
+
+        success = db.createNextVolume(journal, chief, 2012);
+
+        assertTrue(success);
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.createNextVolume(journal, newEditor, 2012);
+        });
+
+    }
+
+    @Test
+    public void test9GetVolumesOfJournal() throws SQLException {
+
+        ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
+
+        assertEquals(2, volumes.size());
+
+        assertEquals(1, volumes.get(0).getVolNum());
+        assertEquals(2, volumes.get(1).getVolNum());
 
     }
 }
