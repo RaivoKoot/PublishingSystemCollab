@@ -1,33 +1,36 @@
 package models;
 
-public class AcceptedArticle extends Submission {
+public class EditionArticle extends Article {
 
-	private int articleID;
+	private int editionArticleID;
 	private int startingPage;
 	private int endingPage;
 
-	public AcceptedArticle()
+	public EditionArticle()
 	{
 		super();
 	}
 
-	public AcceptedArticle(Submission submission)
+	public EditionArticle(Article article)
 	{
 		super();
-		super.setTitle(submission.getTitle());
-		super.setSummary(submission.getSummary());
-		super.setArticleContent(submission.getArticleContent());
-		super.setSubmissionID(submission.getSubmissionID());
+		super.setTitle(article.getTitle());
+		super.setSummary(article.getSummary());
+		super.setContent(article.getContent());
+		super.setArticleID(article.getArticleID());
+		super.setFinal(article.isFinal());
+		super.setAccepted(article.isAccepted());
+		super.setIssn(article.getIssn());
 	}
 
-	public int getArticleID()
+	public int getEditionArticleID()
 	{
-		return articleID;
+		return editionArticleID;
 	}
 
-	public void setArticleID(int articleID)
+	public void setEditionArticleID(int editionArticleID)
 	{
-		this.articleID = articleID;
+		this.editionArticleID = editionArticleID;
 	}
 
 	public int getStartingPage()

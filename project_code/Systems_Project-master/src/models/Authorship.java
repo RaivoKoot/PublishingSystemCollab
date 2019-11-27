@@ -3,7 +3,7 @@ package models;
 public class Authorship extends User {
 
 	private boolean isMain;
-	private Submission article;
+	private Article article;
 
 	public Authorship()
 	{
@@ -29,12 +29,12 @@ public class Authorship extends User {
 		this.isMain = isMain;
 	}
 
-	public Submission getArticle()
+	public Article getArticle()
 	{
 		return article;
 	}
 
-	public void setArticle(Submission article)
+	public void setArticle(Article article)
 	{
 		this.article = article;
 	}

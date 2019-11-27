@@ -3,10 +3,7 @@ package testing;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.*;
-import models.Journal;
-import models.JournalEditor;
-import models.Submission;
-import models.User;
+import models.*;
 import org.junit.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -32,7 +29,7 @@ public class DataAccessControllerTest {
     static User badPasswordUser;
     static Journal journal;
 
-    static Submission submission;
+    static Article submission;
 
 
     @BeforeClass
@@ -72,8 +69,8 @@ public class DataAccessControllerTest {
         badPasswordUser.setEmail("user@gmail.com");
         badPasswordUser.setPassword("wrong");
 
-        submission = new Submission();
-        submission.setArticleContent("www.url.com");
+        submission = new Article();
+        submission.setContent("www.url.com");
         submission.setSummary("summary");
         submission.setTitle("Title Paper");
 
@@ -203,8 +200,8 @@ public class DataAccessControllerTest {
     @Test
     public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
 
-        assertTrue(1 == db.submitArticle(submission, user).getSubmissionID());
-        assertTrue(2 == db.submitArticle(submission, user).getSubmissionID());
+        assertTrue(1 == db.submitArticle(submission, user).getArticleID());
+        assertTrue(2 == db.submitArticle(submission, user).getArticleID());
 
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.submitArticle(submission, badPasswordUser);
@@ -221,7 +218,7 @@ public class DataAccessControllerTest {
         });
 
         // too long title
-        submission.setArticleContent("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+        submission.setContent("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
