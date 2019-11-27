@@ -277,6 +277,7 @@ public class DataAccessController implements DatabaseInterface {
 
         journalChief = getEditorship(journalChief);
 
+
         if (journalChief == null || !journalChief.isChief()) {
             throw new InvalidAuthenticationException();
         }
@@ -315,6 +316,9 @@ public class DataAccessController implements DatabaseInterface {
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, editor.getIssn());
             statement.setString(2, editor.getEmail());
+
+            System.out.println(editor.getIssn());
+            System.out.println(editor.getEmail());
 
             res = statement.executeQuery();
             if (!res.next()) {

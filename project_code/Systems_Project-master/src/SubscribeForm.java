@@ -27,6 +27,7 @@ public class SubscribeForm extends JFrame {
     private JButton registerButton;
     private JButton backward;
     private JLabel successlabel;
+    private JComboBox comboBox1;
 
     Connection con = null; // a Connection object
     Statement stmt = null;
@@ -38,6 +39,10 @@ public class SubscribeForm extends JFrame {
         setTitle("Subscription Form");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        String[] title_list = {"Dr.", "Prof.", "Mr.", "Mrs"};
+        for(int i = 0; i<= title_list.length-1 ; i++) {
+            comboBox1.addItem(title_list[i]);
+        }
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -47,6 +52,8 @@ public class SubscribeForm extends JFrame {
                 char[] spassword = passwordField1.getPassword();
                 String e_mail = textField6.getText();
                 String uni = textField7.getText();
+                String title = (String) comboBox1.getSelectedItem();
+
 
                 User input = new User();
                 input.setEmail(e_mail);
@@ -54,6 +61,7 @@ public class SubscribeForm extends JFrame {
                 input.setUniversity(uni);
                 input.setForenames(fname);
                 input.setSurname(sname);
+                input.setTitle(title);
 
                 try {
                     boolean success = SessionData.db.registerBaseUser(input);

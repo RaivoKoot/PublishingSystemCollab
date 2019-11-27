@@ -4,6 +4,10 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import main.*;
 import models.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.plaf.basic.*;
 
 public class ChiefEditorArea extends JFrame{
     private JButton appointEditorsButton;
@@ -18,14 +22,16 @@ public class ChiefEditorArea extends JFrame{
     private JButton takeDecisionForArticlesButton;
     Connection con = null; // a Connection object
     Statement stmt = null;
-    int one = 1;
-    int zero = 0;
+    private Journal[] list;
+
 
     public ChiefEditorArea(){
         add(ChiefEditorPanel);
         setTitle("Chief Editor Area");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
 
         appointEditorsButton.addActionListener(new ActionListener() {
             @Override
@@ -41,8 +47,13 @@ public class ChiefEditorArea extends JFrame{
                     e1.printStackTrace();
                 }*/
                 Appoint appointform = new Appoint();
-                appointform.setVisible(true);
-                dispose();
+                if (appointform.journal_list.length == 0){
+                    JOptionPane.showMessageDialog(null,"Sorry you cannot access this page, you are not an editor.");
+                }
+                else {
+                    appointform.setVisible(true);
+                    dispose();
+                }
             }
         });
 
@@ -131,6 +142,35 @@ public class ChiefEditorArea extends JFrame{
 
             }
         });
+
+        createNextVolumeOfButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                list = new Journal[0];
+
+                try {
+                    list = SessionData.db.getAllJournals().toArray(new Journal[0]);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+
+                for(int i = 0; i<= list.length-1 ; i++) {
+                    String s = (String)JOptionPane.showInputDialog(
+                            null,
+                            "Choose your ISSN",
+                            "Journal choice",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            list,
+                            new String[]{""});
+                }
+
+
+            }
+        });
+
+
 
 }
 
