@@ -96,10 +96,11 @@ public class DatabaseTestingSetup {
                             "\teditionNum TINYINT,\n" +
                             "\tpublicationMonth TINYINT,\n" +
                             "\tvolumeNum INT,\n" +
+                            "\tisPublic BOOLEAN DEFAULT FALSE,\n" +
                             "\tISSN VARCHAR(20),\n" +
                             "\tFOREIGN KEY (volumeNum, ISSN) REFERENCES Volumes(volumeNum, ISSN)\n" +
                             "\t\tON DELETE CASCADE\n" +
-                            ")",
+                            ");",
                     "CREATE TABLE Users (\n" +
                             "\temail VARCHAR(80) PRIMARY KEY,\n" +
                             "\ttitle VARCHAR(4), \n" +
