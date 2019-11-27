@@ -29,7 +29,6 @@ public class checkDB {
                 //int dropit = stmt.executeUpdate("DROP TABLE editors");
 
                 ResultSet Journals = stmt.executeQuery("SELECT * FROM Journals");
-               // ResultSet authors = stmt2.executeQuery("SELECT * FROM authors");
                 ResultSet Users = stmt3.executeQuery("SELECT * FROM Users");
                 ResultSet Editors = stmt4.executeQuery("SELECT * FROM JournalEditors");
                 ResultSet Submissions = stmt5.executeQuery("SELECT * FROM Submissions");

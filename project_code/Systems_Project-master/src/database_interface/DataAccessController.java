@@ -43,7 +43,7 @@ public class DataAccessController implements DatabaseInterface {
             statement.close();
     }
 
-    private boolean userExists(User user) throws SQLException {
+    public boolean userExists(User user) throws SQLException {
         ResultSet res = null;
         try {
             openConnection();

@@ -9,7 +9,10 @@ import models.Journal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.*;
+import java.lang.Object;
 
 public class JournalForm extends JFrame{
     private JPanel JournalPanel;
@@ -17,12 +20,28 @@ public class JournalForm extends JFrame{
     private JTextField textField2;
     private JButton backward;
     private JButton createButton;
+    private JComboBox comboBox1;
+    private JLabel validornot;
+    //private boolean value = false;
 
     public JournalForm(){
         add(JournalPanel);
         setTitle("Journal Form Screen");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        /*textField2.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                    int i = Integer.parseInt(textField2.getText());
+                    if (String.valueOf(i).length() != 8){
+                        value = true;
+                    }
+                    else {
+                        validornot.setText("Wrong input for ISSN");
+                    }
+            }
+        });*/
 
         createButton.addActionListener(new ActionListener() {
             @Override
