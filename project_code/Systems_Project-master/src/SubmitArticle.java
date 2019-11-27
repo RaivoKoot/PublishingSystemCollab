@@ -6,7 +6,7 @@ import java.sql.*;
 import exceptions.IncompleteInformationException;
 import exceptions.InvalidAuthenticationException;
 import exceptions.UserDoesNotExistException;
-import models.Submission;
+import models.Article;
 import database_interface.DataAccessController;
 import main.SessionData;
 import models.Journal;
@@ -66,10 +66,10 @@ public class SubmitArticle extends JFrame {
                String title = Titre.getText();
                String abs = abstracte.getText();
                String pdfLink = pdflink.getText();
-               Submission sub = new Submission();
+               Article sub = new Article();
                sub.setTitle(title);
                sub.setSummary(abs);
-               sub.setArticleContent(pdfLink);
+               sub.setContent(pdfLink);
                Journal jour = null;
 
                 for (Journal journal : finalJournal_list){
@@ -83,10 +83,11 @@ public class SubmitArticle extends JFrame {
                         MainScreen main_screen = new MainScreen();
                         main_screen.setVisible(true);
                         dispose();
-                }
+                } else
+                    sub.setIssn(jour.getISSN());
 
                try{
-                    Submission success = SessionData.db.submitArticle(sub, SessionData.currentUser/*, jour */);
+                    Article success = SessionData.db.submitArticle(sub, SessionData.currentUser/*, jour */);
                     if (success != null){
                         JOptionPane.showMessageDialog(null,"Submission successful");
                         Titre.setText("");
