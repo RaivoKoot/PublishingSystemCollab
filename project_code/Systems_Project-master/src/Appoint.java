@@ -25,6 +25,8 @@ public class Appoint extends JFrame {
     private JComboBox comboBox1;
     private JPanel first_view;
     private JPanel second_view;
+    private JComboBox comboBox2;
+    public Journal[] journal_list;
     Connection con = null; // a Connection object
     Statement stmt = null;
     Statement stmt2 = null;
@@ -35,7 +37,12 @@ public class Appoint extends JFrame {
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        Journal[] journal_list = new Journal[0];
+        String[] title_list = {"Dr.", "Prof.", "Mr.", "Mrs"};
+        for(int i = 0; i<= title_list.length-1 ; i++) {
+            comboBox2.addItem(title_list[i]);
+        }
+
+        journal_list = new Journal[0];
         try {
             journal_list = SessionData.db.getAllJournals().toArray(new Journal[0]);
         } catch (SQLException e) {
@@ -61,39 +68,67 @@ public class Appoint extends JFrame {
                 String sname = surname.getText();
                 String te_password = t_password.getText();
                 String uni = university.getText();
+                String title = (String) comboBox2.getSelectedItem();
 
                 User target = new User();
                 target.setEmail(e_address);
 
                 JournalEditor target2 = new JournalEditor();
-                target2.setIssn((String) comboBox1.getSelectedItem());
+
                 target2.setEmail(target.getEmail());
                 target2.setChief(false);
+
+                JournalEditor chief = new JournalEditor(SessionData.currentUser);
+
+                chief.setChief(true);
+
+                Journal jour = null;
+                for (Journal journal : journal_list){
+                    if (journal.getName() == comboBox1.getSelectedItem()){
+                        jour = journal;
+                        break;
+                    }
+                }
+
+                if (jour == null){
+                    MainScreen main_screen = new MainScreen();
+                    main_screen.setVisible(true);
+                    dispose();
+                } else {
+                    chief.setIssn((jour.getISSN()));
+                    target2.setIssn(jour.getISSN());
+                }
 
                 try {
                     boolean success = SessionData.db.userExists(target);
                     if (success){
-                        boolean success2 = SessionData.db.promoteUserToEditor(target2, (JournalEditor) SessionData.currentUser);
+                        boolean success2 = SessionData.db.promoteUserToEditor(target2, chief);
                         Success.setText("Success");
                     }
                     else {
-                        JOptionPane.showMessageDialog(null,"Fill in the form, user does not exist");
                         target.setUniversity(uni);
                         target.setForenames(fname);
                         target.setPassword(te_password);
                         target.setSurname(sname);
+                        target.setTitle((String) comboBox2.getSelectedItem());
                         boolean success3 = SessionData.db.registerBaseUser(target);
                         if (success3){
-                            boolean success4 = SessionData.db.promoteUserToEditor(target2, (JournalEditor) SessionData.currentUser);
+                            boolean success4 = SessionData.db.promoteUserToEditor(target2, chief);
                         }
                     }
                 } catch (UserDoesNotExistException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong");
                     e1.printStackTrace();
                 } catch (InvalidAuthenticationException e1) {
+                    JOptionPane.showMessageDialog(null, "You are not a chief editor of that journal");
                     e1.printStackTrace();
                 } catch (IncompleteInformationException e1) {
+                    JOptionPane.showMessageDialog(null, "User does not exist, fill in the entire form");
                     e1.printStackTrace();
-                } catch (SQLException e1) {
+                } catch (SQLIntegrityConstraintViolationException alreadyEditor){
+                    JOptionPane.showMessageDialog(null, "User already an editor of that journal");
+                }
+                catch (SQLException e1) {
                     e1.printStackTrace();
                 } catch (UserAlreadyExistsException e1) {
                     e1.printStackTrace();
