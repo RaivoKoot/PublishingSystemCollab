@@ -66,10 +66,10 @@ public class DataAccessController implements DatabaseInterface {
             throw new UserAlreadyExistsException(newUser.getEmail());
 
         if (newUser.getEmail() == null || newUser.getForenames() == null || newUser.getSurname() == null
-                || newUser.getUniversity() == null
+                || newUser.getUniversity() == null || newUser.getTitle() == null
                 || newUser.getPassword() == null
                 || newUser.getEmail().equals("") || newUser.getForenames().equals("") || newUser.getSurname().equals("")
-                || newUser.getUniversity().equals("")
+                || newUser.getUniversity().equals("") || newUser.getTitle().equals("")
                 || newUser.getPassword().equals(""))
             throw new IncompleteInformationException();
 
@@ -77,13 +77,15 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "INSERT INTO Users (email, forenames, surname, university, password) VALUES (?, ?, ?, ?, ?)";
+            String sqlQuery = "INSERT INTO Users (email, title, forenames, surname, university, password) \n" +
+                    "\tVALUES (?, ?, ?, ?, ?, ?)\n";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, newUser.getEmail());
-            statement.setString(2, newUser.getForenames());
-            statement.setString(3, newUser.getSurname());
-            statement.setString(4, newUser.getUniversity());
-            statement.setString(5, newUser.getPassword());
+            statement.setString(2, newUser.getTitle());
+            statement.setString(3, newUser.getForenames());
+            statement.setString(4, newUser.getSurname());
+            statement.setString(5, newUser.getUniversity());
+            statement.setString(6, newUser.getPassword());
 
 
             int result = statement.executeUpdate();

@@ -43,8 +43,8 @@ public class DatabaseTestingSetup {
                 "DROP TABLE Critiques",
                 "DROP TABLE Reviews",
                 "DROP TABLE Authorships",
-                "DROP TABLE AcceptedArticles",
-                "DROP TABLE Submissions",
+                "DROP TABLE EditionArticles",
+                "DROP TABLE Articles",
                 "DROP TABLE Editions",
                 "DROP TABLE Volumes",
                 "DROP TABLE JournalEditors",
@@ -102,64 +102,73 @@ public class DatabaseTestingSetup {
                             ")",
                     "CREATE TABLE Users (\n" +
                             "\temail VARCHAR(80) PRIMARY KEY,\n" +
+                            "\ttitle VARCHAR(4), \n" +
                             "\tforenames VARCHAR(150),\n" +
                             "\tsurname VARCHAR(120),\n" +
                             "\tuniversity VARCHAR(100),\n" +
                             "\tpassword VARCHAR(200) NOT NULL\n" +
-                            ")",
+                            ");",
                     "CREATE TABLE JournalEditors (\n" +
                             "\tISSN VARCHAR(20),\n" +
                             "\temail VARCHAR(80),\n" +
                             "\tisChief BOOL NOT NULL DEFAULT FALSE,\n" +
                             "\tPRIMARY KEY(ISSN, email),\n" +
                             "\tFOREIGN KEY(email) REFERENCES Users(email)\n" +
-                            "\t\tON DELETE CASCADE,\n" +
+                            "\t\tON DELETE NO ACTION,\n" +
                             "\tFOREIGN KEY(ISSN) REFERENCES Journals(ISSN)\n" +
                             "\t\tON DELETE CASCADE\n" +
-                            ")",
-                    "CREATE TABLE Submissions (\n" +
-                            "\tsubmissionID INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            ");",
+                    "CREATE TABLE Articles (\n" +
+                            "\tarticleID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\ttitle VARCHAR(1000) NOT NULL,\n" +
                             "\tabstract VARCHAR(2000) NOT NULL,\n" +
-                            "\tdraftLink VARCHAR(400) NOT NULL\n" +
-                            ")",
+                            "\tcontent VARCHAR(400) NOT NULL,\n" +
+                            "\tisFinal BOOL DEFAULT FALSE,\n" +
+                            "\tisAccepted BOOL DEFAULT FALSE,\n" +
+                            "\tISSN VARCHAR(20),\n" +
+                            "\t\n" +
+                            "\tFOREIGN KEY(ISSN) REFERENCES Journals(ISSN)\n" +
+                            "\t\tON DELETE CASCADE\n" +
+                            ");",
                     "CREATE TABLE Authorships (\n" +
                             "\temail VARCHAR(80),\n" +
-                            "\tsubmissionID INT,\n" +
+                            "\tarticleID INT,\n" +
                             "\tisMain BOOL NOT NULL DEFAULT FALSE,\n" +
-                            "\tPRIMARY KEY(email, submissionID),\n" +
+                            "\tPRIMARY KEY(email, articleID),\n" +
                             "\tFOREIGN KEY(email) REFERENCES Users(email)\n" +
                             "\t\tON DELETE NO ACTION,\n" +
-                            "\tFOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)\n" +
+                            "\tFOREIGN KEY(articleID) REFERENCES Articles(articleID)\n" +
                             "\t\tON DELETE CASCADE\n" +
-                            ")",
-                    "CREATE TABLE AcceptedArticles (\n" +
-                            "\tarticleID INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            ");",
+                    "CREATE TABLE EditionArticles (\n" +
+                            "\teditionArticleID INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            "\tarticleID INT NOT NULL,\n" +
+                            "\teditionID INT NOT NULL,\n" +
                             "\tstartingPage INT UNSIGNED,\n" +
                             "\tendingPage INT UNSIGNED,\n" +
-                            "\tarticleFile MEDIUMBLOB NOT NULL,\n" +
-                            "\teditionID INT,\n" +
-                            "\tsubmissionID INT NOT NULL,\n" +
-                            "\tFOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)\n" +
+                            "\tFOREIGN KEY(articleID) REFERENCES Articles(articleID)\n" +
                             "\t\tON DELETE CASCADE,\n" +
                             "\tFOREIGN KEY(editionID) REFERENCES Editions(editionID)\n" +
-                            "\t\tON DELETE SET NULL\n" +
-                            ")",
+                            "\t\tON DELETE CASCADE\n" +
+                            ");",
                     "CREATE TABLE Reviews (\n" +
                             "\treviewID INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            "\t\n" +
                             "\tsummary VARCHAR(2000) NOT NULL,\n" +
                             "\tverdict VARCHAR(20) NOT NULL,\n" +
-                            "\tsubmissionID INT NOT NULL,\n" +
-                            "\treviewerEmail VARCHAR(80) NOT NULL,\n" +
-                            "\tarticleOfReviewer INT,\n" +
+                            "\tisFinal BOOL DEFAULT FALSE,\n" +
                             "\t\n" +
-                            "\tFOREIGN KEY(submissionID) REFERENCES Submissions(submissionID)\n" +
+                            "\tsubmissionID INT NOT NULL,\n" +
+                            "\tarticleOfReviewerID INT,\n" +
+                            "\treviewerEmail VARCHAR(80) NOT NULL,\n" +
+                            "\t\n" +
+                            "\tFOREIGN KEY(submissionID) REFERENCES Articles(articleID)\n" +
                             "\t\tON DELETE CASCADE,\n" +
                             "\tFOREIGN KEY(reviewerEmail) REFERENCES Users(email)\n" +
-                            "\t\tON DELETE CASCADE,\n" +
-                            "\tFOREIGN KEY(articleOfReviewer) REFERENCES Submissions(submissionID)\n" +
+                            "\t\tON DELETE NO ACTION,\n" +
+                            "\tFOREIGN KEY(articleOfReviewerID) REFERENCES Articles(articleID)\n" +
                             "\t\tON DELETE SET NULL\n" +
-                            ")",
+                            ");",
                     "CREATE TABLE Critiques (\n" +
                             "\tcritiqueID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\treviewID INT NOT NULL,\n" +
@@ -167,7 +176,7 @@ public class DatabaseTestingSetup {
                             "\treply VARCHAR(250) DEFAULT NULL,\n" +
                             "\tFOREIGN KEY(reviewID) REFERENCES Reviews(reviewID)\n" +
                             "\t\tON DELETE CASCADE\n" +
-                            ")",
+                            ");",
             };
 
             for (String create : creates) {

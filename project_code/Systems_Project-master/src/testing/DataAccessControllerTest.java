@@ -47,12 +47,14 @@ public class DataAccessControllerTest {
         chiefEditor.setSurname("Chief");
         chiefEditor.setForenames("Chiefo");
         chiefEditor.setUniversity("Sheffield");
+        chiefEditor.setTitle("DR");
 
         user.setEmail("user@gmail.com");
         user.setPassword("pswd");
         user.setSurname("user");
         user.setForenames("usero");
         user.setUniversity("Sheffield");
+        user.setTitle("Mr");
 
         journal = new Journal();
         journal.setName("Computer Science Journal");

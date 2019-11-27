@@ -94,7 +94,7 @@ CREATE TABLE Reviews (
 		ON DELETE CASCADE,
 	FOREIGN KEY(reviewerEmail) REFERENCES Users(email)
 		ON DELETE NO ACTION,
-	FOREIGN KEY(articleOfReviewer) REFERENCES Articles(articleID)
+	FOREIGN KEY(articleOfReviewerID) REFERENCES Articles(articleID)
 		ON DELETE SET NULL
 );
 

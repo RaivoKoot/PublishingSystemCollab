@@ -2,8 +2,8 @@
 SELECT EXISTS(SELECT * FROM Users WHERE email=? AND password=?)
 
 # register a user into the database
-INSERT INTO Users (email, forenames, surname, university, password) 
-	VALUES ('raivo@gmail.com', 'Raivo Eli', 'Koot', 'Sheffield Uni', 'password')
+INSERT INTO Users (email, title, forenames, surname, university, password) 
+	VALUES ('raivo@gmail.com', 'DR', 'Raivo Eli', 'Koot', 'Sheffield Uni', 'password')
 	
 # change password
 UPDATE Users 
@@ -34,10 +34,13 @@ SELECT isChief FROM JournalEditors WHERE
                     tISSN = ? AND
                     temail = ?
 					
-# Create a submission
-INSERT INTO Submissions (title, abstract, draftLink) VALUES
-	(?, ?, ?)
+# Create an article with default isFinal=false and isAccepted=false
+INSERT INTO Articles (title, abstract, content, ISSN) VALUES
+	('Mockingbird', 'About birds', 'Once upon a time...', 'ISSN');
 	
 # Create authorship
-INSERT INTO Authorships (email, submissionID, isMain) VALUES
+INSERT INTO Authorships (email, articleID, isMain) VALUES
 	(?,?,?)
+	
+# Get all Journals
+SELECT * FROM Journals
