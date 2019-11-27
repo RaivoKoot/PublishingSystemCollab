@@ -178,6 +178,7 @@ public class DatabaseTestingSetup {
                             "\tFOREIGN KEY(reviewID) REFERENCES Reviews(reviewID)\n" +
                             "\t\tON DELETE CASCADE\n" +
                             ");",
+                    "ALTER TABLE `Editions` ADD UNIQUE `unique_index`(`editionNum`, `volumeNum`, `ISSN`);"
             };
 
             for (String create : creates) {

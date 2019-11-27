@@ -1,14 +1,10 @@
 package database_interface;
 
 import java.sql.*;
+import java.time.Month;
 import java.util.ArrayList;
 
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UniqueColumnValueAlreadyExists;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.*;
 
 public class DataAccessController implements DatabaseInterface {
@@ -430,17 +426,8 @@ public class DataAccessController implements DatabaseInterface {
     public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
 
-        JournalEditor editorCheck;
-        try {
-            editorCheck = getEditorship(editor);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
+        if(!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
-        }
-
-        if (editorCheck == null || !editorCheck.isChief()) {
-            throw new InvalidAuthenticationException();
-        }
 
         try {
             openConnection();
@@ -468,11 +455,73 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    private boolean isChiefEditor(JournalEditor editor) throws SQLException, InvalidAuthenticationException {
+        JournalEditor editorCheck;
+        try {
+            editorCheck = getEditorship(editor);
+        } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+            throw new InvalidAuthenticationException();
+        }
+
+        if (editorCheck == null || !editorCheck.isChief()) {
+            throw new InvalidAuthenticationException();
+        }
+
+        return true;
+    }
+
     @Override
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException {
+
+        if(!isChiefEditor(editor))
+            throw new InvalidAuthenticationException();
+
+        ResultSet rs = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = ? AND volumeNum = ?;";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, volume.getISSN());
+            statement.setInt(2, volume.getVolNum());
+            rs = statement.executeQuery();
+
+            if(!rs.next())
+                throw new SQLException();
+
+            int nextEditionNumber = rs.getInt(1);
+
+            if(nextEditionNumber > 6){
+                throw new VolumeFullException();
+            }
+
+            statement.close();
+
+            String sqlQuery2 = "INSERT INTO Editions (editionNum, publicationMonth, volumeNum, ISSN) VALUES\n" +
+                    "\t(?, ?, ?, ?)";
+
+
+            statement = connection.prepareStatement(sqlQuery2);
+            statement.setInt(1, nextEditionNumber);
+            statement.setInt(2, Month.valueOf(publicationMonth).ordinal());
+            statement.setInt(3, volume.getVolNum());
+            statement.setString(4, volume.getISSN());
+
+            statement.executeUpdate();
+
+            Edition edition = new Edition();
+            edition.setEditionNum(nextEditionNumber);
+            edition.setPublicationMonth(Month.valueOf(publicationMonth).ordinal());
+            edition.setVolumeNum(volume.getVolNum());
+            return edition;
+
+        } finally {
+
+            closeConnection();
+        }
     }
 
     @Override
@@ -541,8 +590,40 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Edition> getAllVolumeEditions(Volume volume) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Editions WHERE ISSN=? AND volumeNum=?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, volume.getISSN());
+            statement.setInt(2, volume.getVolNum());
+
+            res = statement.executeQuery();
+
+            ArrayList<Edition> editions = new ArrayList<>();
+
+            while (res.next()) {
+                Edition edition = new Edition();
+                edition.setEditionID(res.getInt(1));
+                edition.setEditionNum(res.getInt(2));
+                edition.setPublicationMonth(res.getInt(3));
+                edition.setVolumeNum(res.getInt(4));
+                edition.setPublic(res.getBoolean(5));
+                edition.setIssn(res.getString(6));
+
+                editions.add(edition);
+            }
+
+            return editions;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
     @Override

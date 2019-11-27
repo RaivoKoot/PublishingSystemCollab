@@ -65,3 +65,6 @@ INSERT INTO Editions
      VALUES
      (@editionNum, 11, 1, 'issn');
 COMMIT;
+
+# Get next edition num for a volume of a journal
+SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = '01010000' AND volumeNum = 1;

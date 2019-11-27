@@ -110,4 +110,5 @@ CREATE TABLE Critiques (
 		ON DELETE CASCADE
 );
 
+ALTER TABLE `Editions` ADD UNIQUE `unique_index`(`editionNum`, `volumeNum`, `ISSN`);
 

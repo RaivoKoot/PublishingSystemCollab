@@ -272,4 +272,46 @@ public class DataAccessControllerTest {
         assertEquals(2, volumes.get(1).getVolNum());
 
     }
+
+    @Test
+    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException {
+
+        ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
+
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+
+        assertThrows(VolumeFullException.class, () -> {
+            db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        });
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
+        });
+
+
+    }
+
+    @Test
+    public void test9test2GetAllVolumeEditions() throws SQLException {
+        Volume volume = new Volume();
+        volume.setISSN(journal.getISSN());
+        volume.setVolNum(1);
+
+        ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
+
+        assertEquals(6, editions.size());
+
+        volume.setVolNum(5);
+        editions = db.getAllVolumeEditions(volume);
+        assertEquals(0, editions.size());
+
+        volume.setISSN("Nonexistent");
+        editions = db.getAllVolumeEditions(volume);
+        assertEquals(0, editions.size());
+    }
 }
