@@ -20,7 +20,6 @@ public class JournalForm extends JFrame{
     private JTextField textField2;
     private JButton backward;
     private JButton createButton;
-    private JComboBox comboBox1;
     private JLabel validornot;
     //private boolean value = false;
 
