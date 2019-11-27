@@ -6,7 +6,7 @@ import java.sql.*;
 import exceptions.IncompleteInformationException;
 import exceptions.InvalidAuthenticationException;
 import exceptions.UserDoesNotExistException;
-import models.Submission;
+//import models.Submission;
 import database_interface.DataAccessController;
 import main.SessionData;
 
@@ -55,7 +55,7 @@ public class SubmitArticle extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               String title = Titre.getText();
+              /* String title = Titre.getText();
                String abs = abstracte.getText();
                String pdfLink = pdflink.getText();
 
@@ -87,7 +87,7 @@ public class SubmitArticle extends JFrame {
                } catch (SQLException e1) {
                    JOptionPane.showMessageDialog(null,"Sorry, something went wrong. Please try again or contact an admin");
                    e1.printStackTrace();
-               }
+               }*/
             }
         });
 
