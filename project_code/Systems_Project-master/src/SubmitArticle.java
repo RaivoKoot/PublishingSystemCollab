@@ -9,6 +9,8 @@ import exceptions.UserDoesNotExistException;
 import models.Submission;
 import database_interface.DataAccessController;
 import main.SessionData;
+import models.Journal;
+import database_interface.DataAccessController;
 
 public class SubmitArticle extends JFrame {
     private JPanel SubmitArticle;
@@ -30,9 +32,14 @@ public class SubmitArticle extends JFrame {
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        String[] journal_list = {"awdawd","awdawdeee"};
+        Journal[] journal_list = new Journal[0];
+        try {
+            journal_list = SessionData.db.getAllJournals().toArray(new Journal[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         for(int i = 0; i<= journal_list.length-1 ; i++) {
-            comboBox1.addItem(journal_list[i]);
+            comboBox1.addItem(journal_list[i].getName());
         }
 
         comboBox1.addActionListener(new ActionListener() {
@@ -52,20 +59,34 @@ public class SubmitArticle extends JFrame {
             }
         });
 
+        Journal[] finalJournal_list = journal_list;
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                String title = Titre.getText();
                String abs = abstracte.getText();
                String pdfLink = pdflink.getText();
-
                Submission sub = new Submission();
                sub.setTitle(title);
                sub.setSummary(abs);
                sub.setArticleContent(pdfLink);
+               Journal jour = null;
+
+                for (Journal journal : finalJournal_list){
+                    if (journal.getName() == comboBox1.getSelectedItem()){
+                        jour = journal;
+                        break;
+                    }
+                }
+
+                if (jour == null){
+                        MainScreen main_screen = new MainScreen();
+                        main_screen.setVisible(true);
+                        dispose();
+                }
 
                try{
-                    Submission success = SessionData.db.submitArticle(sub, SessionData.currentUser);
+                    Submission success = SessionData.db.submitArticle(sub, SessionData.currentUser/*, jour */);
                     if (success != null){
                         JOptionPane.showMessageDialog(null,"Submission successful");
                         Titre.setText("");
