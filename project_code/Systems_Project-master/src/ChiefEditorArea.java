@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
+import exceptions.InvalidAuthenticationException;
+import exceptions.ObjectDoesNotExistException;
 import main.*;
 import models.*;
 import java.awt.*;
@@ -75,6 +78,15 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
+        createNextEditionOfButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CreateNextEdition per = new CreateNextEdition();
+                per.setVisible(true);
+                dispose();
+            }
+        });
+
         updateOwnRoleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -143,29 +155,55 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
+
         createNextVolumeOfButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                list = new Journal[0];
+                ArrayList<Journal> list = new ArrayList<Journal>();
+                ArrayList<String> lister = new ArrayList<String>();
 
                 try {
-                    list = SessionData.db.getAllJournals().toArray(new Journal[0]);
+                    list = SessionData.db.getAllJournals();
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
 
-
-                for(int i = 0; i<= list.length-1 ; i++) {
-                    String s = (String)JOptionPane.showInputDialog(
-                            null,
-                            "Choose your ISSN",
-                            "Journal choice",
-                            JOptionPane.PLAIN_MESSAGE,
-                            null,
-                            list,
-                            new String[]{""});
+                for (int i = 0; i<list.size(); i++){
+                    lister.add(list.get(i).getName());
                 }
+                System.out.println(lister);
 
+                int n =  JOptionPane.showOptionDialog(null,
+                        "Choose your Journal",
+                        "Journal",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,     //do not use a custom Icon
+                        lister.toArray(),  //the titles of buttons
+                        lister.get(0)); //default button title
+
+                String year = JOptionPane.showInputDialog("What is the publication Year?");
+
+                Journal jour = null;
+
+                for (Journal journal : list){
+                    if (journal.getName().equals(lister.get(n))){
+                        jour = journal;
+                        break;
+                    }
+                }
+                JournalEditor chief = new JournalEditor(SessionData.currentUser);
+                chief.setIssn(jour.getISSN());
+
+                try{
+                    boolean success = SessionData.db.createNextVolume(jour, chief, Integer.valueOf(year));
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
 
             }
         });
