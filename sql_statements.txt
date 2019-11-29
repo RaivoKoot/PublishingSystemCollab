@@ -89,7 +89,6 @@ GROUP BY Articles.articleID
 HAVING contributions < 3;
 
 # Insert an empty review
-SELECT * FROM Reviews;
 INSERT INTO Reviews (submissionID, articleOfReviewerID, reviewerEmail) VALUES
 	(3, 4, 'raivo@gmail.com')
 

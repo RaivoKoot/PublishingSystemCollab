@@ -394,4 +394,22 @@ public class DataAccessControllerTest {
 
         // TODO
     }
+
+    @Test
+    public void test9test7getOwnArticles() throws ObjectDoesNotExistException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+
+        assertTrue(db.getOwnArticles(user).size() == 2);
+        assertTrue(db.getOwnArticles(chiefEditor).size() == 1);
+
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.getOwnArticles(badPasswordUser);
+        });
+
+        /*
+        TEST LATER
+         */
+
+        // TODO
+    }
 }
