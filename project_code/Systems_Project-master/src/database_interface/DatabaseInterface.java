@@ -204,6 +204,7 @@ public interface DatabaseInterface {
      */
     public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException;
 
+
     /**
      * @param user
      * @return the list of articles you are an
@@ -212,5 +213,16 @@ public interface DatabaseInterface {
      * @throws SQLException
      */
     public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+
+    /**
+     *
+     * @param user
+     * @return A list of articles that still need to be reviewed that have not been authored by people you are
+     * affiliated with
+     * @throws UserDoesNotExistException
+     * @throws InvalidAuthenticationException
+     * @throws SQLException
+     */
+    public ArrayList<Article> getUnaffiliatedArticlesToReview(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
 }

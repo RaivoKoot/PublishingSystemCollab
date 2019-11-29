@@ -878,4 +878,54 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public ArrayList<Article> getUnaffiliatedArticlesToReview(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
+        if(!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.submissionID) as reviews FROM (Articles)\n" +
+                    "LEFT JOIN Reviews on Reviews.submissionID = Articles.articleID\n" +
+                    "INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
+                    "\n" +
+                    "WHERE Authorships.email not in\n" +
+                    "\t(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email=?)\n" +
+                    "\tunion\n" +
+                    "\tSELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?))\n" +
+                    "\n" +
+                    "GROUP BY Articles.articleID\n" +
+                    "HAVING reviews < 10;";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+            statement.setString(2,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Article> articles = new ArrayList<>();
+
+            while (res.next()) {
+                Article article = new Article();
+                article.setArticleID(res.getInt(1));
+                article.setTitle(res.getString(2));
+                article.setSummary(res.getString(3));
+                article.setContent(res.getString(4));
+                article.setIssn(res.getString(5));
+
+                articles.add(article);
+            }
+
+            return articles;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
 }
