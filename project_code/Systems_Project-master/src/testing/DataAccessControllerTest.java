@@ -350,4 +350,16 @@ public class DataAccessControllerTest {
 
         assertFalse(db.makeChiefEditor(notAnEditor, chief));
     }
+
+    @Test
+    public void test9test4articlesNeedingContributions() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+
+        assertTrue(db.articlesNeedingContributions(user).size() == 0);
+
+        /*
+        TEST LATER
+         */
+
+        // TODO
+    }
 }

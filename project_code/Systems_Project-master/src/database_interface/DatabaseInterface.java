@@ -174,4 +174,23 @@ public interface DatabaseInterface {
      */
     public boolean makeChiefEditor(JournalEditor editor, JournalEditor chiefAuthentication) throws IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
+    /**
+     *
+     * @param user must include email and password
+     * @return the list of articles this user is an author of that need to still contribute some reviews
+     * @throws UserDoesNotExistException
+     * @throws InvalidAuthenticationException
+     * @throws SQLException
+     */
+    public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+
+    /**
+     *
+     * @param user must include email and password
+     * @return a list of all reviews by the given user that still require future action
+     * @throws UserDoesNotExistException
+     * @throws InvalidAuthenticationException
+     * @throws SQLException
+     */
+    public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 }

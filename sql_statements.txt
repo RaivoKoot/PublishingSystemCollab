@@ -72,3 +72,23 @@ SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = '01010000' AND v
 # Promote an editor to chief
 UPDATE JournalEditors SET isChief=1 WHERE
 	email = 'max@gmail.com' AND ISSN = '99990000'
+	
+# Select all articles of a user
+Select Articles.* FROM Articles, Authorships
+WHERE Articles.articleID = Authorships.articleID AND
+	Authorships.email = 'raivo@gmail.com'
+	
+# Select all articles of a user that do not have 3 contributions yet
+SELECT *, COUNT(Reviews.articleOfReviewerID) as contributions FROM Articles, Reviews, Authorships
+WHERE 
+	Articles.articleID = Reviews.articleOfReviewerID AND 
+	Articles.articleID = Authorships.articleID AND 
+	Authorships.email = 'raivo@gmail.com'
+	
+GROUP BY Articles.articleID
+HAVING contributions < 3;
+
+# Insert an empty review
+SELECT * FROM Reviews;
+INSERT INTO Reviews (submissionID, articleOfReviewerID, reviewerEmail) VALUES
+	(3, 4, 'raivo@gmail.com')
