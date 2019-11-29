@@ -32,50 +32,15 @@ public class RegisterCoAuthors extends JFrame{
                 String sname = surname.getText();
                 String e_address = e_mail_address.getText();
                 String te_password = t_password.getText();
-                int valueweneed = 0;
-                n = 4;
-
-                try {
-                    String DB="jdbc:mysql://stusql.dcs.shef.ac.uk/team035?user=team035&password=5455d7fb";
-                    con = DriverManager.getConnection(DB);
-
-                    try{
-                        stmt = con.createStatement();
-                        int inUsers = stmt.executeUpdate("INSERT INTO Users " + "VALUES (" + "'" + e_address + "'" + ", " + "'" + fname + "'" + ", " + "'" +
-                                sname + "'" + ", " + "'" + "Unkwown" + "'" + ", " + "'" + te_password + "'" + "," + "'author'" +
-                                "," + "'" + valueweneed + "'" + ")");
-
-                        stmt2 = con.createStatement();
-                        int inAuthorships = stmt2.executeUpdate("INSERT INTO Authorships " + "VALUES (" + "'" + e_address + "'" + ", '" + n + "'" + "," +
-                                "'" + valueweneed + "'" + ")");
-
-                        Success.setText("Author Appointed");
-
-
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    } finally {
-                        if (stmt != null)
-                            stmt.close();
-                    }
-
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-
-                } finally {
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-
-
             }
         });
+
+        backward.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainAuthorArea backtoarea = new MainAuthorArea();
+                backtoarea.setVisible(true);
+                dispose();
+            }});
     }
 }
