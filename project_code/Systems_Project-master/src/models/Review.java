@@ -14,11 +14,20 @@ public class Review {
 	private String summary;
 	private String verdict;
 	private boolean isFinal;
+	private String articleName;
 	private ArrayList<Critique> critiques;
 
 	public Review()
 	{
 		critiques = new ArrayList<>();
+	}
+
+	public String getArticleName() {
+		return articleName;
+	}
+
+	public void setArticleName(String articleName) {
+		this.articleName = articleName;
 	}
 
 	public void addCritique(Critique critique)

@@ -374,4 +374,24 @@ public class DataAccessControllerTest {
 
         // TODO
     }
+
+    @Test
+    public void test9test6addCoAuthor() throws ObjectDoesNotExistException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+
+        assertTrue(db.addCoAuthor(submission,chief, user));
+
+        assertThrows(SQLException.class, () -> {
+            db.addCoAuthor(submission,chief, user);
+        });
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            assertFalse(db.addCoAuthor(submission,user, chief));
+        });
+
+        /*
+        TEST LATER
+         */
+
+        // TODO
+    }
 }

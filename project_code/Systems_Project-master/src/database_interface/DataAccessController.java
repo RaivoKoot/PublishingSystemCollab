@@ -449,8 +449,48 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor) throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
-        // TODO Auto-generated method stub
-        return false;
+        if (!userExists(newAuthor) || !userExists(mainAuthor))
+            throw new UserDoesNotExistException("one of the two users");
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT isMain FROM Authorships WHERE\n" +
+                    "\tarticleID = ? AND\n" +
+                    "\temail = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, article.getArticleID());
+            statement.setString(2, mainAuthor.getEmail());
+
+
+            res = statement.executeQuery();
+            if (!res.next() || res.getInt(1) == 0) {
+                // main authorship does not exist
+                throw new InvalidAuthenticationException();
+            }
+
+            // Insert the new authorship into the table with the new submission
+            String sqlQueryTwo = "INSERT INTO Authorships (email, articleID, isMain) VALUES\n" +
+                    "\t(?,?,?)";
+            statement = connection.prepareStatement(sqlQueryTwo);
+            statement.setString(1, newAuthor.getEmail());
+            statement.setInt(2, article.getArticleID());
+            statement.setBoolean(3, false);
+            int res2 = statement.executeUpdate();
+
+            if(res2 == 1)
+                return true;
+
+            return false;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+
     }
 
 
@@ -722,9 +762,11 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT * FROM Reviews WHERE\n" +
+            String sqlQuery = "SELECT *, Articles.title FROM Reviews, Articles WHERE\n" +
+                    "Articles.articleID = Reviews.submissionID AND\n" +
+                    "\n" +
                     "reviewerEmail = ? AND\n" +
-                    "summary is null AND verdict is null and isFinal = 0";
+                    "summary is null AND verdict is null and Reviews.isFinal = 0";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1,user.getEmail());
 
