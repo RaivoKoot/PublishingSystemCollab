@@ -212,4 +212,15 @@ public interface DatabaseInterface {
      */
     public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
+    /**
+     *
+     * @param user
+     * @return A list of articles that still need to be reviewed that have not been authored by people you are
+     * affiliated with
+     * @throws UserDoesNotExistException
+     * @throws InvalidAuthenticationException
+     * @throws SQLException
+     */
+    public ArrayList<Article> getUnaffiliatedArticlesToReview(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+
 }

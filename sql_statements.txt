@@ -96,3 +96,35 @@ INSERT INTO Reviews (submissionID, articleOfReviewerID, reviewerEmail) VALUES
 SELECT * FROM Reviews WHERE
 reviewerEmail = 'raivo@gmail.com' AND
 summary is null AND verdict is null and isFinal = 0
+
+# Get a list of emails that the given user is affiliated with.
+# This is all users that is an author of the same article
+# or is an editor of the same journal
+SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email='raivo@gmail.com')
+union
+SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email='raivo@gmail.com');
+
+# Select all articles that have less than three reviews and are not authored
+# by anyone in a given email list
+SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.submissionID) as reviews FROM (Articles)
+LEFT JOIN Reviews on Reviews.submissionID = Articles.articleID
+INNER JOIN Authorships on Authorships.articleID = Articles.articleID
+
+WHERE Authorships.email not in ('raivo@gmail.com')
+
+GROUP BY Articles.articleID
+HAVING reviews < 3;
+
+# Select all articles that have less than 3 reviews and
+# are not authored by anyone affiliated to the given user
+SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.submissionID) as reviews FROM (Articles)
+LEFT JOIN Reviews on Reviews.submissionID = Articles.articleID
+INNER JOIN Authorships on Authorships.articleID = Articles.articleID
+
+WHERE Authorships.email not in
+	(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email='raivo@gmail.com')
+	union
+	SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email='raivo@gmail.com'))
+
+GROUP BY Articles.articleID
+HAVING reviews < 10;
