@@ -35,15 +35,6 @@ public class WelcomeGUI extends JFrame{
         });
 
 
-      /*  SubmitArticle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                rootPanel.setVisible(false);
-                dispose();
-                SubmitArticle submitform = new SubmitArticle();
-                submitform.setVisible(true);
-            }
-        }); */
 
         logInButton.addActionListener(new ActionListener() {
             @Override
@@ -58,11 +49,8 @@ public class WelcomeGUI extends JFrame{
         updateContentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame = new UserList();
-                frame.setTitle("Swing Example");
-                frame.setSize(500, 300);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                Readers frame = new Readers();
+                frame.show();
             }
         });
 

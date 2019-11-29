@@ -5,9 +5,9 @@ import models.*;
 import main.SessionData;
 import database_interface.*;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
-import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -15,7 +15,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.sql.SQLException;
 import java.util.EventObject;
-
 
 public class Readers extends TreePath {
     private static final java.io.File File = null;
@@ -109,6 +108,8 @@ public class Readers extends TreePath {
     }
 
     public void show(){
+        tree.setBackground(new java.awt.Color(89, 94, 98));
+        frame.getContentPane().setBackground(Color.WHITE/*new java.awt.Color(89, 94, 98)*/);
         frame.setBounds(100,100,1000,650);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
