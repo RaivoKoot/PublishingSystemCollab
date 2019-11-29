@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import exceptions.*;
 import models.*;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 public class DataAccessController implements DatabaseInterface {
 
@@ -661,6 +662,59 @@ public class DataAccessController implements DatabaseInterface {
     public ArrayList<EditionArticle> getallEditionArticles(Edition edition)
             throws ObjectDoesNotExistException, SQLException {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
+
+        if(!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.articleOfReviewerID) as contributions " +
+                    "FROM Articles, Reviews, Authorships\n" +
+                    "WHERE \n" +
+                    "\tArticles.articleID = Reviews.articleOfReviewerID AND \n" +
+                    "\tArticles.articleID = Authorships.articleID AND \n" +
+                    "\tAuthorships.email = ?\n" +
+                    "\t\n" +
+                    "GROUP BY Articles.articleID\n" +
+                    "HAVING contributions < 3;";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Article> articles = new ArrayList<>();
+
+            while (res.next()) {
+                Article article = new Article();
+                article.setArticleID(res.getInt(1));
+                article.setTitle(res.getString(2));
+                article.setSummary(res.getString(3));
+                article.setContent(res.getString(4));
+                article.setIssn(res.getString(5));
+
+                articles.add(article);
+            }
+
+            return articles;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
+    @Override
+    public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
         return null;
     }
 

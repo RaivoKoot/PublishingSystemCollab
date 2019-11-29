@@ -86,7 +86,7 @@ public class CreateNextEdition extends JFrame{
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
                 user.setIssn(paper.getISSN());
 
-                SessionData.db.createNextEdition(volumee,user,publicationMonth);
+                //SessionData.db.createNextEdition(volumee,user,publicationMonth);
             }
         });
 
