@@ -676,10 +676,9 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.articleOfReviewerID) as contributions " +
-                    "FROM Articles, Reviews, Authorships\n" +
+            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.articleOfReviewerID) as contributions FROM (Articles, Authorships)\n" +
+                    "LEFT JOIN Reviews on Reviews.articleOfReviewerID = Articles.articleID\n" +
                     "WHERE \n" +
-                    "\tArticles.articleID = Reviews.articleOfReviewerID AND \n" +
                     "\tArticles.articleID = Authorships.articleID AND \n" +
                     "\tAuthorships.email = ?\n" +
                     "\t\n" +
@@ -715,7 +714,42 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
-        return null;
+        if(!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Reviews WHERE\n" +
+                    "reviewerEmail = ? AND\n" +
+                    "summary is null AND verdict is null and isFinal = 0";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Review> reviews = new ArrayList<>();
+
+            while (res.next()) {
+                Review review = new Review();
+                review.setReviewID(res.getInt(1));
+                review.setSummary(res.getString(2));
+                review.setVerdict(res.getString(3));
+                review.setFinal(res.getBoolean(4));
+
+                reviews.add(review);
+            }
+
+            return reviews;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
     }
 
 }

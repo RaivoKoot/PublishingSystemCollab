@@ -79,9 +79,9 @@ WHERE Articles.articleID = Authorships.articleID AND
 	Authorships.email = 'raivo@gmail.com'
 	
 # Select all articles of a user that do not have 3 contributions yet
-SELECT *, COUNT(Reviews.articleOfReviewerID) as contributions FROM Articles, Reviews, Authorships
+SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.articleOfReviewerID) as contributions FROM (Articles, Authorships)
+LEFT JOIN Reviews on Reviews.articleOfReviewerID = Articles.articleID
 WHERE 
-	Articles.articleID = Reviews.articleOfReviewerID AND 
 	Articles.articleID = Authorships.articleID AND 
 	Authorships.email = 'raivo@gmail.com'
 	
@@ -92,3 +92,8 @@ HAVING contributions < 3;
 SELECT * FROM Reviews;
 INSERT INTO Reviews (submissionID, articleOfReviewerID, reviewerEmail) VALUES
 	(3, 4, 'raivo@gmail.com')
+
+# Get all of a users reviews that still need to be submitted
+SELECT * FROM Reviews WHERE
+reviewerEmail = 'raivo@gmail.com' AND
+summary is null AND verdict is null and isFinal = 0

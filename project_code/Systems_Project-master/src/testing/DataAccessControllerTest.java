@@ -352,9 +352,21 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test4articlesNeedingContributions() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test9test4articlesNeedingContributions() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
 
         assertTrue(db.articlesNeedingContributions(user).size() == 0);
+
+        /*
+        TEST LATER
+         */
+
+        // TODO
+    }
+
+    @Test
+    public void test9test5emptyReviews() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+
+        assertTrue(db.emptyReviews(user).size() == 0);
 
         /*
         TEST LATER
