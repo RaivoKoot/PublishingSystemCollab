@@ -764,7 +764,7 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT *, Articles.title FROM Reviews, Articles WHERE\n" +
+            String sqlQuery = "SELECT reviewID, summary, verdict, Reviews.isFinal, Articles.title, submissionID FROM Reviews, Articles WHERE\n" +
                     "Articles.articleID = Reviews.submissionID AND\n" +
                     "\n" +
                     "reviewerEmail = ? AND\n" +
@@ -782,6 +782,8 @@ public class DataAccessController implements DatabaseInterface {
                 review.setSummary(res.getString(2));
                 review.setVerdict(res.getString(3));
                 review.setFinal(res.getBoolean(4));
+                review.setArticleName(res.getString(5));
+                review.setSubmissionArticleID(res.getInt(6));
 
                 reviews.add(review);
             }
@@ -797,6 +799,39 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
+    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException {
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Articles WHERE articleID=?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, articleID);
+
+            res = statement.executeQuery();
+
+            Article article = new Article();
+
+            if(res.next()){
+                article.setTitle(res.getString(2));
+                article.setSummary(res.getString(3));
+                article.setContent(res.getString(4));
+            } else {
+                throw new ObjectDoesNotExistException("An article with that ID does not exist");
+            }
+
+            return article;
+
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+  
+  @Override
     public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
         if(!validCredentials(user))
             throw new InvalidAuthenticationException();

@@ -196,6 +196,14 @@ public interface DatabaseInterface {
 
     /**
      *
+
+     * @param articleID
+     * @return
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     */
+    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException;
+
      * @param user
      * @return the list of articles you are an
      * @throws UserDoesNotExistException
