@@ -705,6 +705,8 @@ public class DataAccessController implements DatabaseInterface {
         return null;
     }
 
+
+
     @Override
     public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
 
@@ -785,6 +787,49 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             return reviews;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
+    @Override
+    public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
+        if(!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Articles.* FROM Articles, Authorships WHERE\n" +
+                    "Articles.articleID = Authorships.articleID AND\n" +
+                    "Authorships.email = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Article> articles = new ArrayList<>();
+
+            while (res.next()) {
+                Article article = new Article();
+                article.setArticleID(res.getInt(1));
+                article.setTitle(res.getString(2));
+                article.setSummary(res.getString(3));
+                article.setContent(res.getString(4));
+                article.setFinal(res.getBoolean(5));
+                article.setAccepted(res.getBoolean(6));
+                article.setIssn(res.getString(7));
+
+                articles.add(article);
+            }
+
+            return articles;
 
         } finally {
             if (res != null)
