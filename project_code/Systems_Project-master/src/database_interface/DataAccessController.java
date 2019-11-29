@@ -817,7 +817,7 @@ public class DataAccessController implements DatabaseInterface {
                 article.setSummary(res.getString(3));
                 article.setContent(res.getString(4));
             } else {
-                throw new ObjectDoesNotExistException();
+                throw new ObjectDoesNotExistException("An article with that ID does not exist");
             }
 
             return article;
