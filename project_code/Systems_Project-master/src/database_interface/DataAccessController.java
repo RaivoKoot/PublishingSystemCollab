@@ -449,8 +449,12 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor) throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
-        if (!userExists(newAuthor) || !userExists(mainAuthor))
-            throw new UserDoesNotExistException("one of the two users");
+        if (!userExists(newAuthor))
+            throw new UserDoesNotExistException("the new author does not exist");
+
+        if(!userExists(mainAuthor)){
+            throw new UserDoesNotExistException("your validation credentials do not exist");
+        }
 
         ResultSet res = null;
         try {

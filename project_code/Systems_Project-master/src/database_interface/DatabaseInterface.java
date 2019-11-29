@@ -204,6 +204,7 @@ public interface DatabaseInterface {
      */
     public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException;
 
+    /**
      * @param user
      * @return the list of articles you are an
      * @throws UserDoesNotExistException
