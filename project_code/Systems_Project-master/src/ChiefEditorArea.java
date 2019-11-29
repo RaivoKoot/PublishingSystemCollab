@@ -78,6 +78,15 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
+        createNextEditionOfButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CreateNextEdition per = new CreateNextEdition();
+                per.setVisible(true);
+                dispose();
+            }
+        });
+
         updateOwnRoleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
