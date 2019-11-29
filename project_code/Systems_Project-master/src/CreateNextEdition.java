@@ -1,3 +1,6 @@
+import exceptions.InvalidAuthenticationException;
+import exceptions.ObjectDoesNotExistException;
+import exceptions.VolumeFullException;
 import models.Journal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -39,8 +42,9 @@ public class CreateNextEdition extends JFrame{
         generateVolumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                volume_list = new Volume[0];
+                //volume_list = new Volume[0];
                 VolumeCB.removeAllItems();
+                volume_list = null;
 
                 Journal joure = null;
                 for (Journal journal : journal_list){
@@ -66,13 +70,21 @@ public class CreateNextEdition extends JFrame{
         createEditionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Volume volumee = null;
+
+                Volume my_volume = null;
                 for (Volume volume : volume_list){
-                    if (volume.getName() == VolumeCB.getSelectedItem()){
-                        volumee = volume;
+                    if (volume.getName().equals(VolumeCB.getSelectedItem())){
+                        my_volume = volume;
                         break;
                     }
                 }
+
+                for (int i = 0; i<volume_list.length; i++){
+                    System.out.print(volume_list[i].getName() + " / ");
+                }
+
+                System.out.println(VolumeCB.getSelectedItem());
+                System.out.println(my_volume);
 
                 Journal paper = null;
                 for (Journal journale : journal_list){
@@ -81,12 +93,27 @@ public class CreateNextEdition extends JFrame{
                         break;
                     }
                 }
+                System.out.println(JournalCB.getSelectedItem());
+                System.out.println(paper);
 
                 String publicationMonth = JOptionPane.showInputDialog("What is the Publication Month?");
+
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
                 user.setIssn(paper.getISSN());
 
-                SessionData.db.createNextEdition(volumee,user,publicationMonth);
+                System.out.println(user.getIssn());
+
+                try {
+                    SessionData.db.createNextEdition(my_volume,user,publicationMonth);
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (VolumeFullException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
