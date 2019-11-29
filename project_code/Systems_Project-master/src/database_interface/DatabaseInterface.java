@@ -193,4 +193,13 @@ public interface DatabaseInterface {
      * @throws SQLException
      */
     public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+
+    /**
+     *
+     * @param articleID
+     * @return
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     */
+    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException;
 }

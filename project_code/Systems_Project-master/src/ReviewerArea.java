@@ -28,7 +28,6 @@ public class ReviewerArea extends JFrame{
                 MainScreen backtoarea = new MainScreen();
                 backtoarea.setVisible(true);
                 dispose();
-                // How to keep this kind of session which reminds of the username on the welcomeLabel in ChiefEditorArea named "LoggedAs" ? However not immportant Feature
             }});
 
         submitReviewButton.addActionListener(new ActionListener() {
