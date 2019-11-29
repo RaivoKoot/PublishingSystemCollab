@@ -412,4 +412,27 @@ public class DataAccessControllerTest {
 
         // TODO
     }
+
+    @Test
+    public void test9test8getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
+
+        assertThrows(UserDoesNotExistException.class, () -> {
+            db.getUnaffiliatedArticlesToReview(nonexistentUser);
+        });
+
+        // user does not have articles he needs to contribute to
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.getUnaffiliatedArticlesToReview(thirdUser);
+        });
+
+        assertEquals(0, db.getUnaffiliatedArticlesToReview(user).size());
+        assertEquals(0, db.getUnaffiliatedArticlesToReview(chiefEditor).size());
+
+        // change the content to something normal again as it was made huge in an earlier test
+        submission.setContent("HI");
+        db.submitArticle(submission, thirdUser);
+
+        assertEquals(1, db.getUnaffiliatedArticlesToReview(chiefEditor).size());
+
+    }
 }
