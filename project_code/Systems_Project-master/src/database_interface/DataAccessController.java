@@ -271,12 +271,8 @@ public class DataAccessController implements DatabaseInterface {
             throw new UserDoesNotExistException(newEditor.getEmail());
         }
 
-        journalChief = getEditorship(journalChief);
-
-
-        if (journalChief == null || !journalChief.isChief()) {
+        if(!isChiefEditor(journalChief))
             throw new InvalidAuthenticationException();
-        }
 
 
         try {
@@ -288,6 +284,43 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(1, newEditor.getIssn());
             statement.setString(2, newEditor.getEmail());
             statement.setBoolean(3, newEditor.isChief());
+
+            int res = statement.executeUpdate();
+
+            return res == 1;
+
+        } finally {
+            closeConnection();
+        }
+    }
+
+    @Override
+    public boolean makeChiefEditor(JournalEditor editor, JournalEditor chiefAuthentication) throws UserDoesNotExistException, IncompleteInformationException, InvalidAuthenticationException, SQLException {
+        try {
+            if (!editor.getIssn().equals(chiefAuthentication.getIssn())) {
+                throw new InvalidAuthenticationException();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new IncompleteInformationException();
+        }
+
+        if (!userExists(editor)) {
+            throw new UserDoesNotExistException(editor.getEmail());
+        }
+
+        if(!isChiefEditor(chiefAuthentication))
+            throw new InvalidAuthenticationException();
+
+
+        try {
+            openConnection();
+
+            String sqlQuery = "UPDATE JournalEditors SET isChief=1 WHERE\n" +
+                    "\temail = ? AND ISSN = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, editor.getEmail());
+            statement.setString(2, editor.getIssn());
 
             int res = statement.executeUpdate();
 
@@ -313,8 +346,6 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(1, editor.getIssn());
             statement.setString(2, editor.getEmail());
 
-            System.out.println(editor.getIssn());
-            System.out.println(editor.getEmail());
 
             res = statement.executeQuery();
             if (!res.next()) {
