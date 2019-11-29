@@ -27,6 +27,9 @@ public class DataAccessControllerTest {
     static User nonexistentUser;
     static User incompleteInfo;
     static User badPasswordUser;
+
+    static User thirdUser;
+
     static Journal journal;
 
     static JournalEditor chief;
@@ -86,6 +89,14 @@ public class DataAccessControllerTest {
         newEditor.setChief(false);
         newEditor.setIssn(journal.getISSN());
 
+        thirdUser = new User();
+        thirdUser.setEmail("third@gmail.com");
+        thirdUser.setPassword("pswd");
+        thirdUser.setSurname("user");
+        thirdUser.setForenames("usero");
+        thirdUser.setUniversity("Sheffield");
+        thirdUser.setTitle("Mr");
+
     }
 
     @AfterClass
@@ -98,6 +109,7 @@ public class DataAccessControllerTest {
 
         assertTrue(db.registerBaseUser(chiefEditor));
         assertTrue(db.registerBaseUser(user));
+        assertTrue(db.registerBaseUser(thirdUser));
 
         assertThrows(UserAlreadyExistsException.class, () -> {
             db.registerBaseUser(user);
@@ -188,7 +200,7 @@ public class DataAccessControllerTest {
         JournalEditor nonexistentChief = new JournalEditor(nonexistentUser);
         nonexistentChief.setIssn(journal.getISSN());
 
-        assertThrows(UserDoesNotExistException.class, () -> {
+        assertThrows(InvalidAuthenticationException.class, () -> {
             db.promoteUserToEditor(newEditor, nonexistentChief);
         });
 
@@ -271,5 +283,71 @@ public class DataAccessControllerTest {
         assertEquals(1, volumes.get(0).getVolNum());
         assertEquals(2, volumes.get(1).getVolNum());
 
+    }
+
+    @Test
+    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException {
+
+        ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
+
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+
+        assertThrows(VolumeFullException.class, () -> {
+            db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        });
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
+        });
+
+
+    }
+
+    @Test
+    public void test9test2GetAllVolumeEditions() throws SQLException {
+        Volume volume = new Volume();
+        volume.setISSN(journal.getISSN());
+        volume.setVolNum(1);
+
+        ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
+
+        assertEquals(6, editions.size());
+
+        volume.setVolNum(5);
+        editions = db.getAllVolumeEditions(volume);
+        assertEquals(0, editions.size());
+
+        volume.setISSN("Nonexistent");
+        editions = db.getAllVolumeEditions(volume);
+        assertEquals(0, editions.size());
+    }
+
+
+    @Test
+    public void test9test3makeEditorChief() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+        boolean success = db.makeChiefEditor(newEditor, chief);
+        assertTrue(success);
+
+        success = db.makeChiefEditor(newEditor, chief);
+        assertTrue(success);
+
+        assertTrue(success);
+
+        newEditor.setIssn("hi");
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.makeChiefEditor(newEditor, chief);
+        });
+
+        newEditor.setIssn(chief.getIssn());
+
+        JournalEditor notAnEditor = new JournalEditor(thirdUser);
+        notAnEditor.setIssn(chief.getIssn());
+
+        assertFalse(db.makeChiefEditor(notAnEditor, chief));
     }
 }

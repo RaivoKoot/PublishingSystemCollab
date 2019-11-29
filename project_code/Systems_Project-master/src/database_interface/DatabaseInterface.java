@@ -3,12 +3,7 @@ package database_interface;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.UniqueColumnValueAlreadyExists;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.*;
 
 public interface DatabaseInterface {
@@ -129,7 +124,7 @@ public interface DatabaseInterface {
      * @precondition editor and volume must exist
      */
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException;
 
     /**
      * Using the credentials of author, creates a new submission and appoints thi
@@ -161,9 +156,22 @@ public interface DatabaseInterface {
      * @throws InvalidAuthenticationException
      * @precondition all three objects exist in the database
      * @postcondition the newAuthor user has been registered as a co author for that
-     * submission
      */
     public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor)
             throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
+
+    /**
+     * Using the credentials of chiefAuthentication, promotes editor to a chief editor
+     *
+     * @param editor must include email and issn
+     * @param chiefAuthentication must include email, password and issn
+     * @return successful or not
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     * @throws InvalidAuthenticationException
+     * @precondition editor must be an editor of the journal
+     * @postcondition editor has been promoted to a chief editor of the journal
+     */
+    public boolean makeChiefEditor(JournalEditor editor, JournalEditor chiefAuthentication) throws IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
 }

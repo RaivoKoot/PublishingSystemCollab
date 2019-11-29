@@ -95,13 +95,17 @@ public class CreateNextEdition extends JFrame{
                 try {
                     SessionData.db.createNextEdition(my_volume,user,publicationMonth);
                 } catch (ObjectDoesNotExistException e1) {
+                    JOptionPane.showMessageDialog(null, "Something went wrong!");
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Make sure you correctly fill out the form");
                 } catch (InvalidAuthenticationException e1) {
-                    JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
+                    JOptionPane.showMessageDialog(null, "Something went wrong!");
+                    e1.printStackTrace();
+                } catch (VolumeFullException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry this volume is already full");
                     e1.printStackTrace();
                 } catch (SQLException e1) {
-                    JOptionPane.showMessageDialog(null, "Sorry this Volume is already full!");
+                    JOptionPane.showMessageDialog(null, "Something went wrong!");
                     e1.printStackTrace();
                 }
             }

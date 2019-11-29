@@ -7,7 +7,7 @@ CREATE TABLE Journals (
 CREATE TABLE Volumes (
 	volumeNum INT,
 	ISSN VARCHAR(20),
-	publicationYear SMALLINT,
+	publicationYear SMALLINT UNIQUE,
 	PRIMARY KEY (volumeNum, ISSN),
 	FOREIGN KEY (ISSN) REFERENCES Journals(ISSN)
 		ON DELETE CASCADE
@@ -110,4 +110,5 @@ CREATE TABLE Critiques (
 		ON DELETE CASCADE
 );
 
+ALTER TABLE `Editions` ADD UNIQUE `unique_index`(`editionNum`, `volumeNum`, `ISSN`);
 
