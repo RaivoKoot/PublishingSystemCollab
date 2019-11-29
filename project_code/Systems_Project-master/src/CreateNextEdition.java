@@ -79,13 +79,6 @@ public class CreateNextEdition extends JFrame{
                     }
                 }
 
-                for (int i = 0; i<volume_list.length; i++){
-                    System.out.print(volume_list[i].getName() + " / ");
-                }
-
-                System.out.println(VolumeCB.getSelectedItem());
-                System.out.println(my_volume);
-
                 Journal paper = null;
                 for (Journal journale : journal_list){
                     if (journale.getName() == JournalCB.getSelectedItem()){
@@ -93,30 +86,26 @@ public class CreateNextEdition extends JFrame{
                         break;
                     }
                 }
-                System.out.println(JournalCB.getSelectedItem());
-                System.out.println(paper);
 
                 String publicationMonth = JOptionPane.showInputDialog("What is the Publication Month?");
 
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
                 user.setIssn(paper.getISSN());
 
-                System.out.println(user.getIssn());
-
                 try {
                     SessionData.db.createNextEdition(my_volume,user,publicationMonth);
                 } catch (ObjectDoesNotExistException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Make sure you correctly fill out the form");
                 } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (VolumeFullException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
                     e1.printStackTrace();
                 } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry this Volume is already full!");
                     e1.printStackTrace();
                 }
             }
         });
-
 
 
         backward.addActionListener(new ActionListener() {
