@@ -118,6 +118,17 @@ public class MainScreen extends JFrame{
             }
         });
 
+        reviewerSectionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ReviewerArea rarea = new ReviewerArea();
+                rarea.setVisible(true);
+                dispose();
+            }
+        });
+
+
+
 
 }
 }

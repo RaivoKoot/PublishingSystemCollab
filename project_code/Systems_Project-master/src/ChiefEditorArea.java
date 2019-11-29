@@ -3,8 +3,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
+
+import exceptions.IncompleteInformationException;
 import exceptions.InvalidAuthenticationException;
 import exceptions.ObjectDoesNotExistException;
+import exceptions.UserDoesNotExistException;
 import main.*;
 import models.*;
 import java.awt.*;
@@ -17,7 +20,7 @@ public class ChiefEditorArea extends JFrame{
     private JButton publishEditionButton;
     public JLabel LoggedAsLabel;
     private JPanel ChiefEditorPanel;
-    private JButton updateOwnRoleButton;
+    private JButton promote;
     private JButton backward;
     private JButton retireFromAJournalButton;
     private JButton createNextEditionOfButton;
@@ -78,6 +81,74 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
+        promote.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JournalEditor target = new JournalEditor();
+                JournalEditor user = new JournalEditor(SessionData.currentUser);
+                String e_mail = JOptionPane.showInputDialog("Enter this person e-mail");
+                target.setEmail(e_mail);
+
+                ArrayList<Journal> list = new ArrayList<Journal>();
+                ArrayList<String> lister = new ArrayList<String>();
+
+                try {
+                    list = SessionData.db.getAllJournals();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                for (int i = 0; i<list.size(); i++){
+                    lister.add(list.get(i).getName());
+                }
+                System.out.println(lister);
+
+                int n =  JOptionPane.showOptionDialog(null,
+                        "Choose your Journal",
+                        "Journal",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,     //do not use a custom Icon
+                        lister.toArray(),  //the titles of buttons
+                        lister.get(0)); //default button title
+
+                Journal jour = null;
+
+                for (Journal journal : list){
+                    if (journal.getName().equals(lister.get(n))){
+                        jour = journal;
+                        break;
+                    }
+                }
+
+                target.setIssn(jour.getISSN());
+                user.setIssn((jour.getISSN()));
+
+                try {
+                    boolean success = SessionData.db.makeChiefEditor(target,user);
+                    if (success){
+                        JOptionPane.showMessageDialog(null,"Action successful");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"Action not successful");
+
+                    }
+                } catch (UserDoesNotExistException e1) {
+                    JOptionPane.showMessageDialog(null,"Sorry the editor does not exist");
+                    e1.printStackTrace();
+                } catch (IncompleteInformationException e1) {
+                    JOptionPane.showMessageDialog(null,"Make sure you correctly fill out the boxes");
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong");
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong");
+                    e1.printStackTrace();
+                }
+            }
+        });
+
         createNextEditionOfButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,73 +158,7 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
-        updateOwnRoleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //String answer = JOptionPane.showInputDialog("Are you sure you wanna pass your role as Chief Editor onto another person?");
-                String own_e_mail =  JOptionPane.showInputDialog("What is your e_mail address?");
-                String target_e_mail = JOptionPane.showInputDialog("What is the e_mail of that person?");
 
-                try {
-                    String DB="jdbc:mysql://stusql.dcs.shef.ac.uk/team035?user=team035&password=5455d7fb";
-                    con = DriverManager.getConnection(DB);
-
-                    try{
-
-                            String query2 = "UPDATE JournalEditors SET isChief =? WHERE email =?";
-                            String query3 = "UPDATE Users SET isSuperuser =? WHERE email=?";
-                            PreparedStatement preparedStmt2 = con.prepareStatement(query2);
-                            PreparedStatement preparedStmt3 = con.prepareStatement(query3);
-                            PreparedStatement preparedStmt4 = con.prepareStatement(query2);
-                            PreparedStatement preparedStmt5 = con.prepareStatement(query3);
-
-
-                                /*int update = stmt.executeUpdate("UPDATE Users SET password = " + "'" + new_password + "'" + " WHERE " +
-                                        "email = " + "'" + e_mail_address + "'"); */
-
-                            preparedStmt2.setInt(1, 1);
-                            preparedStmt2.setString(2, target_e_mail);
-                            preparedStmt3.setInt(1, 1);
-                            preparedStmt3.setString(2, target_e_mail);
-                            preparedStmt4.setInt(1, 0);
-                            preparedStmt4.setString(2, own_e_mail);
-                            preparedStmt5.setInt(1, 0);
-                            preparedStmt5.setString(2, own_e_mail);
-                            preparedStmt2.executeUpdate();
-                            preparedStmt3.executeUpdate();
-                            preparedStmt4.executeUpdate();
-                            preparedStmt5.executeUpdate();
-
-
-
-                        ChiefEditorArea gobacke = new ChiefEditorArea();
-                            gobacke.setVisible(true);
-                            dispose();
-
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    } finally {
-                        if (stmt != null)
-                            stmt.close();
-                    }
-
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-
-                } finally {
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-
-            }
-        });
 
 
         createNextVolumeOfButton.addActionListener(new ActionListener() {
@@ -170,6 +175,10 @@ public class ChiefEditorArea extends JFrame{
 
                 for (int i = 0; i<list.size(); i++){
                     lister.add(list.get(i).getName());
+                }
+
+                for(int i = 0; i < 100; i++){
+                    lister.add(String.valueOf(i));
                 }
                 System.out.println(lister);
 
