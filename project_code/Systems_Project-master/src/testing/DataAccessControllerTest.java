@@ -354,7 +354,7 @@ public class DataAccessControllerTest {
     @Test
     public void test9test4articlesNeedingContributions() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
 
-        assertTrue(db.articlesNeedingContributions(user).size() == 0);
+        assertTrue(db.articlesNeedingContributions(user).size() == 2);
 
         /*
         TEST LATER
