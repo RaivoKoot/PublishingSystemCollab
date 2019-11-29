@@ -27,6 +27,9 @@ public class DataAccessControllerTest {
     static User nonexistentUser;
     static User incompleteInfo;
     static User badPasswordUser;
+
+    static User thirdUser;
+
     static Journal journal;
 
     static JournalEditor chief;
@@ -86,6 +89,14 @@ public class DataAccessControllerTest {
         newEditor.setChief(false);
         newEditor.setIssn(journal.getISSN());
 
+        thirdUser = new User();
+        thirdUser.setEmail("third@gmail.com");
+        thirdUser.setPassword("pswd");
+        thirdUser.setSurname("user");
+        thirdUser.setForenames("usero");
+        thirdUser.setUniversity("Sheffield");
+        thirdUser.setTitle("Mr");
+
     }
 
     @AfterClass
@@ -98,6 +109,7 @@ public class DataAccessControllerTest {
 
         assertTrue(db.registerBaseUser(chiefEditor));
         assertTrue(db.registerBaseUser(user));
+        assertTrue(db.registerBaseUser(thirdUser));
 
         assertThrows(UserAlreadyExistsException.class, () -> {
             db.registerBaseUser(user);
@@ -188,7 +200,7 @@ public class DataAccessControllerTest {
         JournalEditor nonexistentChief = new JournalEditor(nonexistentUser);
         nonexistentChief.setIssn(journal.getISSN());
 
-        assertThrows(UserDoesNotExistException.class, () -> {
+        assertThrows(InvalidAuthenticationException.class, () -> {
             db.promoteUserToEditor(newEditor, nonexistentChief);
         });
 
@@ -313,5 +325,29 @@ public class DataAccessControllerTest {
         volume.setISSN("Nonexistent");
         editions = db.getAllVolumeEditions(volume);
         assertEquals(0, editions.size());
+    }
+
+
+    @Test
+    public void test9test3makeEditorChief() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+        boolean success = db.makeChiefEditor(newEditor, chief);
+        assertTrue(success);
+
+        success = db.makeChiefEditor(newEditor, chief);
+        assertTrue(success);
+
+        assertTrue(success);
+
+        newEditor.setIssn("hi");
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.makeChiefEditor(newEditor, chief);
+        });
+
+        newEditor.setIssn(chief.getIssn());
+
+        JournalEditor notAnEditor = new JournalEditor(thirdUser);
+        notAnEditor.setIssn(chief.getIssn());
+
+        assertFalse(db.makeChiefEditor(notAnEditor, chief));
     }
 }
