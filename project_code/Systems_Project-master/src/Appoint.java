@@ -134,46 +134,6 @@ public class Appoint extends JFrame {
                     e1.printStackTrace();
                 }
 
-                /*try {
-                    String DB="jdbc:mysql://stusql.dcs.shef.ac.uk/team035?user=team035&password=5455d7fb";
-                    con = DriverManager.getConnection(DB);
-
-                    try{
-                        stmt = con.createStatement();
-                        int inUsers = stmt.executeUpdate("INSERT INTO Users " + "VALUES (" + "'" + e_address + "'" + ", " + "'" + fname + "'" + ", " + "'" +
-                                sname + "'" + ", " + "'" + "Unkwown" + "'" + ", " + "'" + te_password + "'" + "," + "'editor'" +
-                                "," + "'" + valueweneed + "'" + ")");
-
-                        stmt2 = con.createStatement();
-                        int inJournalEditors = stmt2.executeUpdate("INSERT INTO JournalEditors " + "VALUES (" + "'" + ISSN_value + "'" + ", " + "'" + e_address + "'" + "," + "'"
-                                + valueweneed + "'" + ")");
-
-                        Success.setText("Editor Appointed");
-
-
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-
-                    } finally {
-                        if (stmt != null)
-                            stmt.close();
-                    }
-
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-
-                } finally {
-                    if (con != null) {
-                        try {
-                            con.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }*/
-
-
             }
         });
 

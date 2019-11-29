@@ -17,14 +17,22 @@ public class ChooseReview extends JFrame {
     private JButton backward;
     private JComboBox comboBox1;
     private JTextArea summary;
-    private JTextArea critique;
+    private JTextArea critique_field;
     private JButton getContentOfChosenButton;
+    private JTextField chosenarticletitle;
+    private JTextArea chosen_article_content;
+    private JTextArea chosenarticleabstract;
+
+    private ArrayList<Critique> critiques;
+    private Review selected;
 
     ChooseReview() {
         add(ChooseReview);
         setTitle("Choose Review Page");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
 
         String[] verdicts = {"Strong Accept (champion)", "Weak Accept", "Weak Reject", "Strong Reject (detractor)"};
 
@@ -59,29 +67,45 @@ public class ChooseReview extends JFrame {
         send_review.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
-                        "Another critique?", dialogButton);
-                if(dialogResult == 0) {
-                    JTextArea ta = new JTextArea(20, 20);
-                    switch (JOptionPane.showConfirmDialog(null, new JScrollPane(ta))) {
-                        case JOptionPane.OK_OPTION:
-                            JOptionPane.showMessageDialog(null, "Critique added");
-                            
-                            break;
+                critiques = new ArrayList<>();
+                Critique critique = new Critique();
+                critique.setDescription(critique_field.getText());
+                critiques.add(critique);
+
+                while(true) {
+                    int dialogButton = JOptionPane.YES_NO_OPTION;
+                    int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
+                            "Another critique?", dialogButton);
+                    if (dialogResult == 0) {
+                        JTextArea ta = new JTextArea(20, 20);
+                        switch (JOptionPane.showConfirmDialog(null, new JScrollPane(ta))) {
+                            case JOptionPane.OK_OPTION:
+                                JOptionPane.showMessageDialog(null, "Critique added");
+                                critique = new Critique();
+                                critique.setDescription(ta.getText());
+                                critiques.add(critique);
+
+                                break;
+                        }
+                    } else {
+
+                        for(Critique crit: critiques)
+                            crit.setReviewID(selected.getReviewID());
+                        // db.functionCall(Review, critiques, currentUser)
+
+                        JOptionPane.showMessageDialog(null, "Review Sent");
+                        ReviewerArea backtoarea = new ReviewerArea();
+                        backtoarea.setVisible(true);
+                        dispose();
+                        break;
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Review Sent");
-                    ReviewerArea backtoarea = new ReviewerArea();
-                    backtoarea.setVisible(true);
-                    dispose();
                 }
             }});
 
         getContentOfChosenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Review selected = new Review();
+                selected = new Review();
                 Article abc = new Article();
                 ArrayList<Review> lister = new ArrayList<Review>();
 
@@ -102,8 +126,6 @@ public class ChooseReview extends JFrame {
                     }
                 }
 
-                System.out.println(selected.getSubmissionArticleID());
-
                 try {
                     abc = SessionData.db.getArticleInfo(selected.getSubmissionArticleID());
                 } catch (ObjectDoesNotExistException e1) {
@@ -112,10 +134,10 @@ public class ChooseReview extends JFrame {
                     e1.printStackTrace();
                 }
 
-                System.out.println(abc.getTitle() + " " + abc.getSummary() + " " + abc.getContent() + " ");
 
-
-
+                chosenarticletitle.setText(abc.getTitle());
+                chosen_article_content.setText(abc.getContent());
+                chosenarticleabstract.setText(abc.getSummary());
 
             }});
 
