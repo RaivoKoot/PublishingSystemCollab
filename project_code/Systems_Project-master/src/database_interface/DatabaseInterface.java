@@ -196,7 +196,6 @@ public interface DatabaseInterface {
 
     /**
      *
-
      * @param articleID
      * @return
      * @throws ObjectDoesNotExistException
@@ -224,5 +223,14 @@ public interface DatabaseInterface {
      * @throws SQLException
      */
     public ArrayList<Article> getUnaffiliatedArticlesToReview(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
+
+    /**
+     * Reserves one of an article's three open review spots for the given user
+     * @param review must include submissionID, articleOfReviewerID
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws SQLException
+     */
+    public boolean reserverReview(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException;
 
 }

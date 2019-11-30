@@ -435,4 +435,26 @@ public class DataAccessControllerTest {
         assertEquals(1, db.getUnaffiliatedArticlesToReview(chiefEditor).size());
 
     }
+
+    @Test
+    public void test9test9getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+
+        Article article = db.getUnaffiliatedArticlesToReview(user).get(0);
+
+        Review newReview = new Review();
+        newReview.setSubmissionArticleID(article.getArticleID());
+
+        Article contributeTo = db.getOwnArticles(user).get(0);
+
+        newReview.setArticleOfReviwerID(contributeTo.getArticleID());
+
+        assertTrue(db.reserverReview(newReview, user));
+        assertTrue(db.reserverReview(newReview, user));
+        assertTrue(db.reserverReview(newReview, user));
+
+        assertThrows(SQLException.class, () -> {
+            db.reserverReview(newReview, user);
+        });
+
+    }
 }
