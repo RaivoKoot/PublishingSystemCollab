@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+import com.mysql.cj.Session;
 import exceptions.InvalidAuthenticationException;
 import exceptions.UserDoesNotExistException;
 import main.*;
@@ -22,6 +23,7 @@ public class AppointReview extends JFrame{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         Article[] reviews_list = new Article[0];
+        Article[] reviews2_list = new Article[0];
 
         try {
             reviews_list = SessionData.db.articlesNeedingContributions(SessionData.currentUser).toArray(new Article[0]);
@@ -33,8 +35,22 @@ public class AppointReview extends JFrame{
             e.printStackTrace();
         }
 
+        try {
+            reviews2_list = SessionData.db.getUnaffiliatedArticlesToReview(SessionData.currentUser).toArray(new Article[0]);
+        } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+        } catch (InvalidAuthenticationException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         for(int i = 0; i<= reviews_list.length-1 ; i++) {
             own_article_CB.addItem(reviews_list[i].getTitle());
+        }
+
+        for(int i = 0; i<= reviews2_list.length-1 ; i++){
+            selection_CB.addItem(reviews2_list[i].getTitle());
         }
 
         backward.addActionListener(new ActionListener() {
