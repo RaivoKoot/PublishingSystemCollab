@@ -7,8 +7,7 @@ public class MainAuthorArea extends JFrame{
     private JButton registerCoAuthorsButton;
     private JButton checkArticleStatusButton;
     private JButton respondToCriticismsButton;
-    private JButton checkReviewsButton;
-    private JButton updatePasswordButton;
+    private JButton reviseArticleButton;
     private JPanel MAPanel;
     private JButton backward;
     Connection con = null;
@@ -37,6 +36,35 @@ public class MainAuthorArea extends JFrame{
                 dispose();
             }
         });
+
+        checkArticleStatusButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CheckArticleStatus check = new CheckArticleStatus();
+                check.setVisible(true);
+                dispose();
+            }
+        });
+
+        respondToCriticismsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RespondToCritiques respondPage = new RespondToCritiques();
+                respondPage.setVisible(true);
+                dispose();
+            }
+        });
+
+        reviseArticleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SubmitRevision revise_article = new SubmitRevision();
+                revise_article.setVisible(true);
+                dispose();
+            }
+        });
+
+
 
     }
 

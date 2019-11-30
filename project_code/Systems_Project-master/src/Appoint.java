@@ -18,7 +18,6 @@ public class Appoint extends JFrame {
     private JTextField e_mail_address;
     private JTextField t_password;
     private JButton appointButton;
-    private JButton doneButton;
     private JButton backward;
     private JLabel Success;
     private JTextField university;
@@ -104,6 +103,11 @@ public class Appoint extends JFrame {
                     if (success){
                         boolean success2 = SessionData.db.promoteUserToEditor(target2, chief);
                         Success.setText("Success");
+                        forename.setText("");
+                        surname.setText("");
+                        university.setText("");
+                        e_mail_address.setText("");
+                        t_password.setText("");
                     }
                     else {
                         target.setUniversity(uni);
@@ -137,14 +141,7 @@ public class Appoint extends JFrame {
             }
         });
 
-        doneButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ChiefEditorArea area = new ChiefEditorArea();
-                area.setVisible(true);
-                dispose();
-            }
-        });
+
 
         backward.addActionListener(new ActionListener() {
             @Override
