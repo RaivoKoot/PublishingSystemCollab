@@ -32,8 +32,6 @@ public class ChooseReview extends JFrame {
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-
-
         String[] verdicts = {"Strong Accept (champion)", "Weak Accept", "Weak Reject", "Strong Reject (detractor)"};
 
         for(int i = 0; i<= verdicts.length-1 ; i++) {

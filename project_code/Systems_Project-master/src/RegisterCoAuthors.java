@@ -20,7 +20,6 @@ public class RegisterCoAuthors extends JFrame {
     private JPanel RegisterCo;
     private JPanel AppointPanel;
     private JPanel first_view;
-    private JButton doneButton;
     private JLabel Success;
     private JComboBox comboBox1;
     private JPanel second_view;
@@ -96,6 +95,11 @@ public class RegisterCoAuthors extends JFrame {
                     boolean success = SessionData.db.addCoAuthor(the_article, target, SessionData.currentUser);
                     if (success) {
                         Success.setText("Success");
+                        forename.setText("");
+                        surname.setText("");
+                        university.setText("");
+                        e_mail_address.setText("");
+                        t_password.setText("");
                     } else{
                         Success.setText("Nope");
                     }

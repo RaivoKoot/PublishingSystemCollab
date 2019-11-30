@@ -29,9 +29,6 @@ public class SubscribeForm extends JFrame {
     private JLabel successlabel;
     private JComboBox comboBox1;
 
-    Connection con = null; // a Connection object
-    Statement stmt = null;
-    Statement stmt2 = null;
 
     public SubscribeForm() {
 
