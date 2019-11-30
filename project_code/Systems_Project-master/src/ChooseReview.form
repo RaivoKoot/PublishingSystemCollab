@@ -148,6 +148,33 @@
           </component>
         </children>
       </scrollpane>
+      <component id="3efd8" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-3815995"/>
+          <text value="Title"/>
+        </properties>
+      </component>
+      <component id="76eb0" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-3815995"/>
+          <text value="Summary"/>
+        </properties>
+      </component>
+      <component id="22825" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-3815995"/>
+          <text value="Content"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

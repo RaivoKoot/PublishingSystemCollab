@@ -177,11 +177,6 @@ public class ChiefEditorArea extends JFrame{
                     lister.add(list.get(i).getName());
                 }
 
-                for(int i = 0; i < 100; i++){
-                    lister.add(String.valueOf(i));
-                }
-                System.out.println(lister);
-
                 int n =  JOptionPane.showOptionDialog(null,
                         "Choose your Journal",
                         "Journal",
