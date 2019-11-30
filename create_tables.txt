@@ -28,7 +28,7 @@ CREATE TABLE Editions (
 
 CREATE TABLE Users (
 	email VARCHAR(80) PRIMARY KEY,
-	title VARCHAR(4), 
+	title VARCHAR(5), 
 	forenames VARCHAR(150),
 	surname VARCHAR(120),
 	university VARCHAR(100),
@@ -92,6 +92,7 @@ CREATE TABLE Reviews (
 	submissionID INT NOT NULL,
 	articleOfReviewerID INT,
 	reviewerEmail VARCHAR(80) NOT NULL,
+	hasResponse BOOL DEFAULT FALSE,
 	
 	FOREIGN KEY(submissionID) REFERENCES Articles(articleID)
 		ON DELETE CASCADE,

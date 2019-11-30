@@ -155,13 +155,14 @@ public class DatabaseTestingSetup {
                     "CREATE TABLE Reviews (\n" +
                             "\treviewID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\t\n" +
-                            "\tsummary VARCHAR(2000) NOT NULL,\n" +
-                            "\tverdict VARCHAR(20) NOT NULL,\n" +
+                            "\tsummary VARCHAR(2000),\n" +
+                            "\tverdict VARCHAR(20),\n" +
                             "\tisFinal BOOL DEFAULT FALSE,\n" +
                             "\t\n" +
                             "\tsubmissionID INT NOT NULL,\n" +
                             "\tarticleOfReviewerID INT,\n" +
                             "\treviewerEmail VARCHAR(80) NOT NULL,\n" +
+                            "\thasResponse BOOL DEFAULT FALSE,\n" +
                             "\t\n" +
                             "\tFOREIGN KEY(submissionID) REFERENCES Articles(articleID)\n" +
                             "\t\tON DELETE CASCADE,\n" +

@@ -928,4 +928,64 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public boolean reserverReview(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        PreparedStatement statementTwo = null;
+        ResultSet rs = null;
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            // Insert the new submission into the table
+            String sqlQuery = "INSERT INTO Reviews (submissionID, articleOfReviewerID, reviewerEmail) VALUES\n" +
+                    "\t(?,?,?)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, review.getSubmissionArticleID());
+            statement.setInt(2, review.getArticleOfReviwerID());
+            statement.setString(3, user.getEmail());
+            int res1 = statement.executeUpdate();
+
+            if (res1 != 1) {
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            // Make sure that someone else did not also create a review for this article at the same time
+            // and the article now has 4 reviews.
+
+            // get the number of reviews for this article
+            String sqlQueryTwo = "SELECT COUNT(r1.submissionID) as reviewCount FROM (Articles)\n" +
+                    "LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID\n" +
+                    "WHERE Articles.articleID = ?";
+            statementTwo = connection.prepareStatement(sqlQueryTwo);
+            statementTwo.setInt(1, review.getSubmissionArticleID());
+            rs = statementTwo.executeQuery();
+
+            if(!rs.next() || rs.getInt(1) > 3){
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+
+            closeConnection();
+
+            if (statementTwo != null)
+                statementTwo.close();
+
+            if (rs != null)
+                rs.close();
+        }
+    }
+
 }
