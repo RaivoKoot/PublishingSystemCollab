@@ -993,6 +993,7 @@ public class DataAccessController implements DatabaseInterface {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
+        System.out.println("Starting submit");
         PreparedStatement statementTwo = null;
         ResultSet rs = null;
         try {

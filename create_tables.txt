@@ -86,7 +86,7 @@ CREATE TABLE Reviews (
 	reviewID INT PRIMARY KEY AUTO_INCREMENT,
 	
 	summary VARCHAR(2000),
-	verdict VARCHAR(20),
+	verdict VARCHAR(25),
 	isFinal BOOL DEFAULT FALSE,
 	
 	submissionID INT NOT NULL,
