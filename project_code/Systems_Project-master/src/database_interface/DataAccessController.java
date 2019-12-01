@@ -1005,8 +1005,8 @@ public class DataAccessController implements DatabaseInterface {
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, review.getSummary());
             statement.setString(2, review.getVerdict());
-            statement.setInt(3, review.setReviewID());
-            statement.setString(3, user.getEmail());
+            statement.setInt(3, review.getReviewID());
+            statement.setString(4, user.getEmail());
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -1020,13 +1020,16 @@ public class DataAccessController implements DatabaseInterface {
             String sqlQueryTwo = "INSERT INTO Critiques (reviewID, description) VALUES\n" +
                     "\t(?, ?)";
             statementTwo = connection.prepareStatement(sqlQueryTwo);
-            statementTwo.setInt(1, review.getSubmissionArticleID());
-            rs = statementTwo.executeQuery();
 
-            if(!rs.next() || rs.getInt(1) > 3){
-                connection.rollback();
-                throw new SQLException();
+            for(Critique critique: review.getCritiques()) {
+
+                statementTwo.setInt(1, review.getReviewID());
+                statementTwo.setString(2, critique.getDescription());
+                statementTwo.addBatch();
+
             }
+
+            statementTwo.executeBatch();
 
             connection.commit();
 
