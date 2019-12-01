@@ -18,8 +18,17 @@ public class ReviewerArea extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 AppointReview appointpage = new AppointReview();
-                appointpage.setVisible(true);
-                dispose();
+
+                if(appointpage.own_article_CB.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null, "You are not authorised to create a new review. This is because " +
+                            "you do not have any submissions that require you to contribute any more reviews.");
+                } else if (appointpage.selection_CB.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null, "Unfortunately, there are no articles at the moment " +
+                            "that still need reviews and to which you are unaffiliated to. Please be patient and wait until new articles are submitted.");
+                } else {
+                    appointpage.setVisible(true);
+                    dispose();
+                }
             }});
 
         backward.addActionListener(new ActionListener() {
@@ -34,8 +43,13 @@ public class ReviewerArea extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 ChooseReview gotoarea = new ChooseReview();
-                gotoarea.setVisible(true);
-                dispose();
+                if(gotoarea.article_selection_CB.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null, "You currently have no reviews appointed to yourself to submit. " +
+                            "Go to 'Appoint New Review' and select a new article you want to review first.");
+                } else {
+                    gotoarea.setVisible(true);
+                    dispose();
+                }
             }});
 
 

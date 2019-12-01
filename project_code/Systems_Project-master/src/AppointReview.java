@@ -10,8 +10,8 @@ import main.*;
 import models.*;
 
 public class AppointReview extends JFrame{
-    private JComboBox own_article_CB;
-    private JComboBox selection_CB;
+    public JComboBox own_article_CB;
+    public JComboBox selection_CB;
     private JButton appointButton;
     private JPanel AppointReview;
     private JButton backward;

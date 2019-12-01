@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ChooseReview extends JFrame {
     private JPanel ChooseReview;
-    private JComboBox article_selection_CB;
+    public JComboBox article_selection_CB;
     private JButton send_review;
     private JButton backward;
     private JComboBox comboBox1;
