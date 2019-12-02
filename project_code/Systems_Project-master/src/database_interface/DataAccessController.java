@@ -1241,7 +1241,7 @@ public class DataAccessController implements DatabaseInterface {
               try {
                   openConnection();
 
-            String sqlQuery = "SELECT reviewID, summary, verdict FROM Reviews WHERE \n" +
+            String sqlQuery = "SELECT reviewID, summary, verdict, submissionID FROM Reviews WHERE \n" +
                     "\tsubmissionID = ? AND verdict is not null AND isFinal = false";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, article.getArticleID());
@@ -1259,6 +1259,7 @@ public class DataAccessController implements DatabaseInterface {
                 review.setReviewID(res.getInt(1));
                 review.setSummary(res.getString(2));
                 review.setVerdict(res.getString(3));
+                review.setSubmissionArticleID(res.getInt(4));
                 review.setReviewerName(counter);
 
 
@@ -1273,6 +1274,49 @@ public class DataAccessController implements DatabaseInterface {
 
             closeConnection();
         }
+
+  }
+
+  public ArrayList<Critique> getReviewCritiques(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+      if(!validCredentials(user)){
+          throw new InvalidAuthenticationException();
+      }
+
+      if(!isMainAuthor(user, review.getSubmissionArticleID())){
+          throw new InvalidAuthenticationException();
+      }
+
+      ResultSet res = null;
+      try {
+          openConnection();
+
+          String sqlQuery = "SELECT critiqueID, description FROM Critiques WHERE reviewID = ?";
+          statement = connection.prepareStatement(sqlQuery);
+          statement.setInt(1, review.getReviewID());
+
+          res = statement.executeQuery();
+
+          ArrayList<Critique> critiques = new ArrayList<>();
+
+
+          while (res.next()) {
+
+              Critique critique = new Critique();
+              critique.setCritiqueID(res.getInt(1));
+              critique.setDescription(res.getString(2));
+
+
+              critiques.add(critique);
+          }
+
+          return critiques;
+
+      } finally {
+          if (res != null)
+              res.close();
+
+          closeConnection();
+      }
   }
 
 }
