@@ -256,4 +256,27 @@ public interface DatabaseInterface {
      */
     public ArrayList<Article> getOwnArticleWithStatus(User currentUser) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
+    /**
+     * For the given user gets the journals they are an editor of
+     * @param user
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     */
+    public ArrayList<Journal> getJournalsByUser(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
+
+    /**
+     * Deletes an editorship from the editor-journal linker table
+     * @param journalEditor
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     * @throws ObjectDoesNotExistException
+     */
+    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException;
+
+
 }
+
