@@ -503,7 +503,27 @@ public class DataAccessControllerTest {
 
         assertEquals(2, db.getOwnArticleWithStatus(user).size());
 
+    }
 
+    @Test
+    public void test9test9test3getReviewsToRespondTo() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+        List<Article> articles = db.getOwnArticleWithStatus(thirdUser);
+        Article article = articles.get(0);
+
+        List<Review> reviews = db.getInitialReviewsOfArticle(article, thirdUser);
+
+        assertEquals(1, reviews.size());
+
+        assertThrows(InvalidAuthenticationException.class, () -> {
+            db.getInitialReviewsOfArticle(article, user);
+        });
+
+        articles = db.getOwnArticleWithStatus(user);
+        Article article2 = articles.get(0);
+
+        reviews = db.getInitialReviewsOfArticle(article2, user);
+
+        assertEquals(0, reviews.size());
 
     }
 }

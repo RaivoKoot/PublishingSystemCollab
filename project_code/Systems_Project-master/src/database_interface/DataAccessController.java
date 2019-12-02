@@ -271,7 +271,7 @@ public class DataAccessController implements DatabaseInterface {
             throw new UserDoesNotExistException(newEditor.getEmail());
         }
 
-        if(!isChiefEditor(journalChief))
+        if (!isChiefEditor(journalChief))
             throw new InvalidAuthenticationException();
 
 
@@ -309,7 +309,7 @@ public class DataAccessController implements DatabaseInterface {
             throw new UserDoesNotExistException(editor.getEmail());
         }
 
-        if(!isChiefEditor(chiefAuthentication))
+        if (!isChiefEditor(chiefAuthentication))
             throw new InvalidAuthenticationException();
 
 
@@ -446,12 +446,45 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    public boolean isMainAuthor(User user, int articleID) throws SQLException, InvalidAuthenticationException {
+        PreparedStatement statementTwo = null;
+        ResultSet res = null;
+        try {
+            openConnection();
+            String sqlQuery = "SELECT isMain FROM Authorships WHERE\n" +
+                    "\tarticleID = ? AND\n" +
+                    "\temail = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, articleID);
+            statement.setString(2, user.getEmail());
+
+
+            res = statement.executeQuery();
+            if (!res.next() || res.getInt(1) == 0) {
+                // main authorship does not exist
+                throw new InvalidAuthenticationException();
+            }
+
+            return true;
+
+        } finally {
+
+            closeConnection();
+
+            if (statementTwo != null)
+                statementTwo.close();
+
+            if (res != null)
+                res.close();
+        }
+    }
+
     @Override
     public boolean addCoAuthor(Article article, User newAuthor, User mainAuthor) throws UserDoesNotExistException, ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
         if (!userExists(newAuthor))
             throw new UserDoesNotExistException("the new author does not exist");
 
-        if(!userExists(mainAuthor)){
+        if (!userExists(mainAuthor)) {
             throw new UserDoesNotExistException("your validation credentials do not exist");
         }
 
@@ -482,7 +515,7 @@ public class DataAccessController implements DatabaseInterface {
             statement.setBoolean(3, false);
             int res2 = statement.executeUpdate();
 
-            if(res2 == 1)
+            if (res2 == 1)
                 return true;
 
             return false;
@@ -501,7 +534,7 @@ public class DataAccessController implements DatabaseInterface {
     public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
 
-        if(!isChiefEditor(editor))
+        if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
 
         try {
@@ -550,7 +583,7 @@ public class DataAccessController implements DatabaseInterface {
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
             throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException {
 
-        if(!isChiefEditor(editor))
+        if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
 
         ResultSet rs = null;
@@ -564,12 +597,12 @@ public class DataAccessController implements DatabaseInterface {
             statement.setInt(2, volume.getVolNum());
             rs = statement.executeQuery();
 
-            if(!rs.next())
+            if (!rs.next())
                 throw new SQLException();
 
             int nextEditionNumber = rs.getInt(1);
 
-            if(nextEditionNumber > 6){
+            if (nextEditionNumber > 6) {
                 throw new VolumeFullException();
             }
 
@@ -709,11 +742,10 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
     @Override
     public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
 
-        if(!validCredentials(user))
+        if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
 
@@ -730,7 +762,7 @@ public class DataAccessController implements DatabaseInterface {
                     "GROUP BY Articles.articleID\n" +
                     "HAVING contributions < 3;";
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
+            statement.setString(1, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -759,7 +791,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
-        if(!validCredentials(user))
+        if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
 
@@ -773,7 +805,7 @@ public class DataAccessController implements DatabaseInterface {
                     "reviewerEmail = ? AND\n" +
                     "summary is null AND verdict is null and Reviews.isFinal = 0";
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
+            statement.setString(1, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -815,7 +847,7 @@ public class DataAccessController implements DatabaseInterface {
 
             Article article = new Article();
 
-            if(res.next()){
+            if (res.next()) {
                 article.setTitle(res.getString(2));
                 article.setSummary(res.getString(3));
                 article.setContent(res.getString(4));
@@ -833,10 +865,10 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
-  
-  @Override
+
+    @Override
     public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
-        if(!validCredentials(user))
+        if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
 
@@ -848,7 +880,7 @@ public class DataAccessController implements DatabaseInterface {
                     "Articles.articleID = Authorships.articleID AND\n" +
                     "Authorships.email = ?";
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
+            statement.setString(1, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -879,7 +911,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Article> getUnaffiliatedArticlesToReview(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
-        if(!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
+        if (!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
             throw new InvalidAuthenticationException();
 
 
@@ -899,8 +931,8 @@ public class DataAccessController implements DatabaseInterface {
                     "GROUP BY Articles.articleID\n" +
                     "HAVING reviews < 3;";
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
-            statement.setString(2,user.getEmail());
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -963,7 +995,7 @@ public class DataAccessController implements DatabaseInterface {
             statementTwo.setInt(1, review.getSubmissionArticleID());
             rs = statementTwo.executeQuery();
 
-            if(!rs.next() || rs.getInt(1) > 3){
+            if (!rs.next() || rs.getInt(1) > 3) {
                 connection.rollback();
                 throw new SQLException();
             }
@@ -1021,7 +1053,7 @@ public class DataAccessController implements DatabaseInterface {
                     "\t(?, ?)";
             statementTwo = connection.prepareStatement(sqlQueryTwo);
 
-            for(Critique critique: review.getCritiques()) {
+            for (Critique critique : review.getCritiques()) {
 
                 statementTwo.setInt(1, review.getReviewID());
                 statementTwo.setString(2, critique.getDescription());
@@ -1052,7 +1084,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Article> getOwnArticleWithStatus(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
-        if(!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
+        if (!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
             throw new InvalidAuthenticationException();
 
 
@@ -1071,7 +1103,7 @@ public class DataAccessController implements DatabaseInterface {
                     "WHERE Authorships.email = ?\n" +
                     "GROUP BY Articles.articleID;";
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
+            statement.setString(1, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -1109,7 +1141,7 @@ public class DataAccessController implements DatabaseInterface {
         ResultSet res = null;
         try {
             openConnection();
-
+          
             String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
                 + "Jounals.issn = JournalEditors.issn AND\n"
                 + "JournalEditors.email = ?";
@@ -1137,6 +1169,7 @@ public class DataAccessController implements DatabaseInterface {
 
             closeConnection();
         }
+
     }
 
 
@@ -1188,5 +1221,54 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
+  
+    @Override
+    public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+
+        if(!validCredentials(authentication)){
+            throw new InvalidAuthenticationException();
+        }
+
+        if(!isMainAuthor(authentication, article.getArticleID())){
+            throw new InvalidAuthenticationException();
+        }
+  
+        ResultSet res = null;
+              try {
+                  openConnection();
+
+            String sqlQuery = "SELECT reviewID, summary, verdict FROM Reviews WHERE \n" +
+                    "\tsubmissionID = ? AND verdict is not null AND isFinal = false";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, article.getArticleID());
+
+            res = statement.executeQuery();
+
+            ArrayList<Review> reviews = new ArrayList<>();
+
+            // counter for giving  the review a pseudonym name
+            int counter = 0;
+            while (res.next()) {
+                counter++;
+
+                Review review = new Review();
+                review.setReviewID(res.getInt(1));
+                review.setSummary(res.getString(2));
+                review.setVerdict(res.getString(3));
+                review.setReviewerName(counter);
+
+
+                reviews.add(review);
+            }
+
+            return reviews;
+                
+                } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+  }
 
 }

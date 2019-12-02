@@ -264,6 +264,7 @@ public interface DatabaseInterface {
      * @throws UserDoesNotExistException
      * @throws SQLException
      */
+
     public ArrayList<Journal> getJournalsByUser(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
     /**
@@ -276,6 +277,24 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      */
     public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException;
+
+  
+  
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     */
+       
+       /**
+     * Given an article, returns the reviews that can be responded to. User must be the main author
+     * @param article
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     */
+    public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
 
 }
