@@ -288,6 +288,15 @@ public interface DatabaseInterface {
      */
     public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
-
+    /**
+     *
+     * @param review
+     * @param user
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     */
+    public boolean submitReviewResponse(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 }
 
