@@ -245,4 +245,15 @@ public interface DatabaseInterface {
      */
     public boolean submitReview(Review review, User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
+    /**
+     * For the given user gets their articles along with the following info:
+     * publishers decision, review received, contributions, finalReviews received,
+     * responses to received reviews given, and whether the article is final/revised by the author
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     */
+    public ArrayList<Article> getOwnArticleWithStatus(User currentUser) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
+
 }

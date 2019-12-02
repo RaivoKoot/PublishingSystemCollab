@@ -10,6 +10,11 @@ public class Article {
     private boolean isAccepted;
     private String issn;
 
+    private int reviewsReceived;
+    private int reviewsContributed;
+    private int responesToReviewsGiven;
+    private int finalReviewsReceived;
+
     public int getArticleID() {
         return articleID;
     }
@@ -64,5 +69,37 @@ public class Article {
 
     public void setIssn(String issn) {
         this.issn = issn;
+    }
+
+    public int getReviewsReceived() {
+        return reviewsReceived;
+    }
+
+    public void setReviewsReceived(int reviewsReceived) {
+        this.reviewsReceived = reviewsReceived;
+    }
+
+    public int getReviewsContributed() {
+        return reviewsContributed;
+    }
+
+    public void setReviewsContributed(int reviewsContributed) {
+        this.reviewsContributed = reviewsContributed;
+    }
+
+    public int getResponesToReviewsGiven() {
+        return responesToReviewsGiven;
+    }
+
+    public void setResponesToReviewsGiven(int responesToReviewsGiven) {
+        this.responesToReviewsGiven = responesToReviewsGiven;
+    }
+
+    public int getFinalReviewsReceived() {
+        return finalReviewsReceived;
+    }
+
+    public void setFinalReviewsReceived(int finalReviewsReceived) {
+        this.finalReviewsReceived = finalReviewsReceived;
     }
 }

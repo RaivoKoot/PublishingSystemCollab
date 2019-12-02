@@ -1051,4 +1051,55 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public ArrayList<Article> getOwnArticleWithStatus(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+        if(!validCredentials(user) || articlesNeedingContributions(user).size() == 0)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Articles.articleID, title, isAccepted, Articles.isFinal, COUNT(r1.submissionID) as reviewCount, \n" +
+                    "\tCOUNT(r2.articleOfReviewerID) as contributionCount, SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses \n" +
+                    "\tFROM (Articles)\n" +
+                    "\t\n" +
+                    "LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID\n" +
+                    "LEFT JOIN Reviews r2 on r2.articleOfReviewerID = Articles.articleID\n" +
+                    "INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
+                    "\n" +
+                    "WHERE Authorships.email = ?\n" +
+                    "GROUP BY Articles.articleID;";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Article> articles = new ArrayList<>();
+
+            while (res.next()) {
+                Article article = new Article();
+                article.setArticleID(res.getInt(1));
+                article.setTitle(res.getString(2));
+                article.setAccepted(res.getBoolean(3));
+                article.setFinal(res.getBoolean(4));
+                article.setReviewsReceived(res.getInt(5));
+                article.setReviewsContributed(res.getInt(6));
+                article.setFinalReviewsReceived(res.getInt(7));
+                article.setResponesToReviewsGiven(res.getInt(8));
+
+                articles.add(article);
+            }
+
+            return articles;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import org.junit.runners.MethodSorters;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -488,6 +489,21 @@ public class DataAccessControllerTest {
         assertThrows(SQLException.class, () -> {
             db.submitReview(review, chiefEditor);
         });
+
+    }
+
+    @Test
+    public void test9test9test2getArticlesAndStatus() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+        List<Article> articles = db.getOwnArticleWithStatus(thirdUser);
+        Article article = articles.get(0);
+        assertEquals(3, article.getReviewsReceived());
+        assertEquals(0,article.getReviewsContributed());
+
+        assertEquals(1, articles.size());
+
+        assertEquals(2, db.getOwnArticleWithStatus(user).size());
+
+
 
     }
 }
