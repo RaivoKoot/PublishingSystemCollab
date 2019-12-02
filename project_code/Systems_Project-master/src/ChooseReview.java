@@ -71,23 +71,24 @@ public class ChooseReview extends JFrame {
                 critiques.add(critique);
 
                 while(true) {
-                    int dialogButton = JOptionPane.YES_NO_OPTION;
+                    int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
                             "Another critique?", dialogButton);
                     if (dialogResult == 0) {
                         JTextArea ta = new JTextArea(20, 20);
-                        switch (JOptionPane.showConfirmDialog(null, new JScrollPane(ta))) {
+                        switch (JOptionPane.OK_CANCEL_OPTION) {
                             case JOptionPane.OK_OPTION:
                                 JOptionPane.showMessageDialog(null, "Critique added");
                                 critique = new Critique();
                                 critique.setDescription(ta.getText());
                                 critiques.add(critique);
-
-                                break;
+                            case JOptionPane.CANCEL_OPTION:
+                                JOptionPane.showMessageDialog(null, "Critique not added");
                         }
-                    } else {
 
-                        for(Critique crit: critiques) {
+
+                    } else if (dialogResult == 1){
+                        for(Critique crit: critiques)
                             crit.setReviewID(selected.getReviewID());
                             /*
                             TODO Change the description being set to the value from the input field
