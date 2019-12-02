@@ -541,4 +541,10 @@ public class DataAccessControllerTest {
 
         assertEquals("Now it is shorter and has the correct length", db.getReviewCritiques(reviews.get(0), thirdUser).get(0).getDescription());
     }
+
+    @Test
+    public void test9test9test5getArticlesNeedingFinalVerdicts() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+
+        db.articlesNeedingContributions(user);
+    }
 }
