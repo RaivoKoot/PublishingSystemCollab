@@ -112,7 +112,7 @@ public class ChiefEditorArea extends JFrame{
                         JOptionPane.QUESTION_MESSAGE,
                         null,     //do not use a custom Icon
                         lister.toArray(),  //the titles of buttons
-                        lister.get(0)); //default button title
+                        null); //default button title
 
                 Journal jour = null;
 
@@ -163,10 +163,12 @@ public class ChiefEditorArea extends JFrame{
         retireFromAJournalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
 
                 ArrayList<Journal> list = new ArrayList<Journal>();
                 ArrayList<String> lister = new ArrayList<String>();
+
 
                 try {
                     list = SessionData.db.getJournalsByUser(SessionData.currentUser);
@@ -182,61 +184,59 @@ public class ChiefEditorArea extends JFrame{
                     lister.add(list.get(i).getName());
                 }
 
+                    int n = JOptionPane.showOptionDialog(null,
+                            "Choose your Journal",
+                            "Journal",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,     //do not use a custom Icon
+                            lister.toArray(),  //the titles of buttons
+                            null); //default button title
 
-                System.out.println(list);
-                int n =  JOptionPane.showOptionDialog(null,
-                        "Choose your Journal",
-                        "Journal",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,     //do not use a custom Icon
-                        lister.toArray(),  //the titles of buttons
-                        lister.get(0)); //default button title
+                    Journal jour = null;
 
-                Journal jour = null;
-
-                for (Journal journal : list){
-                    if (journal.getName().equals(lister.get(n))){
-                        jour = journal;
-                        break;
-                    }
-                }
-                user.setIssn(jour.getISSN());
-
-                int a = JOptionPane.showConfirmDialog(null,JOptionPane.YES_NO_OPTION);
-                if (a == 0){
-                    try {
-                        
-                        boolean success = SessionData.db.deleteEditor(user);
-                        if(success){
-                            JOptionPane.showMessageDialog(null, "You have been deleted from the board of that journal.");
-                            MainScreen back = new MainScreen();
-                            back.setVisible(true);
-                            dispose();
+                    for (Journal journal : list) {
+                        if (journal.getName().equals(lister.get(n))) {
+                            jour = journal;
+                            break;
                         }
-                        else{
+                    }
+                    user.setIssn(jour.getISSN());
+
+                    if (n == 0) {
+                        try {
+
+                            boolean success = SessionData.db.deleteEditor(user);
+                            if (success) {
+                                JOptionPane.showMessageDialog(null, "You have been deleted from the board of that journal.");
+                                MainScreen back = new MainScreen();
+                                back.setVisible(true);
+                                dispose();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                            }
+                        } catch (InvalidAuthenticationException e1) {
                             JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                            e1.printStackTrace();
+                        } catch (UserDoesNotExistException e1) {
+                            JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                            e1.printStackTrace();
+                        } catch (SQLException e1) {
+                            JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                            e1.printStackTrace();
+                        } catch (ObjectDoesNotExistException e1) {
+                            JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                            e1.printStackTrace();
+                        } catch (CantRemoveLastChiefEditorException e1) {
+                            JOptionPane.showMessageDialog(null, "Sorry it appears you are the last editor of that journal");
+                            e1.printStackTrace();
                         }
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ObjectDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (CantRemoveLastChiefEditorException e1) {
-                        e1.printStackTrace();
+                    } else if (n == 1) {
+                        JOptionPane.showMessageDialog(null, "Process cancelled");
                     }
-                } else if (a == 1){
-                    JOptionPane.showMessageDialog(null, "Process cancelled");
 
-                }
             }
         });
-
-
-
 
         createNextVolumeOfButton.addActionListener(new ActionListener() {
             @Override
@@ -265,7 +265,7 @@ public class ChiefEditorArea extends JFrame{
                         JOptionPane.QUESTION_MESSAGE,
                         null,     //do not use a custom Icon
                         lister.toArray(),  //the titles of buttons
-                        lister.get(0)); //default button title
+                        null); //default button title
 
                 String year = JOptionPane.showInputDialog("What is the publication Year?");
 
