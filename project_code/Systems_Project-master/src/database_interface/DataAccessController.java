@@ -1111,7 +1111,7 @@ public class DataAccessController implements DatabaseInterface {
             openConnection();
 
             String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
-                + "Jounals.issn = JournalEditors.issn AND\n"
+                + "Journals.issn = JournalEditors.issn AND\n"
                 + "JournalEditors.email = ?";
 
             statement = connection.prepareStatement(sqlQuery);

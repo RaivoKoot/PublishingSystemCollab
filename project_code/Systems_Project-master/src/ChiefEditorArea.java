@@ -4,10 +4,8 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UserDoesNotExistException;
+import com.mysql.cj.Session;
+import exceptions.*;
 import main.*;
 import models.*;
 import java.awt.*;
@@ -93,8 +91,12 @@ public class ChiefEditorArea extends JFrame{
                 ArrayList<String> lister = new ArrayList<String>();
 
                 try {
-                    list = SessionData.db.getAllJournals();
+                    list = SessionData.db.getJournalsByUser(SessionData.currentUser);
                 } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
                     e1.printStackTrace();
                 }
 
@@ -158,6 +160,81 @@ public class ChiefEditorArea extends JFrame{
             }
         });
 
+        retireFromAJournalButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JournalEditor user = new JournalEditor(SessionData.currentUser);
+
+                ArrayList<Journal> list = new ArrayList<Journal>();
+                ArrayList<String> lister = new ArrayList<String>();
+
+                try {
+                    list = SessionData.db.getJournalsByUser(SessionData.currentUser);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                }
+
+                for (int i = 0; i<list.size(); i++){
+                    lister.add(list.get(i).getName());
+                }
+
+
+                System.out.println(list);
+                int n =  JOptionPane.showOptionDialog(null,
+                        "Choose your Journal",
+                        "Journal",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,     //do not use a custom Icon
+                        lister.toArray(),  //the titles of buttons
+                        lister.get(0)); //default button title
+
+                Journal jour = null;
+
+                for (Journal journal : list){
+                    if (journal.getName().equals(lister.get(n))){
+                        jour = journal;
+                        break;
+                    }
+                }
+                user.setIssn(jour.getISSN());
+
+                int a = JOptionPane.showConfirmDialog(null,JOptionPane.YES_NO_OPTION);
+                if (a == 0){
+                    try {
+                        
+                        boolean success = SessionData.db.deleteEditor(user);
+                        if(success){
+                            JOptionPane.showMessageDialog(null, "You have been deleted from the board of that journal.");
+                            MainScreen back = new MainScreen();
+                            back.setVisible(true);
+                            dispose();
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                        }
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
+                    } catch (UserDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (CantRemoveLastChiefEditorException e1) {
+                        e1.printStackTrace();
+                    }
+                } else if (a == 1){
+                    JOptionPane.showMessageDialog(null, "Process cancelled");
+
+                }
+            }
+        });
+
 
 
 
@@ -168,8 +245,12 @@ public class ChiefEditorArea extends JFrame{
                 ArrayList<String> lister = new ArrayList<String>();
 
                 try {
-                    list = SessionData.db.getAllJournals();
+                    list = SessionData.db.getJournalsByUser(SessionData.currentUser);
                 } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
                     e1.printStackTrace();
                 }
 

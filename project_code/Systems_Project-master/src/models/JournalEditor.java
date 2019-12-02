@@ -14,6 +14,7 @@ public class JournalEditor extends User{
 		super.setForenames(user.getForenames());
 		super.setSurname(user.getSurname());
 		super.setUniversity(user.getUniversity());
+		super.setPassword(user.getPassword());
 	}
 	
 	public boolean isChief()
