@@ -53,6 +53,14 @@ public class ReviewerArea extends JFrame{
                 }
             }});
 
+        yourResponsesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Reviewer_responses backtoarea = new Reviewer_responses();
+                backtoarea.setVisible(true);
+                dispose();
+            }});
+
 
 
     }
