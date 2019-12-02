@@ -7,6 +7,7 @@ public class ReviewerArea extends JFrame{
     private JButton appointNewReviewButton;
     private JButton submitReviewButton;
     private JButton backward;
+    private JButton yourResponsesButton;
 
     ReviewerArea(){
         add(ReviewerPanel);

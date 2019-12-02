@@ -35,7 +35,7 @@ public class RegisterCoAuthors extends JFrame {
     public RegisterCoAuthors() {
         add(RegisterCo);
         setTitle("Register Author Page");
-        setSize(400, 500);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         String[] title_list = {"Dr.", "Prof.", "Mr.", "Mrs"};
