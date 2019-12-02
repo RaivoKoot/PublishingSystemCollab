@@ -1026,7 +1026,7 @@ public class DataAccessController implements DatabaseInterface {
 
         System.out.println("Starting submit");
         PreparedStatement statementTwo = null;
-        ResultSet rs = null;
+
         try {
             openConnection();
             connection.setAutoCommit(false);
@@ -1077,8 +1077,6 @@ public class DataAccessController implements DatabaseInterface {
             if (statementTwo != null)
                 statementTwo.close();
 
-            if (rs != null)
-                rs.close();
         }
     }
 
@@ -1274,5 +1272,66 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
   }
+
+
+    public boolean submitReviewResponse(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        if(!isMainAuthor(user, review.getSubmissionArticleID())){
+            throw new InvalidAuthenticationException();
+        }
+
+        PreparedStatement statement2 = null;
+
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            String sqlQuery = "UPDATE Reviews SET hasResponse = 1 WHERE Reviews.reviewID =?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, review.getReviewID());
+
+            int res1 = statement.executeUpdate();
+
+            if (res1 != 1) {
+                connection.rollback();
+                throw new SQLException();
+            }
+
+
+            String sqlQuery2 = "UPDATE Critiques SET reply = ? WHERE Critiques.critiqueID = ?";
+            statement2 = connection.prepareStatement(sqlQuery2);
+
+
+            for (Critique critique : review.getCritiques()) {
+                statement2.setString(1, critique.getReply());
+                statement2.setInt(2, critique.getCritiqueID());
+                statement2.addBatch();
+            }
+
+            statement2.executeBatch();
+
+            connection.commit();
+
+            return true;
+        }
+        catch (Exception e) {
+            connection.rollback();
+            throw e;
+        }
+
+        finally {
+
+        closeConnection();
+
+        if (statement2 != null)
+            statement2.close();
+        }
+
+
+    }
+
+
 
 }
