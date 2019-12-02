@@ -86,16 +86,38 @@ public class ChooseReview extends JFrame {
                                 JOptionPane.showMessageDialog(null, "Critique not added");
                         }
 
+
                     } else if (dialogResult == 1){
                         for(Critique crit: critiques)
                             crit.setReviewID(selected.getReviewID());
-                        // db.functionCall(Review, critiques, currentUser)
+                            /*
+                            TODO Change the description being set to the value from the input field
+                             */
+                            crit.setDescription("Test critique description value");
+                            selected.addCritique(crit);
+                        }
 
-                        JOptionPane.showMessageDialog(null, "Review Sent");
-                        ReviewerArea backtoarea = new ReviewerArea();
-                        backtoarea.setVisible(true);
-                        dispose();
-                        break;
+                        selected.setSummary(summary.getText());
+                        selected.setVerdict((String)comboBox1.getSelectedItem());
+                        try {
+                            boolean success = SessionData.db.submitReview(selected, SessionData.currentUser);
+
+                            if(!success){
+                                throw new SQLException();
+                            }
+
+                            JOptionPane.showMessageDialog(null, "Review Sent");
+                            ReviewerArea backtoarea = new ReviewerArea();
+                            backtoarea.setVisible(true);
+                            dispose();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
+                        }
+                        finally {
+                            break;
+                        }
+
                     }
                 }
             }});

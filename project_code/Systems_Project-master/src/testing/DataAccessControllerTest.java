@@ -378,14 +378,14 @@ public class DataAccessControllerTest {
     @Test
     public void test9test6addCoAuthor() throws ObjectDoesNotExistException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
 
-        assertTrue(db.addCoAuthor(submission,chief, user));
+        assertTrue(db.addCoAuthor(submission, chief, user));
 
         assertThrows(SQLException.class, () -> {
-            db.addCoAuthor(submission,chief, user);
+            db.addCoAuthor(submission, chief, user);
         });
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            assertFalse(db.addCoAuthor(submission,user, chief));
+            assertFalse(db.addCoAuthor(submission, user, chief));
         });
 
         /*
@@ -437,7 +437,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test9getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test9test9reserveReview() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
 
         Article article = db.getUnaffiliatedArticlesToReview(user).get(0);
 
@@ -454,6 +454,39 @@ public class DataAccessControllerTest {
 
         assertThrows(SQLException.class, () -> {
             db.reserverReview(newReview, user);
+        });
+
+    }
+
+    @Test
+    public void test9test9test1submitReviewAndCritiques() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+        assertTrue(db.emptyReviews(user).size() == 3);
+
+        Critique critique = new Critique();
+        critique.setDescription("TOO LONG BECAUSE OVER 250 CHARACTERS TOO LONG BECAUSE OVER 250 CHARACTERS" +
+                " TOO LONG BECAUSE OVER 250 CHARACTERS TOO LONG BECAUSE OVER 250 CHARACTERS TOO LONG BECAUSE OVER 250" +
+                " CHARACTERS TOO LONG BECAUSE OVER 250 CHARACTERS TOO LONG BECAUSE OVER 250 CHARACTERS" +
+                " TOO LONG BECAUSE OVER 250 CHARACTERS ");
+
+        Review review = db.emptyReviews(user).get(0);
+        review.setVerdict("Champion");
+        review.setSummary("My summary understanding");
+        review.addCritique(critique);
+
+        assertThrows(SQLException.class, () -> {
+            db.submitReview(review, user);
+        });
+
+        assertTrue(db.emptyReviews(user).size() == 3);
+
+        critique.setDescription("Now it is shorter and has the correct length");
+
+        assertTrue(db.submitReview(review, user));
+
+        assertTrue(db.emptyReviews(user).size() == 2);
+
+        assertThrows(SQLException.class, () -> {
+            db.submitReview(review, chiefEditor);
         });
 
     }

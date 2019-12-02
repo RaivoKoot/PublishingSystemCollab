@@ -988,4 +988,67 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public boolean submitReview(Review review, User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        System.out.println("Starting submit");
+        PreparedStatement statementTwo = null;
+        ResultSet rs = null;
+        try {
+            openConnection();
+            connection.setAutoCommit(false);
+
+            // Insert the new submission into the table
+            String sqlQuery = "UPDATE Reviews SET summary=?, verdict=? WHERE\n" +
+                    "\treviewID = ? AND reviewerEmail=?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, review.getSummary());
+            statement.setString(2, review.getVerdict());
+            statement.setInt(3, review.getReviewID());
+            statement.setString(4, user.getEmail());
+            int res1 = statement.executeUpdate();
+
+            if (res1 != 1) {
+                connection.rollback();
+                throw new SQLException();
+            }
+
+            // Insert the critiques
+
+            // get the number of reviews for this article
+            String sqlQueryTwo = "INSERT INTO Critiques (reviewID, description) VALUES\n" +
+                    "\t(?, ?)";
+            statementTwo = connection.prepareStatement(sqlQueryTwo);
+
+            for(Critique critique: review.getCritiques()) {
+
+                statementTwo.setInt(1, review.getReviewID());
+                statementTwo.setString(2, critique.getDescription());
+                statementTwo.addBatch();
+
+            }
+
+            statementTwo.executeBatch();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            connection.rollback();
+            throw e;
+        } finally {
+
+            closeConnection();
+
+            if (statementTwo != null)
+                statementTwo.close();
+
+            if (rs != null)
+                rs.close();
+        }
+    }
+
 }

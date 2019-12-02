@@ -233,4 +233,16 @@ public interface DatabaseInterface {
      */
     public boolean reserverReview(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException;
 
+    /**
+     * submits the given review and its critiques
+     *
+     * @param review must include verdict, summary and the list of critiques
+     * @param user must be the user that owns the empty review with that reviewID
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws UserDoesNotExistException
+     * @throws SQLException
+     */
+    public boolean submitReview(Review review, User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
+
 }

@@ -140,3 +140,12 @@ INNER JOIN Authorships on Authorships.articleID = Articles.articleID
 
 WHERE Authorships.email in ('raivo@gmail.com')
 GROUP BY Articles.articleID;
+
+
+# Update a review
+UPDATE Reviews SET summary='good stuff', verdict='champion' WHERE
+	reviewID = 1
+
+# Insert a critique
+INSERT INTO Critiques (reviewID, description) VALUES
+	(1, 'Bad bad article no goody')
