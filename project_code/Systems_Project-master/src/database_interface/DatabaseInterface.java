@@ -275,7 +275,7 @@ public interface DatabaseInterface {
      * @throws SQLException
      * @throws ObjectDoesNotExistException
      */
-    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException;
+    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException;
 
 
 }

@@ -1141,15 +1141,39 @@ public class DataAccessController implements DatabaseInterface {
 
 
     @Override
-    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException {
+    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException {
 
         if (!validCredentials(journalEditor))
             throw new InvalidAuthenticationException();
 
+        //checking whether there are other chief editors - cant delete the only chief editor of a journal
+        if(isChiefEditor(journalEditor)){
+            ResultSet rs = null;
+            try {
+                openConnection();
+
+                String sqlQuery = "SELECT COUNT(*) FROM JournalEditor WHERE JournalEditor.issn = ?";
+
+                statement = connection.prepareStatement(sqlQuery);
+                statement.setString(1, journalEditor.getIssn());
+
+                rs = statement.executeQuery();
+                if(rs.next()){
+                    if (rs.getInt(1) < 2) throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                }
+                else throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+
+            }
+            finally {
+                closeConnection();
+            }
+
+        }
+
         try {
             openConnection();
 
-            String sqlQuery = "DELETE FROM JournalEditor WHERE JournalEditor.email = ? AND JournalEditor.issn = ?";
+            String sqlQuery = "DELETE FROM JournalEditors WHERE JournalEditors.email = ? AND JournalEditors.issn = ?";
 
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, journalEditor.getEmail());
