@@ -277,14 +277,6 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      */
     public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException;
-
-  
-  
-     * @return
-     * @throws InvalidAuthenticationException
-     * @throws UserDoesNotExistException
-     * @throws SQLException
-     */
        
        /**
      * Given an article, returns the reviews that can be responded to. User must be the main author
