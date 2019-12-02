@@ -29,25 +29,6 @@ public class main {
                 con.setAutoCommit(false);
                 stmt = con.createStatement();
 
-                //stmt.addBatch("DROP TABLE IF EXISTS Journals, Volumes, Editions, Users, JournalEditors, Authorships, AcceptedArticles,Reviews, Critiques, Submissions");
-
-                //stmt.addBatch("DELETE FROM Users");
-/*
-                stmt.addBatch("CREATE TABLE editors ("
-                        + "FORENAME VARCHAR(45) NOT NULL,"
-                        + "SURNAME VARCHAR(45) NOT NULL,"
-                        + "ROLE VARCHAR(56) NOT NULL,"
-                        + "USERNAME VARCHAR(45) NOT NULL,"
-                        + "PASSWORD VARCHAR(45) NOT NULL);");
-
-                stmt.addBatch("CREATE TABLE authors("
-                        + "FORENAME VARCHAR(45) NOT NULL,"
-                        + "SURNAME VARCHAR(45) NOT NULL,"
-                        + "ROLE VARCHAR(56) NOT NULL,"
-                        + "USERNAME VARCHAR(45) NOT NULL,"
-                        + "PASSWORD VARCHAR(45) NOT NULL);");
-*/
-                // from this point on, real DB
 
                 stmt.addBatch("CREATE TABLE Journals (\n" +
                         "\tISSN VARCHAR(20) PRIMARY KEY,\n" +
