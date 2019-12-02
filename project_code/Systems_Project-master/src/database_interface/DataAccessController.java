@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import exceptions.*;
 import models.*;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 public class DataAccessController implements DatabaseInterface {
 
@@ -1100,6 +1099,47 @@ public class DataAccessController implements DatabaseInterface {
 
             closeConnection();
         }
+    }
+
+    @Override
+    public ArrayList<Journal> getJournalsByUser(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
+                + "Jounals.issn = JournalEditors.issn AND\n"
+                + "JournalEditors.email = ?";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Journal> journals = new ArrayList<>();
+
+            while (res.next()) {
+                Journal journal = new Journal();
+                journal.setISSN(res.getString(1));
+                journal.setName(res.getString(2));
+
+                journals.add(journal);
+            }
+
+            return journals;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
+
+    @Override
+    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException {
+        return false;
     }
 
 }
