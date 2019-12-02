@@ -65,62 +65,53 @@ public class ChooseReview extends JFrame {
         send_review.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                critiques = new ArrayList<>();
                 Critique critique = new Critique();
                 critique.setDescription(critique_field.getText());
-                critiques.add(critique);
+                selected.addCritique(critique);
 
-                while(true) {
-                    int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
-                    int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
-                            "Another critique?", dialogButton);
-                    if (dialogResult == 0) {
-                        JTextArea ta = new JTextArea(20, 20);
-                        switch (JOptionPane.OK_CANCEL_OPTION) {
-                            case JOptionPane.OK_OPTION:
-                                JOptionPane.showMessageDialog(null, "Critique added");
-                                critique = new Critique();
-                                critique.setDescription(ta.getText());
-                                critiques.add(critique);
-                            case JOptionPane.CANCEL_OPTION:
-                                JOptionPane.showMessageDialog(null, "Critique not added");
-                        }
+                    while(true) {
+                        int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
+                        int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
+                                "Another critique?", dialogButton);
 
-
-                    } else if (dialogResult == 1){
-                        for(Critique crit: critiques)
-                            crit.setReviewID(selected.getReviewID());
-                            /*
-                            TODO Change the description being set to the value from the input field
-                             */
-                            crit.setDescription("Test critique description value");
-                            selected.addCritique(crit);
-                        }
-
-                        selected.setSummary(summary.getText());
-                        selected.setVerdict((String)comboBox1.getSelectedItem());
-                        try {
-                            boolean success = SessionData.db.submitReview(selected, SessionData.currentUser);
-
-                            if(!success){
-                                throw new SQLException();
+                        if (dialogResult == 0) { // if yes
+                            int option = JOptionPane.YES_NO_OPTION;
+                            JTextArea ta = new JTextArea(20, 20);
+                            switch (JOptionPane.showConfirmDialog(null, ta, "Box Title", option)) {
+                                case JOptionPane.YES_OPTION:
+                                    Critique crit = new Critique();
+                                    crit.setDescription(ta.getText());
+                                    selected.addCritique(crit);
+                                    break;
                             }
-
-                            JOptionPane.showMessageDialog(null, "Review Sent");
-                            ReviewerArea backtoarea = new ReviewerArea();
-                            backtoarea.setVisible(true);
-                            dispose();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
-                        }
-                        finally {
-                            break;
                         }
 
+                        if (dialogResult == 1) { // if no
+                            selected.setSummary(summary.getText());
+                            selected.setVerdict((String) comboBox1.getSelectedItem());
+
+                            try {
+                                for(Critique crit: selected.getCritiques())
+                                    System.out.println(crit.getDescription());
+                                boolean success = SessionData.db.submitReview(selected, SessionData.currentUser);
+
+                                if (!success) {
+                                    throw new SQLException();
+                                }
+                                JOptionPane.showMessageDialog(null, "Review Sent");
+                                ReviewerArea backtoarea = new ReviewerArea();
+                                backtoarea.setVisible(true);
+                                dispose();
+                                break;
+
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
+                            }
+                        }
                     }
-                }
             }});
+
 
         getContentOfChosenButton.addActionListener(new ActionListener() {
             @Override
