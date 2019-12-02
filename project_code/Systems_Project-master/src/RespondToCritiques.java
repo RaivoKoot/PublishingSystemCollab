@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import main.*;
@@ -57,6 +58,49 @@ public class RespondToCritiques extends JFrame {
                         System.out.println(ta.getText());
                         frame.dispose();
                     }
+            }
+        });
+
+        generateReviewsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Review> reviews_list = new ArrayList<Review>();
+                ArrayList<Article> articles_list = null;
+                reviews.removeAllItems();
+
+                try {
+                    articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                Article art = null;
+
+                for (Article er : articles_list){
+                    if (er.getTitle().equals(articles.getSelectedItem())){
+                        art = er;
+                        break;
+                    }
+                }
+
+                try {
+                    reviews_list = SessionData.db.getInitialReviewsOfArticle(art, SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                for(int i = 0; i< reviews_list.size() ; i++) {
+                    reviews.addItem(reviews_list.get(i).getReviewerPseudonym());
+                }
+
             }
         });
 
