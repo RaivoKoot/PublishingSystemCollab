@@ -19,7 +19,7 @@ public class RespondToCritiques extends JFrame {
 
     public RespondToCritiques(){
         add(RespondToCritiques);
-        setTitle("Chief Editor Area");
+        setTitle("Respond to Critiques Area");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ArrayList<Article> articles_list = null;
@@ -38,6 +38,27 @@ public class RespondToCritiques extends JFrame {
             articles.addItem(articles_list.get(i).getTitle());
         }
 
+        respondButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] critiques = {"This is bad", "How can u do this!", "OMG!"};
+                String[] options = {"Next"};
+                for(int i = 0; i< critiques.length; i++){
+                        JTextArea ta = new JTextArea(20, 40);
+                        JFrame frame = new JFrame();
+                        JLabel label = new JLabel();
+                        frame.setSize(300,300);
+                        frame.setBounds(20,20,300,400);
+                        label.setText(critiques[i]);
+                        frame.add(label);
+                        frame.setVisible(true);
+
+                        JOptionPane.showConfirmDialog(null, ta,"respond!", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION);
+                        System.out.println(ta.getText());
+                        frame.dispose();
+                    }
+            }
+        });
 
         backward.addActionListener(new ActionListener() {
             @Override
