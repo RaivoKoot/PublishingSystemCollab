@@ -1134,6 +1134,95 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
+    public ArrayList<Journal> getJournalsByUser(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        ResultSet res = null;
+        try {
+            openConnection();
+          
+            String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
+                + "Jounals.issn = JournalEditors.issn AND\n"
+                + "JournalEditors.email = ?";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1,user.getEmail());
+
+            res = statement.executeQuery();
+
+            ArrayList<Journal> journals = new ArrayList<>();
+
+            while (res.next()) {
+                Journal journal = new Journal();
+                journal.setISSN(res.getString(1));
+                journal.setName(res.getString(2));
+
+                journals.add(journal);
+            }
+
+            return journals;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+
+    }
+
+
+    @Override
+    public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException {
+
+        if (!validCredentials(journalEditor))
+            throw new InvalidAuthenticationException();
+
+        //checking whether there are other chief editors - cant delete the only chief editor of a journal
+        if(isChiefEditor(journalEditor)){
+            ResultSet rs = null;
+            try {
+                openConnection();
+
+                String sqlQuery = "SELECT COUNT(*) FROM JournalEditor WHERE JournalEditor.issn = ?";
+
+                statement = connection.prepareStatement(sqlQuery);
+                statement.setString(1, journalEditor.getIssn());
+
+                rs = statement.executeQuery();
+                if(rs.next()){
+                    if (rs.getInt(1) < 2) throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                }
+                else throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+
+            }
+            finally {
+                closeConnection();
+            }
+
+        }
+
+        try {
+            openConnection();
+
+            String sqlQuery = "DELETE FROM JournalEditors WHERE JournalEditors.email = ? AND JournalEditors.issn = ?";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journalEditor.getEmail());
+            statement.setString(2, journalEditor.getIssn());
+
+            int result = statement.executeUpdate();
+            if (result != 1) throw new ObjectDoesNotExistException("Editorship could not be deleted");
+
+            return true;
+        }
+        finally {
+            closeConnection();
+        }
+    }
+  
+    @Override
     public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
 
         if(!validCredentials(authentication)){
@@ -1143,11 +1232,10 @@ public class DataAccessController implements DatabaseInterface {
         if(!isMainAuthor(authentication, article.getArticleID())){
             throw new InvalidAuthenticationException();
         }
-
-
+  
         ResultSet res = null;
-        try {
-            openConnection();
+              try {
+                  openConnection();
 
             String sqlQuery = "SELECT reviewID, summary, verdict FROM Reviews WHERE \n" +
                     "\tsubmissionID = ? AND verdict is not null AND isFinal = false";
@@ -1174,14 +1262,13 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             return reviews;
-
-        } finally {
+                
+                } finally {
             if (res != null)
                 res.close();
 
             closeConnection();
         }
-
-    }
+  }
 
 }
