@@ -32,8 +32,10 @@ public class CheckArticleStatus extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         ArrayList<Article> articles_list = null;
+        ArrayList<Article> articles_infos = null;
 
-        try {
+
+        /*try {
             articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
         } catch (UserDoesNotExistException e) {
             e.printStackTrace();
@@ -41,21 +43,34 @@ public class CheckArticleStatus extends JFrame {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        } */
+
+        try {
+            articles_infos = SessionData.db.getOwnArticleWithStatus(SessionData.currentUser);
+        } catch (InvalidAuthenticationException e) {
+            e.printStackTrace();
+        } catch (UserDoesNotExistException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        for(int i = 0; i< articles_list.size() ; i++) {
-            comboBox1.addItem(articles_list.get(i).getTitle());
+        for(int i = 0; i< articles_infos.size() ; i++) {
+            comboBox1.addItem(articles_infos.get(i).getTitle());
         }
-/*
+
         Article art = null;
 
-        for (Article er : articles_list){
+        for (Article er : articles_infos){
             if (er.getTitle().equals(comboBox1.getSelectedItem())){
                 art = er;
                 break;
             }
         }
-        */
+
+
+
+
 
         backward.addActionListener(new ActionListener() {
             @Override
@@ -70,14 +85,45 @@ public class CheckArticleStatus extends JFrame {
         getInfoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ArrayList<Article> articles_infos = null;
 
-                InitialReviews.setText("");
-                Contributions.setText("");
-                Reponses.setText("");
-                RevisedStatus.setText("");
-                FinalReviews.setText("");
-                Decisions.setText("");
+                try {
+                    articles_infos = SessionData.db.getOwnArticleWithStatus(SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
 
+                Article art = null;
+
+                for (Article er : articles_infos){
+                    if (er.getTitle().equals(comboBox1.getSelectedItem())){
+                        art = er;
+                        break;
+                    }
+                }
+
+
+
+                InitialReviews.setText(String.valueOf(art.getReviewsReceived()));
+                Contributions.setText(String.valueOf(art.getReviewsContributed()));
+                Reponses.setText(String.valueOf(art.getResponesToReviewsGiven()));
+                if(art.isFinal()){
+                    RevisedStatus.setText("Revised");
+                }
+                else{
+                    RevisedStatus.setText("Not Revised");
+                }
+                FinalReviews.setText(String.valueOf(art.getFinalReviewsReceived()));
+                if(art.isAccepted()){
+                    Decisions.setText("Accepted");
+                }
+                else{
+                    Decisions.setText("Not Accepted");
+                }
             }
         });
 
