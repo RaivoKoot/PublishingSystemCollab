@@ -1111,7 +1111,7 @@ public class DataAccessController implements DatabaseInterface {
             openConnection();
 
             String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
-                + "Jounals.issn = JournalEditors.issn AND\n"
+                + "Journals.issn = JournalEditors.issn AND\n"
                 + "JournalEditors.email = ?";
 
             statement = connection.prepareStatement(sqlQuery);
@@ -1146,13 +1146,14 @@ public class DataAccessController implements DatabaseInterface {
         if (!validCredentials(journalEditor))
             throw new InvalidAuthenticationException();
 
+        try {
         //checking whether there are other chief editors - cant delete the only chief editor of a journal
         if(isChiefEditor(journalEditor)){
             ResultSet rs = null;
             try {
                 openConnection();
 
-                String sqlQuery = "SELECT COUNT(*) FROM JournalEditor WHERE JournalEditor.issn = ?";
+                String sqlQuery = "SELECT COUNT(*) FROM JournalEditors WHERE JournalEditors.issn = ?";
 
                 statement = connection.prepareStatement(sqlQuery);
                 statement.setString(1, journalEditor.getIssn());
@@ -1169,6 +1170,9 @@ public class DataAccessController implements DatabaseInterface {
             }
 
         }
+        }  catch(InvalidAuthenticationException e){
+        }
+
 
         try {
             openConnection();
