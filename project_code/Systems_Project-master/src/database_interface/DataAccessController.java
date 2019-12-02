@@ -1103,6 +1103,9 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public ArrayList<Journal> getJournalsByUser(User user) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
         ResultSet res = null;
         try {
             openConnection();
@@ -1139,7 +1142,27 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException {
-        return false;
+
+        if (!validCredentials(journalEditor))
+            throw new InvalidAuthenticationException();
+
+        try {
+            openConnection();
+
+            String sqlQuery = "DELETE FROM JournalEditor WHERE JournalEditor.email = ? AND JournalEditor.issn = ?";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journalEditor.getEmail());
+            statement.setString(2, journalEditor.getIssn());
+
+            int result = statement.executeUpdate();
+            if (result != 1) throw new ObjectDoesNotExistException("Editorship could not be deleted");
+
+            return true;
+        }
+        finally {
+            closeConnection();
+        }
     }
 
 }
