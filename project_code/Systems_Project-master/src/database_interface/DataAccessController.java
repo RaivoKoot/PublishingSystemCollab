@@ -1139,13 +1139,13 @@ public class DataAccessController implements DatabaseInterface {
         ResultSet res = null;
         try {
             openConnection();
-          
+
             String sqlQuery = "SELECT Journals.issn, Journals.name FROM Journals, JournalEditors WHERE\n"
-                + "Journals.issn = JournalEditors.issn AND\n"
-                + "JournalEditors.email = ?";
+                    + "Journals.issn = JournalEditors.issn AND\n"
+                    + "JournalEditors.email = ?";
 
             statement = connection.prepareStatement(sqlQuery);
-            statement.setString(1,user.getEmail());
+            statement.setString(1, user.getEmail());
 
             res = statement.executeQuery();
 
@@ -1178,30 +1178,28 @@ public class DataAccessController implements DatabaseInterface {
             throw new InvalidAuthenticationException();
 
         try {
-        //checking whether there are other chief editors - cant delete the only chief editor of a journal
-        if(isChiefEditor(journalEditor)){
-            ResultSet rs = null;
-            try {
-                openConnection();
+            //checking whether there are other chief editors - cant delete the only chief editor of a journal
+            if (isChiefEditor(journalEditor)) {
+                ResultSet rs = null;
+                try {
+                    openConnection();
 
-                String sqlQuery = "SELECT COUNT(*) FROM JournalEditors WHERE JournalEditors.issn = ?";
+                    String sqlQuery = "SELECT COUNT(*) FROM JournalEditors WHERE JournalEditors.issn = ?";
 
-                statement = connection.prepareStatement(sqlQuery);
-                statement.setString(1, journalEditor.getIssn());
+                    statement = connection.prepareStatement(sqlQuery);
+                    statement.setString(1, journalEditor.getIssn());
 
-                rs = statement.executeQuery();
-                if(rs.next()){
-                    if (rs.getInt(1) < 2) throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                    rs = statement.executeQuery();
+                    if (rs.next()) {
+                        if (rs.getInt(1) < 2) throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                    } else throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+
+                } finally {
+                    closeConnection();
                 }
-                else throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
 
             }
-            finally {
-                closeConnection();
-            }
-
-        }
-        }  catch(InvalidAuthenticationException e){
+        } catch (InvalidAuthenticationException e) {
         }
 
 
@@ -1218,26 +1216,25 @@ public class DataAccessController implements DatabaseInterface {
             if (result != 1) throw new ObjectDoesNotExistException("Editorship could not be deleted");
 
             return true;
-        }
-        finally {
+        } finally {
             closeConnection();
         }
     }
-  
+
     @Override
     public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException {
 
-        if(!validCredentials(authentication)){
+        if (!validCredentials(authentication)) {
             throw new InvalidAuthenticationException();
         }
 
-        if(!isMainAuthor(authentication, article.getArticleID())){
+        if (!isMainAuthor(authentication, article.getArticleID())) {
             throw new InvalidAuthenticationException();
         }
-  
+
         ResultSet res = null;
-              try {
-                  openConnection();
+        try {
+            openConnection();
 
             String sqlQuery = "SELECT reviewID, summary, verdict, submissionID FROM Reviews WHERE \n" +
                     "\tsubmissionID = ? AND verdict is not null AND isFinal = false and hasResponse=false";
@@ -1265,15 +1262,16 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             return reviews;
-                
-                } finally {
+
+        } finally {
             if (res != null)
                 res.close();
 
             closeConnection();
         }
 
-  }
+    }
+
 
   public ArrayList<Critique> getReviewCritiques(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
       if(!validCredentials(user)){
@@ -1322,7 +1320,7 @@ public class DataAccessController implements DatabaseInterface {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
-        if(!isMainAuthor(user, review.getSubmissionArticleID())){
+        if (!isMainAuthor(user, review.getSubmissionArticleID())) {
             throw new InvalidAuthenticationException();
         }
 
@@ -1359,21 +1357,47 @@ public class DataAccessController implements DatabaseInterface {
             connection.commit();
 
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             connection.rollback();
             throw e;
+        } finally {
+
+            closeConnection();
+
+            if (statement2 != null)
+                statement2.close();
         }
 
-        finally {
 
-        closeConnection();
+    }
 
-        if (statement2 != null)
-            statement2.close();
+
+    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(mainAuthor))
+            throw new InvalidAuthenticationException();
+
+        if (!isMainAuthor(mainAuthor, article.getArticleID())) {
+            throw new InvalidAuthenticationException();
         }
 
+        try {
+            openConnection();
+            String sqlQuery = "UPDATE Articles SET title = ?, abstract = ?, content = ?, isFinal = true WHERE Articles.articleID = ? AND Articles.isFinal = false";
 
+            statement = connection.prepareStatement(sqlQuery);
+
+            statement.setString(1, article.getTitle());
+            statement.setString(2, article.getSummary());
+            statement.setString(3, article.getContent());
+            statement.setInt(4, article.getArticleID());
+
+            int result = statement.executeUpdate();
+            if (result != 1) throw new ObjectDoesNotExistException("Final article could not be submitted");
+
+            return true;
+        } finally {
+            closeConnection();
+        }
     }
 
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {

@@ -22,7 +22,7 @@ public interface DatabaseInterface {
     /**
      * attempts to change the password of the given user
      *
-     * @param user must include email and old password
+     * @param user        must include email and old password
      * @param newPassword
      * @return success or not
      * @precondition the user exists in the system
@@ -147,7 +147,7 @@ public interface DatabaseInterface {
      * Using the credentials of mainAuthor, appoints newAuthor as a co-author to the
      * submission
      *
-     * @param article only needs to include articleID
+     * @param article    only needs to include articleID
      * @param newAuthor  only needs to include email
      * @param mainAuthor only needs to include email and password
      * @return successful or not
@@ -163,7 +163,7 @@ public interface DatabaseInterface {
     /**
      * Using the credentials of chiefAuthentication, promotes editor to a chief editor
      *
-     * @param editor must include email and issn
+     * @param editor              must include email and issn
      * @param chiefAuthentication must include email, password and issn
      * @return successful or not
      * @throws UserDoesNotExistException
@@ -175,7 +175,6 @@ public interface DatabaseInterface {
     public boolean makeChiefEditor(JournalEditor editor, JournalEditor chiefAuthentication) throws IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
     /**
-     *
      * @param user must include email and password
      * @return the list of articles this user is an author of that need to still contribute some reviews
      * @throws UserDoesNotExistException
@@ -185,7 +184,6 @@ public interface DatabaseInterface {
     public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
     /**
-     *
      * @param user must include email and password
      * @return a list of all reviews by the given user that still require future action
      * @throws UserDoesNotExistException
@@ -195,7 +193,6 @@ public interface DatabaseInterface {
     public ArrayList<Review> emptyReviews(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
     /**
-     *
      * @param articleID
      * @return
      * @throws ObjectDoesNotExistException
@@ -214,7 +211,6 @@ public interface DatabaseInterface {
     public ArrayList<Article> getOwnArticles(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException;
 
     /**
-     *
      * @param user
      * @return A list of articles that still need to be reviewed that have not been authored by people you are
      * affiliated with
@@ -226,6 +222,7 @@ public interface DatabaseInterface {
 
     /**
      * Reserves one of an article's three open review spots for the given user
+     *
      * @param review must include submissionID, articleOfReviewerID
      * @return
      * @throws InvalidAuthenticationException
@@ -237,7 +234,7 @@ public interface DatabaseInterface {
      * submits the given review and its critiques
      *
      * @param review must include verdict, summary and the list of critiques
-     * @param user must be the user that owns the empty review with that reviewID
+     * @param user   must be the user that owns the empty review with that reviewID
      * @return
      * @throws InvalidAuthenticationException
      * @throws UserDoesNotExistException
@@ -249,6 +246,7 @@ public interface DatabaseInterface {
      * For the given user gets their articles along with the following info:
      * publishers decision, review received, contributions, finalReviews received,
      * responses to received reviews given, and whether the article is final/revised by the author
+     *
      * @return
      * @throws InvalidAuthenticationException
      * @throws UserDoesNotExistException
@@ -258,6 +256,7 @@ public interface DatabaseInterface {
 
     /**
      * For the given user gets the journals they are an editor of
+     *
      * @param user
      * @return
      * @throws InvalidAuthenticationException
@@ -269,6 +268,7 @@ public interface DatabaseInterface {
 
     /**
      * Deletes an editorship from the editor-journal linker table
+     *
      * @param journalEditor
      * @return
      * @throws InvalidAuthenticationException
@@ -277,9 +277,10 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      */
     public boolean deleteEditor(JournalEditor journalEditor) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException, ObjectDoesNotExistException, CantRemoveLastChiefEditorException;
-       
-       /**
+
+    /**
      * Given an article, returns the reviews that can be responded to. User must be the main author
+     *
      * @param article
      * @return
      * @throws InvalidAuthenticationException
@@ -289,7 +290,6 @@ public interface DatabaseInterface {
     public ArrayList<Review> getInitialReviewsOfArticle(Article article, User authentication) throws InvalidAuthenticationException, UserDoesNotExistException, SQLException;
 
     /**
-     *
      * @param review
      * @param user
      * @return
@@ -298,5 +298,20 @@ public interface DatabaseInterface {
      * @throws SQLException
      */
     public boolean submitReviewResponse(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+    /**
+     * Updates the title, summary and content of a review and sets isFinal to true
+     *
+     * @param article
+     * @param mainAuthor
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     */
+    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+
+
 }
 
