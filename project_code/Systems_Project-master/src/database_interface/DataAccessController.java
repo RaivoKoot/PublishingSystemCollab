@@ -1400,6 +1400,8 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+
+
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
@@ -1446,9 +1448,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
-
-
+    //to be tested
     public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
         if (!validCredentials(editor))
@@ -1509,7 +1509,45 @@ public class DataAccessController implements DatabaseInterface {
 
     }
 
-    
+    @Override
+    //to be tested
+    public ArrayList<String> getAllVerdictsForArticle(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(article.getIssn());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet rs = null;
+
+        try {
+            openConnection();
+            String sqlQuery = "SELECT Reviews.verdict FROM Reviews WHERE Reviews.submissionID = ?";
+            statement = connection.prepareStatement(sqlQuery);
+
+            statement.setInt(1, article.getArticleID());
+
+            rs = statement.executeQuery();
+
+            ArrayList<String> list = new ArrayList<>();
+
+            while (rs.next()) {
+                list.add(rs.getString(1));
+            }
+
+            return list;
+        }
+        finally {
+            if(rs != null)
+                rs.close();
+
+            closeConnection();
+        }
+    }
 
 }
