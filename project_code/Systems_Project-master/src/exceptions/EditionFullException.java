@@ -1,4 +1,8 @@
 package exceptions;
 
-public class EditionFullException {
+public class EditionFullException extends Exception {
+
+    public EditionFullException(){
+        super();
+    }
 }
