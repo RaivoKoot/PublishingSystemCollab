@@ -1,5 +1,6 @@
 package database_interface;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -311,7 +312,86 @@ public interface DatabaseInterface {
      */
     public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
+    /**
+     * Gets a list of articles submitted to the specified journal that need to be accepted or rejected by an editor afer they have been fully reviewed by reviewers
+     * @param journal
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     * @throws UserDoesNotExistException
+     */
+    public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
+    /**
+     * gets the three verdicts from the reviews of an article
+     * @param article
+     * @param editor
+     * @return
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     * @throws UserDoesNotExistException
+     */
+    public ArrayList<String> getAllVerdictsForArticle(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+    /**
+     * sets isAccepted to either true or false depending on the Editor's choice
+     * if accepted or rejected, delete reviews, critiques(should be deleted automatically when reviews deleted) and autorships
+     * if rejected also delete article (deleting article should automatically delete authorship, reviews, crritiques)
+     * @param article
+     * @param editor
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     * @throws UserDoesNotExistException
+     */
+    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+    /**
+     * delete user if they dont have an authorship, an editorship and no non-final reviews
+     * @param user
+     * @throws InvalidAuthenticationException
+     * @throws ObjectDoesNotExistException
+     * @throws SQLException
+     * @throws UserDoesNotExistException
+     */
+    public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+    /**
+     * checks if edition has at least 3 articles, checks if user is main editor for journal
+     * and then set isPublished to true
+     * @param edition
+     * @param mainEditor
+     */
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+
+    /**
+     * gets the accepted articles for that journal that are not yet assigned to an edition
+     * aka EditionArticle does not have the articleID in there
+     * @param journal
+     * @param editor
+     * @return
+     */
+    public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+
+    /**
+     * gets the latest Edition of the specified journal
+     * use max function to return the biggest page number of all the EditionArticles of that journal
+     * set currentLastPage of the edition object to the max
+     *
+     * @param journal
+     * @param editor
+     * @return
+     */
+    public Edition getLatestEdition(Journal journal, User editor)
+
+    /**
+     * creates an EditionArticle object
+     * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
+     */
+    public EditionArticle assignArticleToEdition(Article article, User editor)
 
 }
 
