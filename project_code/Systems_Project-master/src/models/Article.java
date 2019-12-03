@@ -15,6 +15,18 @@ public class Article {
     private int responesToReviewsGiven;
     private int finalReviewsReceived;
 
+    private int reviewID; // Only used in the case that the article of a review wants to be viewed and the user
+    // must know later which reivew that article came from
+
+
+    public int getReviewID() {
+        return reviewID;
+    }
+
+    public void setReviewID(int reviewID) {
+        this.reviewID = reviewID;
+    }
+
     public int getArticleID() {
         return articleID;
     }

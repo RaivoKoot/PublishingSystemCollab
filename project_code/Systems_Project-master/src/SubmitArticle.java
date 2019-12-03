@@ -34,14 +34,11 @@ public class SubmitArticle extends JFrame {
 
         Journal[] journal_list = new Journal[0];
         try {
-            journal_list = SessionData.db.getJournalsByUser(SessionData.currentUser).toArray(new Journal[0]);
+            journal_list = SessionData.db.getAllJournals().toArray(new Journal[0]);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
         }
+
         for(int i = 0; i<= journal_list.length-1 ; i++) {
             comboBox1.addItem(journal_list[i].getName());
         }

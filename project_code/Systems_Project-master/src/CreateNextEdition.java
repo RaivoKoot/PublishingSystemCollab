@@ -19,6 +19,7 @@ public class CreateNextEdition extends JFrame{
     private JButton backward;
     private JButton generateVolumeButton;
     private JButton createEditionButton;
+    private JComboBox monthss;
     private Journal[] journal_list;
     private Volume[] volume_list;
 
@@ -26,7 +27,7 @@ public class CreateNextEdition extends JFrame{
         // TODO: place custom component creation code here
         add(createNextEdition);
         setTitle("Create Next Edition Page");
-        setSize(400, 500);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         journal_list = new Journal[0];
@@ -42,6 +43,12 @@ public class CreateNextEdition extends JFrame{
         }
         for(int i = 0; i<= journal_list.length-1 ; i++) {
             JournalCB.addItem(journal_list[i].getName());
+        }
+
+        String[] months = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
+
+        for(int i = 0; i< months.length; i++){
+            monthss.addItem(months[i]);
         }
 
         generateVolumeButton.addActionListener(new ActionListener() {
@@ -92,13 +99,14 @@ public class CreateNextEdition extends JFrame{
                     }
                 }
 
-                String publicationMonth = JOptionPane.showInputDialog("What is the Publication Month?");
+                String publicationMonth = (String) monthss.getSelectedItem();
 
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
                 user.setIssn(paper.getISSN());
 
                 try {
-                    SessionData.db.createNextEdition(my_volume,user,publicationMonth);
+                     SessionData.db.createNextEdition(my_volume,user,publicationMonth);
+                     JOptionPane.showMessageDialog(null,"Edition added");
                 } catch (ObjectDoesNotExistException e1) {
                     JOptionPane.showMessageDialog(null, "Something went wrong!");
                     e1.printStackTrace();
