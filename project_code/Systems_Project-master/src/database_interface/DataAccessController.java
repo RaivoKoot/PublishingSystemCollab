@@ -1240,7 +1240,7 @@ public class DataAccessController implements DatabaseInterface {
                   openConnection();
 
             String sqlQuery = "SELECT reviewID, summary, verdict, submissionID FROM Reviews WHERE \n" +
-                    "\tsubmissionID = ? AND verdict is not null AND isFinal = false";
+                    "\tsubmissionID = ? AND verdict is not null AND isFinal = false and hasResponse=false";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, article.getArticleID());
 
