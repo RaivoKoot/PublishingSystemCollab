@@ -1273,6 +1273,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
+  
   public ArrayList<Critique> getReviewCritiques(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
       if(!validCredentials(user)){
           throw new InvalidAuthenticationException();
@@ -1315,7 +1316,8 @@ public class DataAccessController implements DatabaseInterface {
 
 
     public boolean submitReviewResponse(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
-        if (!validCredentials(user))
+
+      if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
         if (!isMainAuthor(user, review.getSubmissionArticleID())) {
@@ -1443,6 +1445,71 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+
+
+
+
+    public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        ResultSet rs = null;
+
+        try{
+            openConnection();
+            String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals FROM Articles, Reviews, Authorships\n" +
+                    "WHERE Reviews.submissionID = Articles.articleID\n" +
+                    "AND Articles.articleID = Authorships.articleID\n" +
+                    "AND Articles.issn = ?" +
+                    "\n" +  "AND Authorships.email not in\n" +
+                    "(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email= ?)\n" +
+                    "union\n" +
+                    "SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email= ?))\n" +
+                    "\n" +
+                    "AND Reviews.isFinal = true\n" +
+                    "GROUP BY Reviews.submissionID\n" +
+                    "HAVING numberOfFinals = 3;\n";
+
+            statement = connection.prepareStatement(sqlQuery);
+
+            statement.setString(1, journal.getISSN());
+            statement.setString(2, editor.getEmail());
+            statement.setString(3, editor.getEmail());
+
+            rs = statement.executeQuery();
+
+            ArrayList<Article> list = new ArrayList<>();
+
+            while (rs.next()) {
+                Article article = new Article();
+                article.setArticleID(rs.getInt(1));
+                article.setTitle(rs.getString(2));
+                article.setSummary(rs.getString(3));
+                article.setContent(rs.getString(4));
+                article.setFinal(rs.getBoolean(5));
+                article.setAccepted(rs.getBoolean(6));
+                article.setIssn(rs.getString(7));
+                article.setReviewsReceived(rs.getInt(8));
+                article.setReviewsContributed(rs.getInt(9));
+                article.setResponesToReviewsGiven(rs.getInt(10));
+                article.setFinalReviewsReceived(rs.getInt(11);
+
+                list.add(article);
+            }
+            return list;
+
+        }
+        finally {
+            if(rs != null)
+                rs.close();
+
+            closeConnection();
+        }
+
+    }
+
+    
 
 
 }
