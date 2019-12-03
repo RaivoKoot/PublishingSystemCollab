@@ -31,6 +31,8 @@ public class ChooseReview extends JFrame {
         setTitle("Choose Review Page");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        summary.setLineWrap(true);
+        critique_field.setLineWrap(true);
 
         String[] verdicts = {"Strong Accept (champion)", "Weak Accept", "Weak Reject", "Strong Reject (detractor)"};
 
@@ -75,7 +77,7 @@ public class ChooseReview extends JFrame {
                 critique.setDescription(critique_field.getText());
                 selected.addCritique(critique);
 
-                    while(true) {
+                    aa : while(true) {
                         int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
                         int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
                                 "Another critique?", dialogButton);
@@ -83,6 +85,7 @@ public class ChooseReview extends JFrame {
                         if (dialogResult == 0) { // if yes
                             int option = JOptionPane.YES_NO_OPTION;
                             JTextArea ta = new JTextArea(20, 20);
+                            ta.setLineWrap(true);
                             switch (JOptionPane.showConfirmDialog(null, ta, "Box Title", option)) {
                                 case JOptionPane.YES_OPTION:
                                     Critique crit = new Critique();
@@ -90,6 +93,13 @@ public class ChooseReview extends JFrame {
                                     selected.addCritique(crit);
                                     break;
                             }
+                        }
+
+                        if(dialogResult == -1 || dialogResult == 2){
+                            JOptionPane.showMessageDialog(null, "Process Cancelled");
+                            ChooseReview backtoarea = new ChooseReview();
+                            selected = null;
+                            break aa;
                         }
 
                         if (dialogResult == 1) { // if no
@@ -115,6 +125,8 @@ public class ChooseReview extends JFrame {
                                 JOptionPane.showMessageDialog(null, "Something went wrong. Please try again.");
                             }
                         }
+
+
                     }
             }});
 

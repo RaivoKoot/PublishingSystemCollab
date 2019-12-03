@@ -20,7 +20,7 @@ public class RespondToCritiques extends JFrame {
     private JButton respondButton;
     private JButton backward;
     private JButton generateReviewsButton;
-
+    private int validity =0;
     public RespondToCritiques(){
         add(RespondToCritiques);
         setTitle("Respond to Critiques Area");
@@ -100,47 +100,55 @@ public class RespondToCritiques extends JFrame {
                 } catch (UserDoesNotExistException e1) {
                     e1.printStackTrace();
                 }
-                String[] options = {"Next"};
 
-                Review response = new Review();
-                for(int i = 0; i< critiques_list.size(); i++){
+                    Review response = new Review();
+                    for (int i = 0; i < critiques_list.size(); i++) {
                         JScrollPane pane = new JScrollPane();
                         JTextArea ta = new JTextArea(20, 40);
                         JFrame frame = new JFrame();
                         JTextArea label = new JTextArea();
                         label.setLineWrap(true);
                         label.setEditable(false);
-                        frame.setSize(300,300);
-                        frame.setBounds(20,20,300,400);
+                        frame.setSize(300, 300);
+                        frame.setBounds(20, 20, 300, 400);
                         label.setText(critiques_list.get(i).getDescription());
                         frame.add(label);
                         frame.setVisible(true);
                         ta.setLineWrap(true);
-                        JOptionPane.showConfirmDialog(null, ta,"respond!", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION);
+                        int n = JOptionPane.showConfirmDialog(null, ta, "Respond!", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION);
+
                         Critique crit = new Critique();
+                        if(!ta.getText().isEmpty()){
                         crit.setReply(ta.getText());
                         crit.setCritiqueID(critiques_list.get(i).getCritiqueID());
-                        response.addCritique(crit);
+                        response.addCritique(crit);}
                         frame.dispose();
                     }
-                try {
-                    response.setSubmissionArticleID(art.getArticleID());
-                    response.setReviewID(our_review.getReviewID());
 
-                    boolean success = SessionData.db.submitReviewResponse(response, SessionData.currentUser);
-                    if (success){
-                        JOptionPane.showMessageDialog(null, "Responses submitted!");
+                    if(response.getCritiques().size() == critiques_list.size()) {
+                        try {
+                            response.setSubmissionArticleID(art.getArticleID());
+                            response.setReviewID(our_review.getReviewID());
+
+                            boolean success = SessionData.db.submitReviewResponse(response, SessionData.currentUser);
+                            if (success) {
+                                JOptionPane.showMessageDialog(null, "Responses submitted!");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
+                            }
+                        } catch (InvalidAuthenticationException e1) {
+                            e1.printStackTrace();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        } catch (UserDoesNotExistException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else{
+                        JOptionPane.showMessageDialog(null, "You did not reply to all the critiques.");
+                        MainAuthorArea back = new MainAuthorArea();
+                        back.setVisible(true);
+                        dispose();
                     }
-                    else {
-                        JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
-                    }
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                }
 
             }
         });

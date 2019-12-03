@@ -1278,15 +1278,12 @@ public class DataAccessController implements DatabaseInterface {
           throw new InvalidAuthenticationException();
       }
 
-      if(!isMainAuthor(user, review.getSubmissionArticleID())){
-          throw new InvalidAuthenticationException();
-      }
 
       ResultSet res = null;
       try {
           openConnection();
 
-          String sqlQuery = "SELECT critiqueID, description FROM Critiques WHERE reviewID = ?";
+          String sqlQuery = "SELECT critiqueID, description, reply FROM Critiques WHERE reviewID = ?";
           statement = connection.prepareStatement(sqlQuery);
           statement.setInt(1, review.getReviewID());
 
@@ -1300,6 +1297,7 @@ public class DataAccessController implements DatabaseInterface {
               Critique critique = new Critique();
               critique.setCritiqueID(res.getInt(1));
               critique.setDescription(res.getString(2));
+              critique.setReply(res.getString(3));
 
 
               critiques.add(critique);
