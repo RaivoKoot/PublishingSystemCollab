@@ -1398,6 +1398,46 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        return null;
+    }
+
+    @Override
+    public ArrayList<String> getAllVerdictsForArticle(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        return null;
+    }
+
+    @Override
+    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        return null;
+    }
+
+    @Override
+    public Edition getLatestEdition(Journal journal, User editor) {
+        return null;
+    }
+
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
+    }
+
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
