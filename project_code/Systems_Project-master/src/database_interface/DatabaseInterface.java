@@ -321,7 +321,7 @@ public interface DatabaseInterface {
      * @throws SQLException
      * @throws UserDoesNotExistException
      */
-    public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public ArrayList<Article> getJournalArticlesNeedingEditorDecision(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
     /**
      * gets the three verdicts from the reviews of an article
