@@ -24,7 +24,7 @@ public class ChooseReview extends JFrame {
     private JTextArea chosenarticleabstract;
 
     private ArrayList<Critique> critiques;
-    private Review selected;
+    private Review selected = null;
 
     ChooseReview() {
         add(ChooseReview);
@@ -65,6 +65,12 @@ public class ChooseReview extends JFrame {
         send_review.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(selected==null){
+                    // box
+                    return;
+                }
+
+
                 Critique critique = new Critique();
                 critique.setDescription(critique_field.getText());
                 selected.addCritique(critique);

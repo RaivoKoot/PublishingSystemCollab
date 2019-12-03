@@ -526,4 +526,25 @@ public class DataAccessControllerTest {
         assertEquals(0, reviews.size());
 
     }
+
+    @Test
+    public void test9test9test4getReviewsCritiques() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+
+        List<Article> articles = db.getOwnArticleWithStatus(thirdUser);
+        Article article = articles.get(0);
+
+        List<Review> reviews = db.getInitialReviewsOfArticle(article, thirdUser);
+
+        reviews.get(0);
+
+        assertEquals(1, db.getReviewCritiques(reviews.get(0), thirdUser).size());
+
+        assertEquals("Now it is shorter and has the correct length", db.getReviewCritiques(reviews.get(0), thirdUser).get(0).getDescription());
+    }
+
+    @Test
+    public void test9test9test5getArticlesNeedingFinalVerdicts() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+
+        db.articlesNeedingContributions(user);
+    }
 }

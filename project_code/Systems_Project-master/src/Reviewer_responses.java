@@ -14,13 +14,27 @@ public class Reviewer_responses extends JFrame{
 
     private JPanel Responses;
     private JComboBox comboBox1;
+    private JTextField textField1;
+    private JButton getInfoButton;
+    private JTextField textField2;
+    private JTextArea content;
+    private JButton viewCritiquesAndGiveButton;
+    private JButton backward;
 
     public Reviewer_responses(){
         add(Responses);
         setTitle("Reviewer Responses Area");
-        setSize(400, 500);
+        setSize(600, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        backward.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ReviewerArea backtoarea = new ReviewerArea();
+                backtoarea.setVisible(true);
+                dispose();
+            }
+        });
 
     }
 }
