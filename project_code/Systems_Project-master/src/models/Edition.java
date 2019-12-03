@@ -12,6 +12,16 @@ public class Edition {
     private int editionNum;
     private Month publicationMonth;
 
+    private int currentLastPage;
+
+    public int getCurrentLastPage() {
+        return currentLastPage;
+    }
+
+    public void setCurrentLastPage(int currentLastPage) {
+        this.currentLastPage = currentLastPage;
+    }
+
     public String getName() {
         return String.format(NAME_TEMPLATE, volumeNum, editionNum);
     }
