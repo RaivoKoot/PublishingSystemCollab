@@ -19,6 +19,7 @@ public class Reviewer_responses extends JFrame{
     private JTextField textField2;
     private JTextArea content;
     private JButton viewCritiquesAndGiveButton;
+    private JButton backward;
 
     public Reviewer_responses(){
         add(Responses);
@@ -26,8 +27,14 @@ public class Reviewer_responses extends JFrame{
         setSize(600, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-
-
+        backward.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ReviewerArea backtoarea = new ReviewerArea();
+                backtoarea.setVisible(true);
+                dispose();
+            }
+        });
 
     }
 }
