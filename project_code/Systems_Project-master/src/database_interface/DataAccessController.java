@@ -15,6 +15,7 @@ public class DataAccessController implements DatabaseInterface {
     private String databaseUser;
     private String databaseUserPassword;
 
+
     public DataAccessController(DatabaseConstants connectionInfo) {
         this.databaseURL = connectionInfo.getDatabaseURL();
         this.databaseUser = connectionInfo.getDatabaseUser();
@@ -1550,4 +1551,41 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+
+    @Override
+    //to be tested
+    public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        ResultSet rs = null;
+
+
+        try {
+            String sqlQuery1 = "SELECT EXISTS(SELECT email FROM Authorships WHERE Authorships.email = ? \n" +
+                    "UNION\n" +
+                    "SELECT email FROM JournalEditors WHERE JournalEditors.email = ? \n" +
+                    "UNION\n" +
+                    "SELECT reviewerEmail FROM Reviews WHERE Reviews.reviewerEmail = ? AND Reviews.isFinal = false)\n" +
+                    "AS hasRole";
+            statement = connection.prepareStatement(sqlQuery1);
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getEmail());
+            rs = statement.executeQuery();
+            if (rs.getInt(1) == 0) {
+                String sqlQuery2 = "DELETE * FROM Users WHERE Users.email = ?";
+                statement = connection.prepareStatement(sqlQuery2);
+                statement.setString(1, user.getEmail());
+                int result = statement.executeUpdate();
+                if (result != 1) throw new SQLException();
+            }
+        }
+        finally {
+            if(rs != null)
+                rs.close();
+
+            closeConnection();
+        }
+    }
 }
