@@ -159,3 +159,14 @@ WHERE Editions.editionID = 0
 
 GROUP BY Editions.editionID
 
+
+# Get your articles needing revision (ones that have not been revised yet and have 3 reviews)
+SELECT Articles.articleID, title, abstract, content, COUNT(Reviews.verdict) as reviews
+FROM Articles, Reviews, Authorships
+WHERE Articles.articleID = Reviews.submissionID AND Articles.isFinal = false
+	AND Authorships.articleID = Articles.articleID
+	AND Authorships.email = 'raivo' AND Authorships.isMain=true
+
+GROUP BY Articles.articleID
+HAVING reviews = 3
+
