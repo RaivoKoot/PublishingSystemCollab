@@ -1138,16 +1138,19 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT Articles.articleID, title, isAccepted, Articles.isFinal, COUNT(r1.submissionID) as reviewCount, \n" +
-                    "\tCOUNT(r2.articleOfReviewerID) as contributionCount, SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses \n" +
-                    "\tFROM (Articles)\n" +
-                    "\t\n" +
-                    "LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID\n" +
-                    "LEFT JOIN Reviews r2 on r2.articleOfReviewerID = Articles.articleID\n" +
-                    "INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
-                    "\n" +
-                    "WHERE Authorships.email = ?\n" +
-                    "GROUP BY Articles.articleID;";
+            String sqlQuery = "SELECT Articles.articleID, title, isAccepted, Articles.isFinal, COUNT(r1.submissionID) as reviewCount, r2.contributions,\n" +
+                    "                    SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses \n" +
+                    "                    FROM (Articles)\n" +
+                    "               \n" +
+                    "                    LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID\n" +
+                    "                    LEFT JOIN \n" +
+                    "\t\t\t\t\t\t  (SELECT articleOfReviewerID as articleID, COUNT(articleOfReviewerID) as contributions FROM Reviews GROUP BY articleID) \n" +
+                    "\t\t\t\t\t\t  \n" +
+                    "\t\t\t\t\t\t  r2 on r2.articleID = Articles.articleID\n" +
+                    "                    INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
+                    "                   \n" +
+                    "                    WHERE Authorships.email = ?\n" +
+                    "                    GROUP BY Articles.articleID;";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
 

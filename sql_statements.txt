@@ -130,16 +130,19 @@ GROUP BY Articles.articleID
 HAVING reviews < 10;
 
 # GET all your articles and all their status information
-SELECT Articles.articleID, title, isAccepted, Articles.isFinal, COUNT(r1.submissionID) as reviewCount, 
-	COUNT(r2.articleOfReviewerID) as contributionCount, SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses 
-	FROM (Articles)
-	
-LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID
-LEFT JOIN Reviews r2 on r2.articleOfReviewerID = Articles.articleID
-INNER JOIN Authorships on Authorships.articleID = Articles.articleID
-
-WHERE Authorships.email in ('raivo@gmail.com')
-GROUP BY Articles.articleID;
+SELECT Articles.articleID, title, isAccepted, Articles.isFinal, COUNT(r1.submissionID) as reviewCount, r2.contributions,
+                    SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses 
+                    FROM (Articles)
+               
+                    LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID
+                    LEFT JOIN 
+						  (SELECT articleOfReviewerID as articleID, COUNT(articleOfReviewerID) as contributions FROM Reviews GROUP BY articleID) 
+						  
+						  r2 on r2.articleID = Articles.articleID
+                    INNER JOIN Authorships on Authorships.articleID = Articles.articleID
+                   
+                    WHERE Authorships.email = 'raivo@'
+                    GROUP BY Articles.articleID;
 
 
 # Update a review
