@@ -109,8 +109,7 @@ public class Reviewer_responses extends JFrame{
                     }
                 }
 
-                System.out.println(art.getReviewID());
-                System.out.println(art.getArticleID());
+
 
                 Review review = new Review();
                 review.setReviewID(art.getReviewID());
@@ -150,6 +149,27 @@ public class Reviewer_responses extends JFrame{
                     frame.dispose();
                 }
 
+                int final_verdict =  JOptionPane.showOptionDialog(null,
+                        "Choose your Final Verdict",
+                        "Final Verdict Box",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,     //do not use a custom Icon
+                        verdicts,  //the titles of buttons
+                        null); //default button title
+
+                if (final_verdict == 0){
+                    review.setVerdict(verdicts[0]);
+                }
+                else if (final_verdict == 1){
+                    review.setVerdict(verdicts[1]);
+                }
+                else if (final_verdict == 2) {
+                    review.setVerdict(verdicts[2]);
+                }
+                else if (final_verdict == 3){
+                    review.setVerdict(verdicts[3]);
+                }
             }
         });
 

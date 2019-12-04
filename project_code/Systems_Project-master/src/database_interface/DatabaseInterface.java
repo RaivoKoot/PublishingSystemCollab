@@ -385,13 +385,13 @@ public interface DatabaseInterface {
      * @param editor
      * @return
      */
-    public Edition getLatestEdition(Journal journal, User editor)
+    public Edition getLatestEdition(Journal journal, User editor);
 
     /**
      * creates an EditionArticle object
      * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
      */
-    public EditionArticle assignArticleToEdition(Article article, User editor)
+    public EditionArticle assignArticleToEdition(Article article, User editor);
 
 }
 

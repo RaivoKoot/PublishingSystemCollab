@@ -46,8 +46,6 @@ public class Readers extends TreePath {
         tree.setBounds(45,45,150,100);
         frame.add(tree);
 
-
-
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
 

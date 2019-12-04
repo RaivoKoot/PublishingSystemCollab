@@ -16,6 +16,7 @@ public class SubmitRevision extends JFrame{
         setTitle("Chief Editor Area");
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        textArea1.setLineWrap(true);
 
         backward.addActionListener(new ActionListener() {
             @Override
@@ -25,5 +26,6 @@ public class SubmitRevision extends JFrame{
                 dispose();
             }
         });
+
     }
 }
