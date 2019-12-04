@@ -576,4 +576,9 @@ public class DataAccessControllerTest {
             db.giveFinalVerdict(review, thirdUser);
         });
     }
+
+    @Test
+    public void test9test9test7getArticlesNeedingRevision() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+        db.getArticlesNeedingRevision(user);
+    }
 }

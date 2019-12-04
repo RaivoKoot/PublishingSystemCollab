@@ -1725,4 +1725,49 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    public ArrayList<Article> getArticlesNeedingRevision(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        ResultSet set = null;
+
+        try {
+            openConnection();
+            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, COUNT(Reviews.verdict) as reviews\n" +
+                    "FROM Articles, Reviews, Authorships\n" +
+                    "WHERE Articles.articleID = Reviews.submissionID AND Articles.isFinal = false\n" +
+                    "\tAND Authorships.articleID = Articles.articleID\n" +
+                    "\tAND Authorships.email = ? AND Authorships.isMain=true\n" +
+                    "\n" +
+                    "GROUP BY Articles.articleID\n" +
+                    "HAVING reviews = 3";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+            set = statement.executeQuery();
+
+            ArrayList<Article> list = new ArrayList<>();
+
+            while (set.next()) {
+                Article article = new Article();
+                article.setArticleID(set.getInt(1));
+                article.setTitle(set.getString(2));
+                article.setSummary(set.getString(3));
+                article.setContent(set.getString(4));
+
+                list.add(article);
+            }
+            return list;
+
+        }
+        finally {
+            if(set != null)
+                set.close();
+
+            closeConnection();
+        }
+
+    }
+
+
 }
