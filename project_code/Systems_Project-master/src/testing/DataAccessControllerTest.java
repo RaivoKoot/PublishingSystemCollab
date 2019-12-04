@@ -556,5 +556,24 @@ public class DataAccessControllerTest {
     public void test9test9test5getArticlesNeedingFinalVerdicts() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
 
         db.articlesNeedingContributions(user);
+
+        /*
+
+        TODO
+
+         */
+    }
+
+    @Test
+    public void test9test9test6giveFinalVerdict() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+        Review review = new Review();
+        review.setReviewID(1);
+        review.setVerdict("TESTVERDICTFINAL");
+
+        assertTrue(db.giveFinalVerdict(review,user));
+
+        assertThrows(ObjectDoesNotExistException.class, () -> {
+            db.giveFinalVerdict(review, thirdUser);
+        });
     }
 }
