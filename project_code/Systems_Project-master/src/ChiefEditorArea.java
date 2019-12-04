@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
-
 import com.mysql.cj.Session;
 import exceptions.*;
 import main.*;
@@ -289,6 +288,13 @@ public class ChiefEditorArea extends JFrame{
                 } catch (ObjectDoesNotExistException e1) {
                     e1.printStackTrace();
                 }
+
+            }
+        });
+
+        takeDecisionForArticlesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
             }
         });

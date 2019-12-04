@@ -141,13 +141,11 @@ public class Reviewer_responses extends JFrame{
                     frame.add(label);
                     frame.setVisible(true);
                     ta.setLineWrap(true);
-
                     JTextArea te = new JTextArea(30,70);
                     te.setSize(200,200);
                     te.setLineWrap(true);
                     te.setEditable(false);
                     te.setText(liste.get(i).getDescription());
-
                     JOptionPane.showMessageDialog(null,te);
                     frame.dispose();
                 }
