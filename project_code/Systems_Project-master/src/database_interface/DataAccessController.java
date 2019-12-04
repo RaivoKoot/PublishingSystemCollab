@@ -1486,6 +1486,7 @@ public class DataAccessController implements DatabaseInterface {
                     "\tArticles.articleID = Reviews.submissionID AND Reviews.reviewerEmail = ?\n" +
                     "\tAND Articles.isFinal = true\n" +
                     "\tAND Critiques.reviewID = Reviews.reviewID AND Critiques.reply is not null\n" +
+                    "\tAND Reviews.isFinal = false" +
                     "\t\n" +
                     "\t\n" +
                     "\tGROUP BY Reviews.reviewID";
