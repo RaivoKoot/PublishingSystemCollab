@@ -1288,8 +1288,8 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT reviewID, summary, verdict, submissionID FROM Reviews WHERE \n" +
-                    "\tsubmissionID = ? AND verdict is not null AND isFinal = false and hasResponse=false";
+            String sqlQuery = "SELECT reviewID, summary, verdict, submissionID, isFinal, hasResponse FROM Reviews WHERE \n" +
+                    "\tsubmissionID = ? "; // AND verdict is not null AND isFinal = false and hasResponse=false";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, article.getArticleID());
 
@@ -1307,6 +1307,11 @@ public class DataAccessController implements DatabaseInterface {
                 review.setSummary(res.getString(2));
                 review.setVerdict(res.getString(3));
                 review.setSubmissionArticleID(res.getInt(4));
+
+                if(review.getVerdict() == null || res.getBoolean(5) || res.getBoolean(6))
+                    continue;
+
+
                 review.setReviewerName(counter);
 
 
