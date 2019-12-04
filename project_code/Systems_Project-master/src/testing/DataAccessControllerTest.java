@@ -287,12 +287,17 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException, NoMoreEditionsAllowedInVolumeException {
+    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
         db.createNextEdition(volumes.get(1), chief, "JANUARY");
-        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+
+        assertThrows(LastEditionNotFinishedException.class, () -> {
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        });
+
+        /*
         db.createNextEdition(volumes.get(1), chief, "JANUARY");
         db.createNextEdition(volumes.get(1), chief, "JANUARY");
         db.createNextEdition(volumes.get(1), chief, "JANUARY");
@@ -301,6 +306,7 @@ public class DataAccessControllerTest {
         assertThrows(VolumeFullException.class, () -> {
             db.createNextEdition(volumes.get(1), chief, "JANUARY");
         });
+        */
 
         assertThrows(InvalidAuthenticationException.class, () -> {
             db.createNextEdition(volumes.get(1), newEditor, "JANUARY");
@@ -321,7 +327,7 @@ public class DataAccessControllerTest {
 
         ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
 
-        assertEquals(6, editions.size());
+        assertEquals(1, editions.size());
 
         volume.setVolNum(5);
         editions = db.getAllVolumeEditions(volume);

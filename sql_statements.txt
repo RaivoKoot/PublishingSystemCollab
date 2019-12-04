@@ -150,4 +150,12 @@ UPDATE Reviews SET summary='good stuff', verdict='champion' WHERE
 INSERT INTO Critiques (reviewID, description) VALUES
 	(1, 'Bad bad article no goody')
 	
-# As a reviewer, get a list of articles for which you need to give a final verdict
+# Check whether an edition is public or full
+SELECT Editions.editionID, isPublic, (COUNT(ea.editionID) = 8) AS isFull
+FROM Editions
+LEFT JOIN EditionArticles ea on Editions.editionID = ea.editionID
+
+WHERE Editions.editionID = 0
+
+GROUP BY Editions.editionID
+

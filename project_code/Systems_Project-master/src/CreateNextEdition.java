@@ -120,6 +120,10 @@ public class CreateNextEdition extends JFrame{
                 } catch (NoMoreEditionsAllowedInVolumeException e1) {
                     JOptionPane.showMessageDialog(null, "This Volume is not allowed any more Editions because a newer Volume of your journal exists.");
                     e1.printStackTrace();
+                } catch (LastEditionNotFinishedException e1) {
+                    JOptionPane.showMessageDialog(null, "You are not allowed to create a new edition in this volume " +
+                            "because the last edition is not public yet or has room for more articles. Please publish the last edition or make sure it is full before creating a new one.");
+                    e1.printStackTrace();
                 }
             }
         });

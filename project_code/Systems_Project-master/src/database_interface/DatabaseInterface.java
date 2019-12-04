@@ -125,7 +125,7 @@ public interface DatabaseInterface {
      * @precondition editor and volume must exist
      */
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException;
 
     /**
      * Using the credentials of author, creates a new submission and appoints thi
