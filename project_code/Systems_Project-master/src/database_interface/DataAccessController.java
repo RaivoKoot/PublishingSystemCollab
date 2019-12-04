@@ -1589,4 +1589,51 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
+
+
+
+    @Override
+    //to be tested
+    public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(journal.getISSN());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet set = null;
+
+        try {
+            openConnection();
+            String sqlQuery = "SELECT articleID, title FROM Articles WHERE Articles.ISSN = ? AND Articles.isAccepted = true AND" +
+                    "Articles.articleID not in (SELECT articleID FROM EditionArticles)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+            set = statement.executeQuery();
+
+            ArrayList<Article> list = new ArrayList<>();
+
+            while (set.next()) {
+                Article article = new Article();
+                article.setArticleID(set.getInt(1));
+                article.setTitle(set.getString(2));
+
+                list.add(article);
+            }
+            return list;
+
+        }
+        finally {
+            if(set != null)
+                set.close();
+
+            closeConnection();
+        }
+
+    }
 }
