@@ -266,8 +266,16 @@ public class ChiefEditorArea extends JFrame{
                         lister.toArray(),  //the titles of buttons
                         null); //default button title
 
-                String year = JOptionPane.showInputDialog("What is the publication Year?");
+                    String year = "";
+                    while(year.isEmpty()) {
+                        try {
+                            year = JOptionPane.showInputDialog("What is the publication Year?");
+                            int intValue = Integer.parseInt(year);
+                        } catch (NumberFormatException e1) {
+                            year = JOptionPane.showInputDialog(null, "Input is not a valid integer");
+                        }
 
+                    }
                 Journal jour = null;
 
                 for (Journal journal : list){
@@ -279,15 +287,29 @@ public class ChiefEditorArea extends JFrame{
                 JournalEditor chief = new JournalEditor(SessionData.currentUser);
                 chief.setIssn(jour.getISSN());
 
+
                 try{
                     boolean success = SessionData.db.createNextVolume(jour, chief, Integer.valueOf(year));
+                    if (success){
+                        JOptionPane.showMessageDialog(null, "Volume succesfully created!");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Sorry, Volume could not be created!");
+                    }
                 } catch (InvalidAuthenticationException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
+                    e1.printStackTrace();
+                }  catch (ObjectDoesNotExistException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
+                    e1.printStackTrace();
+                } catch (SQLIntegrityConstraintViolationException e1){
+                    JOptionPane.showMessageDialog(null, "Sorry a volume with that year already exists in your journal");
                     e1.printStackTrace();
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
+                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
                     e1.printStackTrace();
                 }
+
 
             }
         });
@@ -295,7 +317,9 @@ public class ChiefEditorArea extends JFrame{
         takeDecisionForArticlesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                FinalDecision finalde = new FinalDecision();
+                finalde.setVisible(true);
+                dispose();
             }
         });
 

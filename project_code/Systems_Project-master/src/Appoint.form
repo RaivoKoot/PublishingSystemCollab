@@ -88,7 +88,7 @@
             </constraints>
             <properties>
               <foreground color="-1"/>
-              <text value="Only fill the boxes below if the person is a user already"/>
+              <text value="Skip the boxes above if you know the person is already a user"/>
             </properties>
           </component>
         </children>

@@ -1346,7 +1346,6 @@ public class DataAccessController implements DatabaseInterface {
               critique.setDescription(res.getString(2));
               critique.setReply(res.getString(3));
 
-
               critiques.add(critique);
           }
 
@@ -1446,6 +1445,7 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+
     @Override
     public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
@@ -1465,6 +1465,7 @@ public class DataAccessController implements DatabaseInterface {
     public EditionArticle assignArticleToEdition(Article article, User editor) {
         return null;
     }
+
 
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
@@ -1522,7 +1523,7 @@ public class DataAccessController implements DatabaseInterface {
 
         try{
             openConnection();
-            String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals FROM Articles, Reviews, Authorships\n" +
+            String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals, Articles.issn FROM Articles, Reviews, Authorships\n" +
                     "WHERE Reviews.submissionID = Articles.articleID\n" +
                     "AND Articles.articleID = Authorships.articleID\n" +
                     "AND Articles.issn = ?" +
@@ -1549,15 +1550,7 @@ public class DataAccessController implements DatabaseInterface {
                 Article article = new Article();
                 article.setArticleID(rs.getInt(1));
                 article.setTitle(rs.getString(2));
-                article.setSummary(rs.getString(3));
-                article.setContent(rs.getString(4));
-                article.setFinal(rs.getBoolean(5));
-                article.setAccepted(rs.getBoolean(6));
-                article.setIssn(rs.getString(7));
-                article.setReviewsReceived(rs.getInt(8));
-                article.setReviewsContributed(rs.getInt(9));
-                article.setResponesToReviewsGiven(rs.getInt(10));
-                article.setFinalReviewsReceived(rs.getInt(11));
+                article.setIssn(rs.getString(4));
 
                 list.add(article);
             }
@@ -1613,7 +1606,6 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
-
 
     @Override
     //to be tested
@@ -1723,6 +1715,7 @@ public class DataAccessController implements DatabaseInterface {
         } finally {
             closeConnection();
         }
+
     }
 
 }
