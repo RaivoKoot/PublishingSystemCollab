@@ -1590,6 +1590,7 @@ public class DataAccessController implements DatabaseInterface {
 
 
         try {
+            openConnection();
             String sqlQuery1 = "SELECT EXISTS(SELECT email FROM Authorships WHERE Authorships.email = ? \n" +
                     "UNION\n" +
                     "SELECT email FROM JournalEditors WHERE JournalEditors.email = ? \n" +
