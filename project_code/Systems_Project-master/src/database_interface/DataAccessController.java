@@ -1700,4 +1700,29 @@ public class DataAccessController implements DatabaseInterface {
 
     }
 
+
+    public boolean giveFinalVerdict(Review review, User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        try {
+            openConnection();
+            String sqlQuery = "UPDATE Reviews SET verdict = ?, isFinal=true\n" +
+                    "WHERE reviewID = ? and reviewerEmail=?";
+
+            statement = connection.prepareStatement(sqlQuery);
+
+            statement.setString(1, review.getVerdict());
+            statement.setInt(2, review.getReviewID());
+            statement.setString(3,user.getEmail());
+
+            int result = statement.executeUpdate();
+            if (result != 1) throw new ObjectDoesNotExistException("Final Review verdict could not be submitted");
+
+            return true;
+        } finally {
+            closeConnection();
+        }
+    }
+
 }
