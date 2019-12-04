@@ -582,7 +582,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException {
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException {
 
         if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
@@ -590,6 +590,23 @@ public class DataAccessController implements DatabaseInterface {
         ResultSet rs = null;
         try {
             openConnection();
+
+            /*
+            Check whether the volume we are trying to add an edition to is the newest volume and stop if not
+             */
+
+            statement = connection.prepareStatement("SELECT IFNULL(MAX(volumeNum),1) FROM Volumes WHERE issn = ?");
+            statement.setString(1, volume.getISSN());
+
+            rs = statement.executeQuery();
+
+            if(!rs.next() || rs.getInt(1) != volume.getVolNum()) {
+                throw new NoMoreEditionsAllowedInVolumeException();
+            }
+            statement.close();
+            /*
+            Check that the volume is not full
+             */
 
             String sqlQuery = "SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = ? AND volumeNum = ?;";
 
@@ -608,6 +625,34 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             statement.close();
+
+            /*
+            Make sure that the previous edition is either full or public
+             */
+
+            if(nextEditionNumber != 1) {
+
+                statement = connection.prepareStatement("SELECT Editions.editionID, isPublic, (COUNT(ea.editionID) = 8) AS isFull\n" +
+                        "FROM Editions\n" +
+                        "LEFT JOIN EditionArticles ea on Editions.editionID = ea.editionID\n" +
+                        "\n" +
+                        "WHERE Editions.editionID = ?\n" +
+                        "\n" +
+                        "GROUP BY Editions.editionID");
+                statement.setInt(1, nextEditionNumber-1);
+
+                rs = statement.executeQuery();
+                if (!rs.next() || (!rs.getBoolean(2) && !rs.getBoolean(3))) {
+                    throw new LastEditionNotFinishedException();
+                }
+
+                statement.close();
+
+            }
+
+            /*
+            Finally, Create the new edition
+             */
 
             String sqlQuery2 = "INSERT INTO Editions (editionNum, publicationMonth, volumeNum, ISSN) VALUES\n" +
                     "\t(?, ?, ?, ?)";
@@ -1407,18 +1452,8 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-
-    }
-
-    @Override
     public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
-    }
-
-    @Override
-    public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-        return null;
     }
 
     @Override
@@ -1664,4 +1699,5 @@ public class DataAccessController implements DatabaseInterface {
         }
 
     }
+
 }

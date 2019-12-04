@@ -125,7 +125,7 @@ public interface DatabaseInterface {
      * @precondition editor and volume must exist
      */
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException;
 
     /**
      * Using the credentials of author, creates a new submission and appoints thi
@@ -385,13 +385,13 @@ public interface DatabaseInterface {
      * @param editor
      * @return
      */
-    public Edition getLatestEdition(Journal journal, User editor)
+    public Edition getLatestEdition(Journal journal, User editor);
 
     /**
      * creates an EditionArticle object
      * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
      */
-    public EditionArticle assignArticleToEdition(Article article, User editor)
+    public EditionArticle assignArticleToEdition(Article article, User editor);
 
 }
 
