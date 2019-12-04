@@ -974,11 +974,13 @@ public class DataAccessController implements DatabaseInterface {
                     "\tunion\n" +
                     "\tSELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?))\n" +
                     "\n" +
+                    "AND Articles.articleID not in (SELECT submissionID FROM Reviews WHERE reviewerEmail=?)" +
                     "GROUP BY Articles.articleID\n" +
                     "HAVING reviews < 3;";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getEmail());
+            statement.setString(3, user.getEmail());
 
             res = statement.executeQuery();
 
