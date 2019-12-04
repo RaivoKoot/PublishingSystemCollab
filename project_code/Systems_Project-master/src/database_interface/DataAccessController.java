@@ -1142,7 +1142,7 @@ public class DataAccessController implements DatabaseInterface {
                     "                    SUM(r1.isFinal) as finalReviews, SUM(r1.hasResponse) as reviewResponses \n" +
                     "                    FROM (Articles)\n" +
                     "               \n" +
-                    "                    LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID\n" +
+                    "                    LEFT JOIN Reviews r1 on r1.submissionID = Articles.articleID and verdict is not null\n" +
                     "                    LEFT JOIN \n" +
                     "\t\t\t\t\t\t  (SELECT articleOfReviewerID as articleID, COUNT(articleOfReviewerID) as contributions FROM Reviews " +
                     "WHERE verdict is not null GROUP BY articleID) \n" +
@@ -1151,7 +1151,6 @@ public class DataAccessController implements DatabaseInterface {
                     "                    INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
                     "                   \n" +
                     "                    WHERE Authorships.email = ?\n" +
-                    "AND verdict is not null" +
                     "                    GROUP BY Articles.articleID;";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
