@@ -20,15 +20,5 @@ public class TestManual {
         raivo.setPassword("123");
         raivo.setEmail("raivo");
         System.out.println(db.submitFinalArticleVersion(art, raivo));
-
-
-
-
-
-
-
-
-
-
     }
 }

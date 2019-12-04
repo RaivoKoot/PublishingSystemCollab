@@ -34,17 +34,6 @@ public class CheckArticleStatus extends JFrame {
         ArrayList<Article> articles_list = null;
         ArrayList<Article> articles_infos = null;
 
-
-        /*try {
-            articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } */
-
         try {
             articles_infos = SessionData.db.getOwnArticleWithStatus(SessionData.currentUser);
         } catch (InvalidAuthenticationException e) {
@@ -122,7 +111,7 @@ public class CheckArticleStatus extends JFrame {
                     Decisions.setText("Accepted");
                 }
                 else{
-                    Decisions.setText("Not Accepted");
+                    Decisions.setText("Not considered yet");
                 }
             }
         });
