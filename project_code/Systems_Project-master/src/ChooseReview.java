@@ -29,7 +29,7 @@ public class ChooseReview extends JFrame {
     ChooseReview() {
         add(ChooseReview);
         setTitle("Choose Review Page");
-        setSize(600, 500);
+        setSize(800, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         summary.setLineWrap(true);
         critique_field.setLineWrap(true);
@@ -72,12 +72,13 @@ public class ChooseReview extends JFrame {
                     return;
                 }
 
+                if(!summary.getText().isEmpty() && !critique_field.getText().isEmpty()) {
+                    Critique critique = new Critique();
+                    critique.setDescription(critique_field.getText());
+                    selected.addCritique(critique);
 
-                Critique critique = new Critique();
-                critique.setDescription(critique_field.getText());
-                selected.addCritique(critique);
-
-                    aa : while(true) {
+                    aa:
+                    while (true) {
                         int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
                         int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to add another critique?",
                                 "Another critique?", dialogButton);
@@ -95,7 +96,7 @@ public class ChooseReview extends JFrame {
                             }
                         }
 
-                        if(dialogResult == -1 || dialogResult == 2){
+                        if (dialogResult == -1 || dialogResult == 2) {
                             JOptionPane.showMessageDialog(null, "Process Cancelled");
                             ChooseReview backtoarea = new ChooseReview();
                             selected = null;
@@ -107,7 +108,7 @@ public class ChooseReview extends JFrame {
                             selected.setVerdict((String) comboBox1.getSelectedItem());
 
                             try {
-                                for(Critique crit: selected.getCritiques())
+                                for (Critique crit : selected.getCritiques())
                                     System.out.println(crit.getDescription());
                                 boolean success = SessionData.db.submitReview(selected, SessionData.currentUser);
 
@@ -128,6 +129,9 @@ public class ChooseReview extends JFrame {
 
 
                     }
+                } else{
+                    JOptionPane.showMessageDialog(null, "Make sure you fill out the form correctly!");
+                }
             }});
 
 

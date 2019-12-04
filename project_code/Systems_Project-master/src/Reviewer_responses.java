@@ -164,6 +164,9 @@ public class Reviewer_responses extends JFrame{
                         boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
                         if(success){
                             JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                            ReviewerArea back_view = new ReviewerArea();
+                            back_view.setVisible(true);
+                            dispose();
                         }
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
@@ -184,6 +187,9 @@ public class Reviewer_responses extends JFrame{
                         boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
                         if(success){
                             JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                            ReviewerArea back_view = new ReviewerArea();
+                            back_view.setVisible(true);
+                            dispose();
                         }
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
@@ -204,6 +210,9 @@ public class Reviewer_responses extends JFrame{
                         boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
                         if(success){
                             JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                            ReviewerArea back_view = new ReviewerArea();
+                            back_view.setVisible(true);
+                            dispose();
                         }
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
@@ -224,6 +233,9 @@ public class Reviewer_responses extends JFrame{
                         boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
                         if(success){
                             JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                            ReviewerArea back_view = new ReviewerArea();
+                            back_view.setVisible(true);
+                            dispose();
                         }
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");

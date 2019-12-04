@@ -133,6 +133,9 @@ public class RespondToCritiques extends JFrame {
                             boolean success = SessionData.db.submitReviewResponse(response, SessionData.currentUser);
                             if (success) {
                                 JOptionPane.showMessageDialog(null, "Responses submitted!");
+                                ReviewerArea back_view = new ReviewerArea();
+                                back_view.setVisible(true);
+                                dispose();
                             } else {
                                 JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
                             }

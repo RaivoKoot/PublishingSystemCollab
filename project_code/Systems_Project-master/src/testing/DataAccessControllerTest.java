@@ -19,26 +19,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DataAccessControllerTest {
-
     static DatabaseTestingSetup dbSetup;
     static DataAccessController db;
-
     static User chiefEditor;
     static User user;
     static User nonexistentUser;
     static User incompleteInfo;
     static User badPasswordUser;
-
     static User thirdUser;
-
     static Journal journal;
-
     static JournalEditor chief;
     static JournalEditor newEditor;
-
-
     static Article submission;
-
 
     @BeforeClass
     public static void setUp() throws Exception {
