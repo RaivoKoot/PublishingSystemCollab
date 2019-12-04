@@ -133,7 +133,7 @@ public class RespondToCritiques extends JFrame {
                             boolean success = SessionData.db.submitReviewResponse(response, SessionData.currentUser);
                             if (success) {
                                 JOptionPane.showMessageDialog(null, "Responses submitted!");
-                                ReviewerArea back_view = new ReviewerArea();
+                                MainAuthorArea back_view = new MainAuthorArea();
                                 back_view.setVisible(true);
                                 dispose();
                             } else {
