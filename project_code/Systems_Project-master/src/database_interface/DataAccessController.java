@@ -1530,18 +1530,24 @@ public class DataAccessController implements DatabaseInterface {
 
         try{
             openConnection();
-            String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals, Articles.issn FROM Articles, Reviews, Authorships\n" +
-                    "WHERE Reviews.submissionID = Articles.articleID\n" +
-                    "AND Articles.articleID = Authorships.articleID\n" +
-                    "AND Articles.issn = ?" +
-                    "\n" +  "AND Authorships.email not in\n" +
-                    "(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email= ?)\n" +
-                    "union\n" +
-                    "SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email= ?))\n" +
+            String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals, Articles.issn, r2.contributions FROM (Articles, Reviews, Authorships)\n" +
+                    "\t\t\t\t\t\tLEFT JOIN \n" +
+                    "\t\t\t\t\t\t  (SELECT articleOfReviewerID as articleID, COUNT(articleOfReviewerID) as contributions FROM Reviews WHERE verdict is not null GROUP BY articleID) \n" +
+                    "\t\t\t\t\t\t  \n" +
+                    "\t\t\t\t\t\t  r2 on r2.articleID = Articles.articleID\n" +
                     "\n" +
-                    "AND Reviews.isFinal = true\n" +
-                    "GROUP BY Reviews.submissionID\n" +
-                    "HAVING numberOfFinals = 3;\n";
+                    "                    WHERE Reviews.submissionID = Articles.articleID\n" +
+                    "                    AND Articles.articleID = Authorships.articleID\n" +
+                    "                    AND Articles.issn = ?\n" +
+                    "                    AND Authorships.email not in\n" +
+                    "                    (SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email= ?)\n" +
+                    "                    union\n" +
+                    "                    SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email= ?))\n" +
+                    "                    AND r2.contributions = 3\n" +
+                    "                    \n" +
+                    "                    AND Reviews.isFinal = true\n" +
+                    "                    GROUP BY Reviews.submissionID\n" +
+                    "                    HAVING numberOfFinals = 3;";
 
             statement = connection.prepareStatement(sqlQuery);
 
