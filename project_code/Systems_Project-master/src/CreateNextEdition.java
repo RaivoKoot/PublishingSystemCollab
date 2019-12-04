@@ -1,7 +1,4 @@
-import exceptions.InvalidAuthenticationException;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UserDoesNotExistException;
-import exceptions.VolumeFullException;
+import exceptions.*;
 import models.Journal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -119,6 +116,9 @@ public class CreateNextEdition extends JFrame{
                     e1.printStackTrace();
                 } catch (SQLException e1) {
                     JOptionPane.showMessageDialog(null, "Something went wrong!");
+                    e1.printStackTrace();
+                } catch (NoMoreEditionsAllowedInVolumeException e1) {
+                    JOptionPane.showMessageDialog(null, "This Volume is not allowed any more Editions because a newer Volume of your journal exists.");
                     e1.printStackTrace();
                 }
             }

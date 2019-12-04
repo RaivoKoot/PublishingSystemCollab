@@ -287,33 +287,37 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException {
+    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException, NoMoreEditionsAllowedInVolumeException {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
 
         assertThrows(VolumeFullException.class, () -> {
-            db.createNextEdition(volumes.get(0), chief, "JANUARY");
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
         });
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
+            db.createNextEdition(volumes.get(1), newEditor, "JANUARY");
         });
 
+        db.createNextVolume(journal, chief, 2012);
 
+        assertThrows(NoMoreEditionsAllowedInVolumeException.class, () -> {
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        });
     }
 
     @Test
     public void test9test2GetAllVolumeEditions() throws SQLException {
         Volume volume = new Volume();
         volume.setISSN(journal.getISSN());
-        volume.setVolNum(1);
+        volume.setVolNum(2);
 
         ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
 

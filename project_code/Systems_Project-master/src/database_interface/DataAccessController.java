@@ -581,7 +581,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException {
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException {
 
         if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
@@ -589,6 +589,16 @@ public class DataAccessController implements DatabaseInterface {
         ResultSet rs = null;
         try {
             openConnection();
+
+            statement = connection.prepareStatement("SELECT IFNULL(MAX(volumeNum),1) FROM Volumes WHERE issn = ?");
+            statement.setString(1, volume.getISSN());
+
+            rs = statement.executeQuery();
+
+            if(!rs.next() || rs.getInt(1) != volume.getVolNum()) {
+                throw new NoMoreEditionsAllowedInVolumeException();
+            }
+
 
             String sqlQuery = "SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = ? AND volumeNum = ?;";
 
@@ -1493,7 +1503,7 @@ public class DataAccessController implements DatabaseInterface {
                 article.setReviewsReceived(rs.getInt(8));
                 article.setReviewsContributed(rs.getInt(9));
                 article.setResponesToReviewsGiven(rs.getInt(10));
-                article.setFinalReviewsReceived(rs.getInt(11);
+                article.setFinalReviewsReceived(rs.getInt(11));
 
                 list.add(article);
             }
@@ -1548,6 +1558,36 @@ public class DataAccessController implements DatabaseInterface {
 
             closeConnection();
         }
+    }
+
+    @Override
+    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        return null;
+    }
+
+    @Override
+    public Edition getLatestEdition(Journal journal, User editor) {
+        return null;
+    }
+
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
     }
 
 }
