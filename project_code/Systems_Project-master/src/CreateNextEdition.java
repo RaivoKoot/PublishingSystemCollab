@@ -1,7 +1,4 @@
-import exceptions.InvalidAuthenticationException;
-import exceptions.ObjectDoesNotExistException;
-import exceptions.UserDoesNotExistException;
-import exceptions.VolumeFullException;
+import exceptions.*;
 import models.Journal;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -119,6 +116,13 @@ public class CreateNextEdition extends JFrame{
                     e1.printStackTrace();
                 } catch (SQLException e1) {
                     JOptionPane.showMessageDialog(null, "Something went wrong!");
+                    e1.printStackTrace();
+                } catch (NoMoreEditionsAllowedInVolumeException e1) {
+                    JOptionPane.showMessageDialog(null, "This Volume is not allowed any more Editions because a newer Volume of your journal exists.");
+                    e1.printStackTrace();
+                } catch (LastEditionNotFinishedException e1) {
+                    JOptionPane.showMessageDialog(null, "You are not allowed to create a new edition in this volume " +
+                            "because the last edition is not public yet or has room for more articles. Please publish the last edition or make sure it is full before creating a new one.");
                     e1.printStackTrace();
                 }
             }

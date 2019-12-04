@@ -287,37 +287,47 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException {
+    public void test9test1CreateNextVolumeEdition() throws SQLException, VolumeFullException, ObjectDoesNotExistException, InvalidAuthenticationException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
-        db.createNextEdition(volumes.get(0), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+
+        assertThrows(LastEditionNotFinishedException.class, () -> {
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        });
+
+        /*
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(1), chief, "JANUARY");
 
         assertThrows(VolumeFullException.class, () -> {
-            db.createNextEdition(volumes.get(0), chief, "JANUARY");
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
         });
+        */
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
+            db.createNextEdition(volumes.get(1), newEditor, "JANUARY");
         });
 
+        db.createNextVolume(journal, chief, 2012);
 
+        assertThrows(NoMoreEditionsAllowedInVolumeException.class, () -> {
+            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        });
     }
 
     @Test
     public void test9test2GetAllVolumeEditions() throws SQLException {
         Volume volume = new Volume();
         volume.setISSN(journal.getISSN());
-        volume.setVolNum(1);
+        volume.setVolNum(2);
 
         ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
 
-        assertEquals(6, editions.size());
+        assertEquals(1, editions.size());
 
         volume.setVolNum(5);
         editions = db.getAllVolumeEditions(volume);
@@ -546,5 +556,24 @@ public class DataAccessControllerTest {
     public void test9test9test5getArticlesNeedingFinalVerdicts() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
 
         db.articlesNeedingContributions(user);
+
+        /*
+
+        TODO
+
+         */
+    }
+
+    @Test
+    public void test9test9test6giveFinalVerdict() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+        Review review = new Review();
+        review.setReviewID(1);
+        review.setVerdict("TESTVERDICTFINAL");
+
+        assertTrue(db.giveFinalVerdict(review,user));
+
+        assertThrows(ObjectDoesNotExistException.class, () -> {
+            db.giveFinalVerdict(review, thirdUser);
+        });
     }
 }

@@ -15,6 +15,7 @@ public class DataAccessController implements DatabaseInterface {
     private String databaseUser;
     private String databaseUserPassword;
 
+
     public DataAccessController(DatabaseConstants connectionInfo) {
         this.databaseURL = connectionInfo.getDatabaseURL();
         this.databaseUser = connectionInfo.getDatabaseUser();
@@ -581,7 +582,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public Edition createNextEdition(Volume volume, JournalEditor editor, String publicationMonth)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException {
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, VolumeFullException, SQLException, NoMoreEditionsAllowedInVolumeException, LastEditionNotFinishedException {
 
         if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
@@ -589,6 +590,23 @@ public class DataAccessController implements DatabaseInterface {
         ResultSet rs = null;
         try {
             openConnection();
+
+            /*
+            Check whether the volume we are trying to add an edition to is the newest volume and stop if not
+             */
+
+            statement = connection.prepareStatement("SELECT IFNULL(MAX(volumeNum),1) FROM Volumes WHERE issn = ?");
+            statement.setString(1, volume.getISSN());
+
+            rs = statement.executeQuery();
+
+            if(!rs.next() || rs.getInt(1) != volume.getVolNum()) {
+                throw new NoMoreEditionsAllowedInVolumeException();
+            }
+            statement.close();
+            /*
+            Check that the volume is not full
+             */
 
             String sqlQuery = "SELECT IFNULL(MAX(editionNum),0) + 1 FROM Editions WHERE issn = ? AND volumeNum = ?;";
 
@@ -607,6 +625,34 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             statement.close();
+
+            /*
+            Make sure that the previous edition is either full or public
+             */
+
+            if(nextEditionNumber != 1) {
+
+                statement = connection.prepareStatement("SELECT Editions.editionID, isPublic, (COUNT(ea.editionID) = 8) AS isFull\n" +
+                        "FROM Editions\n" +
+                        "LEFT JOIN EditionArticles ea on Editions.editionID = ea.editionID\n" +
+                        "\n" +
+                        "WHERE Editions.editionID = ?\n" +
+                        "\n" +
+                        "GROUP BY Editions.editionID");
+                statement.setInt(1, nextEditionNumber-1);
+
+                rs = statement.executeQuery();
+                if (!rs.next() || (!rs.getBoolean(2) && !rs.getBoolean(3))) {
+                    throw new LastEditionNotFinishedException();
+                }
+
+                statement.close();
+
+            }
+
+            /*
+            Finally, Create the new edition
+             */
 
             String sqlQuery2 = "INSERT INTO Editions (editionNum, publicationMonth, volumeNum, ISSN) VALUES\n" +
                     "\t(?, ?, ?, ?)";
@@ -1400,6 +1446,26 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
+    @Override
+    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    @Override
+    public Edition getLatestEdition(Journal journal, User editor) {
+        return null;
+    }
+
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
+    }
+
 
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
@@ -1542,33 +1608,114 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-
-    }
-
-    @Override
+    //to be tested
     public void deleteUser(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
 
+        ResultSet rs = null;
+
+
+        try {
+            openConnection();
+            String sqlQuery1 = "SELECT EXISTS(SELECT email FROM Authorships WHERE Authorships.email = ? \n" +
+                    "UNION\n" +
+                    "SELECT email FROM JournalEditors WHERE JournalEditors.email = ? \n" +
+                    "UNION\n" +
+                    "SELECT reviewerEmail FROM Reviews WHERE Reviews.reviewerEmail = ? AND Reviews.isFinal = false)\n" +
+                    "AS hasRole";
+            statement = connection.prepareStatement(sqlQuery1);
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getEmail());
+            rs = statement.executeQuery();
+            if (rs.getInt(1) == 0) {
+                String sqlQuery2 = "DELETE * FROM Users WHERE Users.email = ?";
+                statement = connection.prepareStatement(sqlQuery2);
+                statement.setString(1, user.getEmail());
+                int result = statement.executeUpdate();
+                if (result != 1) throw new SQLException();
+            }
+        }
+        finally {
+            if(rs != null)
+                rs.close();
+
+            closeConnection();
+        }
     }
 
-    @Override
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
-    }
 
     @Override
+    //to be tested
     public ArrayList<Article> getAcceptedArticlesByJournal(Journal journal, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-        return null;
+
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(journal.getISSN());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet set = null;
+
+        try {
+            openConnection();
+            String sqlQuery = "SELECT articleID, title FROM Articles WHERE Articles.ISSN = ? AND Articles.isAccepted = true AND" +
+                    "Articles.articleID not in (SELECT articleID FROM EditionArticles)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+            set = statement.executeQuery();
+
+            ArrayList<Article> list = new ArrayList<>();
+
+            while (set.next()) {
+                Article article = new Article();
+                article.setArticleID(set.getInt(1));
+                article.setTitle(set.getString(2));
+
+                list.add(article);
+            }
+            return list;
+
+        }
+        finally {
+            if(set != null)
+                set.close();
+
+            closeConnection();
+        }
+
     }
 
-    @Override
-    public Edition getLatestEdition(Journal journal, User editor) {
-        return null;
-    }
 
-    @Override
-    public EditionArticle assignArticleToEdition(Article article, User editor) {
-        return null;
+    public boolean giveFinalVerdict(Review review, User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+        if (!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        try {
+            openConnection();
+            String sqlQuery = "UPDATE Reviews SET verdict = ?, isFinal=true\n" +
+                    "WHERE reviewID = ? and reviewerEmail=?";
+
+            statement = connection.prepareStatement(sqlQuery);
+
+            statement.setString(1, review.getVerdict());
+            statement.setInt(2, review.getReviewID());
+            statement.setString(3,user.getEmail());
+
+            int result = statement.executeUpdate();
+            if (result != 1) throw new ObjectDoesNotExistException("Final Review verdict could not be submitted");
+
+            return true;
+        } finally {
+            closeConnection();
+        }
+
     }
 
 }
