@@ -160,15 +160,83 @@ public class Reviewer_responses extends JFrame{
 
                 if (final_verdict == 0){
                     review.setVerdict(verdicts[0]);
+                    try {
+                        boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
+                        if(success){
+                            JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,"Something went wrong!");
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (UserDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 else if (final_verdict == 1){
                     review.setVerdict(verdicts[1]);
+                    try {
+                        boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
+                        if(success){
+                            JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,"Something went wrong!");
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (UserDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 else if (final_verdict == 2) {
                     review.setVerdict(verdicts[2]);
+                    try {
+                        boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
+                        if(success){
+                            JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,"Something went wrong!");
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (UserDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 else if (final_verdict == 3){
                     review.setVerdict(verdicts[3]);
+                    try {
+                        boolean success = SessionData.db.giveFinalVerdict(review,SessionData.currentUser);
+                        if(success){
+                            JOptionPane.showMessageDialog(null,"Final Verdict given!");
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,"Something went wrong!");
+                        }
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (UserDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
