@@ -11,7 +11,7 @@ import models.*;
 
 public class CreateNextEdition extends JFrame{
     private JPanel createNextEdition;
-    private JComboBox JournalCB;
+    public JComboBox JournalCB;
     private JComboBox VolumeCB;
     private JButton backward;
     private JButton generateVolumeButton;

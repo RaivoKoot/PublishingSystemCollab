@@ -21,7 +21,7 @@ public class RegisterCoAuthors extends JFrame {
     private JPanel AppointPanel;
     private JPanel first_view;
     private JLabel Success;
-    private JComboBox comboBox1;
+    public JComboBox comboBox1;
     private JPanel second_view;
     private JTextField university;
     private JComboBox comboBox2;

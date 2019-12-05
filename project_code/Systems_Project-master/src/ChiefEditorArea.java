@@ -23,6 +23,7 @@ public class ChiefEditorArea extends JFrame{
     private JButton createNextEditionOfButton;
     private JButton createNextVolumeOfButton;
     private JButton takeDecisionForArticlesButton;
+    private JButton assignEditionButton;
     Connection con = null; // a Connection object
     Statement stmt = null;
     private Journal[] list;
@@ -39,16 +40,6 @@ public class ChiefEditorArea extends JFrame{
         appointEditorsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*String e_mail = JOptionPane.showInputDialog(null,"Please enter the e-mail of the person you want to register as an editor");
-                User target = new User();
-                target.setEmail(e_mail);
-                try {
-                    boolean doesitExist = SessionData.db.userExists(target);
-                    if (doesitExist){
-                    }
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }*/
                 Appoint appointform = new Appoint();
                 if (appointform.journal_list.length == 0){
                     JOptionPane.showMessageDialog(null,"Sorry you cannot access this page, you are not an editor.");
@@ -83,8 +74,7 @@ public class ChiefEditorArea extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 JournalEditor target = new JournalEditor();
                 JournalEditor user = new JournalEditor(SessionData.currentUser);
-                String e_mail = JOptionPane.showInputDialog("Enter this person e-mail");
-                target.setEmail(e_mail);
+
 
                 ArrayList<Journal> list = new ArrayList<Journal>();
                 ArrayList<String> lister = new ArrayList<String>();
@@ -104,49 +94,53 @@ public class ChiefEditorArea extends JFrame{
                 }
                 System.out.println(lister);
 
-                int n =  JOptionPane.showOptionDialog(null,
-                        "Choose your Journal",
-                        "Journal",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,     //do not use a custom Icon
-                        lister.toArray(),  //the titles of buttons
-                        null); //default button title
+                if(!list.isEmpty()) {
+                    String e_mail = JOptionPane.showInputDialog("Enter this person e-mail");
+                    target.setEmail(e_mail);
 
-                Journal jour = null;
+                    int n = JOptionPane.showOptionDialog(null,
+                            "Choose your Journal",
+                            "Journal",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,     //do not use a custom Icon
+                            lister.toArray(),  //the titles of buttons
+                            null); //default button title
 
-                for (Journal journal : list){
-                    if (journal.getName().equals(lister.get(n))){
-                        jour = journal;
-                        break;
+                    Journal jour = null;
+
+                    for (Journal journal : list) {
+                        if (journal.getName().equals(lister.get(n))) {
+                            jour = journal;
+                            break;
+                        }
                     }
-                }
 
-                target.setIssn(jour.getISSN());
-                user.setIssn((jour.getISSN()));
+                    target.setIssn(jour.getISSN());
+                    user.setIssn((jour.getISSN()));
 
-                try {
-                    boolean success = SessionData.db.makeChiefEditor(target,user);
-                    if (success){
-                        JOptionPane.showMessageDialog(null,"Action successful");
+                    try {
+                        boolean success = SessionData.db.makeChiefEditor(target, user);
+                        if (success) {
+                            JOptionPane.showMessageDialog(null, "Action successful");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Action not successful");
+
+                        }
+                    } catch (UserDoesNotExistException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry the editor does not exist");
+                        e1.printStackTrace();
+                    } catch (IncompleteInformationException e1) {
+                        JOptionPane.showMessageDialog(null, "Make sure you correctly fill out the boxes");
+                        e1.printStackTrace();
+                    } catch (InvalidAuthenticationException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                        e1.printStackTrace();
+                    } catch (SQLException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry something went wrong");
+                        e1.printStackTrace();
                     }
-                    else{
-                        JOptionPane.showMessageDialog(null,"Action not successful");
-
-                    }
-                } catch (UserDoesNotExistException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry the editor does not exist");
-                    e1.printStackTrace();
-                } catch (IncompleteInformationException e1) {
-                    JOptionPane.showMessageDialog(null,"Make sure you correctly fill out the boxes");
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong");
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong");
-                    e1.printStackTrace();
-                }
+                } else{JOptionPane.showMessageDialog(null,"Sorry you are not an editor!");}
             }
         });
 
@@ -154,8 +148,26 @@ public class ChiefEditorArea extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateNextEdition per = new CreateNextEdition();
+                if(per.JournalCB.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null,"Sorry, you are not an editor!");
+                }else{
                 per.setVisible(true);
-                dispose();
+                dispose();}
+            }
+        });
+
+
+
+        assignEditionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AssignArticle assart = new AssignArticle();
+                if (assart.journals.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null,"Sorry you cannot access this page, you are not an editor.");
+                }
+                else{
+                assart.setVisible(true);
+                dispose();}
             }
         });
 
@@ -182,6 +194,8 @@ public class ChiefEditorArea extends JFrame{
                 for (int i = 0; i<list.size(); i++){
                     lister.add(list.get(i).getName());
                 }
+
+                if(!list.isEmpty()) {
 
                     int n = JOptionPane.showOptionDialog(null,
                             "Choose your Journal",
@@ -233,6 +247,7 @@ public class ChiefEditorArea extends JFrame{
                     } else if (n == 1) {
                         JOptionPane.showMessageDialog(null, "Process cancelled");
                     }
+                } else{JOptionPane.showMessageDialog(null,"Sorry you are not an editor...");}
 
             }
         });
@@ -257,17 +272,19 @@ public class ChiefEditorArea extends JFrame{
                     lister.add(list.get(i).getName());
                 }
 
-                int n =  JOptionPane.showOptionDialog(null,
-                        "Choose your Journal",
-                        "Journal",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,     //do not use a custom Icon
-                        lister.toArray(),  //the titles of buttons
-                        null); //default button title
+                if(!list.isEmpty()) {
+
+                    int n = JOptionPane.showOptionDialog(null,
+                            "Choose your Journal",
+                            "Journal",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,     //do not use a custom Icon
+                            lister.toArray(),  //the titles of buttons
+                            null); //default button title
 
                     String year = "";
-                    while(year.isEmpty()) {
+                    while (year.isEmpty()) {
                         try {
                             year = JOptionPane.showInputDialog("What is the publication Year?");
                             int intValue = Integer.parseInt(year);
@@ -276,41 +293,40 @@ public class ChiefEditorArea extends JFrame{
                         }
 
                     }
-                Journal jour = null;
+                    Journal jour = null;
 
-                for (Journal journal : list){
-                    if (journal.getName().equals(lister.get(n))){
-                        jour = journal;
-                        break;
+                    for (Journal journal : list) {
+                        if (journal.getName().equals(lister.get(n))) {
+                            jour = journal;
+                            break;
+                        }
                     }
-                }
-                JournalEditor chief = new JournalEditor(SessionData.currentUser);
-                chief.setIssn(jour.getISSN());
+                    JournalEditor chief = new JournalEditor(SessionData.currentUser);
+                    chief.setIssn(jour.getISSN());
 
 
-                try{
-                    boolean success = SessionData.db.createNextVolume(jour, chief, Integer.valueOf(year));
-                    if (success){
-                        JOptionPane.showMessageDialog(null, "Volume succesfully created!");
+                    try {
+                        boolean success = SessionData.db.createNextVolume(jour, chief, Integer.valueOf(year));
+                        if (success) {
+                            JOptionPane.showMessageDialog(null, "Volume succesfully created!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Sorry, Volume could not be created!");
+                        }
+                    } catch (InvalidAuthenticationException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
+                        e1.printStackTrace();
+                    } catch (ObjectDoesNotExistException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
+                        e1.printStackTrace();
+                    } catch (SQLIntegrityConstraintViolationException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry a volume with that year already exists in your journal");
+                        e1.printStackTrace();
+                    } catch (SQLException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
+                        e1.printStackTrace();
                     }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Sorry, Volume could not be created!");
-                    }
-                } catch (InvalidAuthenticationException e1) {
-                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
-                    e1.printStackTrace();
-                }  catch (ObjectDoesNotExistException e1) {
-                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
-                    e1.printStackTrace();
-                } catch (SQLIntegrityConstraintViolationException e1){
-                    JOptionPane.showMessageDialog(null, "Sorry a volume with that year already exists in your journal");
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
-                    e1.printStackTrace();
-                }
 
-
+                }else{JOptionPane.showMessageDialog(null,"Sorry you are not an editor");}
             }
         });
 
@@ -318,8 +334,11 @@ public class ChiefEditorArea extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 FinalDecision finalde = new FinalDecision();
+                if (finalde.comboBox1.getItemCount() == 0){
+                    JOptionPane.showMessageDialog(null,"Sorry you are not an editor");
+                }else{
                 finalde.setVisible(true);
-                dispose();
+                dispose();}
             }
         });
 

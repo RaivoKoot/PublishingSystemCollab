@@ -11,7 +11,7 @@ import models.*;
 
 public class SubmitRevision extends JFrame{
     private JPanel SubmitRevision;
-    private JComboBox comboBox1;
+    public JComboBox comboBox1;
     private JTextField textField1;
     private JTextArea textArea1;
     private JButton submitRevisionButton;

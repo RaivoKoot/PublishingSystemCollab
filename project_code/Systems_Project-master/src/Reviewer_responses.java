@@ -14,13 +14,14 @@ import java.util.ArrayList;
 public class Reviewer_responses extends JFrame{
 
     private JPanel Responses;
-    private JComboBox comboBox1;
+    public JComboBox comboBox1;
     private JTextField summary;
     private JButton getInfoButton;
     private JTextField titre;
     private JTextArea content;
     private JButton viewCritiquesAndGiveButton;
     private JButton backward;
+
 
     public Reviewer_responses(){
         add(Responses);

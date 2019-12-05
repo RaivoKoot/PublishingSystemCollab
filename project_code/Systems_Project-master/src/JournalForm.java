@@ -26,21 +26,9 @@ public class JournalForm extends JFrame{
     public JournalForm(){
         add(JournalPanel);
         setTitle("Journal Form Screen");
-        setSize(400, 500);
+        setSize(450, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        /*textField2.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                    int i = Integer.parseInt(textField2.getText());
-                    if (String.valueOf(i).length() != 8){
-                        value = true;
-                    }
-                    else {
-                        validornot.setText("Wrong input for ISSN");
-                    }
-            }
-        });*/
 
         createButton.addActionListener(new ActionListener() {
             @Override
