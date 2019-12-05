@@ -1,10 +1,12 @@
 package database_interface;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.Month;
 import java.util.ArrayList;
 
 import exceptions.*;
+import helpers.Encryption;
 import models.*;
 
 public class DataAccessController implements DatabaseInterface {
@@ -98,9 +100,8 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException {
-        if (newPassword.equals(""))
-            throw new IncompleteInformationException();
+    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
+        newPassword = Encryption.encryptPassword(newPassword);
 
         if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
@@ -542,14 +543,16 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?)";
+            String sqlQuery = "SELECT COUNT(editionID), IFNULL((SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?), 0) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?)";
 
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, journal.getISSN());
+            statement.setString(2, journal.getISSN());
             rs = statement.executeQuery();
 
-            if(!rs.next() || rs.getInt(1) < 4)
+            if(!rs.next() || (rs.getInt(1) < 4) && rs.getInt(2) != 0) {
                 throw new LastVolumeNotEnoughEditionsExceptions();
+            }
 
 
             // SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn='raivoissn')

@@ -1,5 +1,6 @@
 package database_interface;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public interface DatabaseInterface {
      * @return success or not
      * @precondition the user exists in the system
      */
-    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, IncompleteInformationException, InvalidAuthenticationException, SQLException;
+    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, IncompleteInformationException, InvalidAuthenticationException, SQLException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException;
 
     /**
      * Checks whether a given user with that email and password exist
