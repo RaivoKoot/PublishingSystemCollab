@@ -72,7 +72,7 @@ public class Readers extends TreePath {
                     Volume volume = (Volume) currentNode.getUserObject();
                     Edition[] editions = null;
                     try {
-                        editions = SessionData.db.getAllVolumeEditions(volume).toArray(new Edition[0]);
+                        editions = SessionData.db.getAllVolumePublicEditions(volume).toArray(new Edition[0]);
                     } catch (SQLException exc) {
                         exc.printStackTrace();
                     }
@@ -81,7 +81,7 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                } /*else if(userObject instanceof Edition){
+                } else if(userObject instanceof Edition){
                     Edition edition = (Edition) currentNode.getUserObject();
                     Article[] articles = null;
                     try {
@@ -94,7 +94,7 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                }*/ else if(userObject instanceof Article){
+                } else if(userObject instanceof Article){
                     Article article = (Article) userObject;
                     ArticleTreeDisplay info_box = new ArticleTreeDisplay();
                     info_box.title_field.setText((article.getTitle()));
