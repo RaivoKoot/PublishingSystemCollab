@@ -324,6 +324,9 @@ public class ChiefEditorArea extends JFrame{
                     } catch (SQLException e1) {
                         JOptionPane.showMessageDialog(null, "Sorry, something went wrong!");
                         e1.printStackTrace();
+                    } catch (LastVolumeNotEnoughEditionsExceptions lastVolumeNotEnoughEditionsExceptions) {
+                        lastVolumeNotEnoughEditionsExceptions.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "You are not allowed to create a new volume as long as the current volume does not have at least 4 editions.");
                     }
 
                 }else{JOptionPane.showMessageDialog(null,"Sorry you are not an editor");}

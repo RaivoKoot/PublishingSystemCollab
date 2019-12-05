@@ -533,15 +533,28 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException {
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException, LastVolumeNotEnoughEditionsExceptions {
 
         if (!isChiefEditor(editor))
             throw new InvalidAuthenticationException();
 
+        ResultSet rs = null;
         try {
             openConnection();
 
-            String sqlQuery = "BEGIN;\n" +
+            String sqlQuery = "SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?)";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+            rs = statement.executeQuery();
+
+            if(!rs.next() || rs.getInt(1) < 4)
+                throw new LastVolumeNotEnoughEditionsExceptions();
+
+
+            // SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn='raivoissn')
+
+            sqlQuery = "BEGIN;\n" +
                     "SELECT @id := IFNULL(MAX(volumeNum),0) + 1 FROM Volumes WHERE issn = ? FOR UPDATE;\n" +
                     "INSERT INTO Volumes\n" +
                     "     (volumeNum, issn, publicationYear)\n" +
