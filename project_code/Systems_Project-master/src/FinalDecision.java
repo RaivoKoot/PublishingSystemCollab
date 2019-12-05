@@ -1,4 +1,4 @@
-import com.mysql.cj.Session;
+
 import exceptions.InvalidAuthenticationException;
 import exceptions.ObjectDoesNotExistException;
 import exceptions.UserDoesNotExistException;
@@ -31,7 +31,7 @@ public class FinalDecision extends JFrame{
     public FinalDecision(){
         add(FinalDecision);
         setTitle("Final Decision Page");
-        setSize(800, 500);
+        setSize(950, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         journal_list = new Journal[0];
@@ -181,10 +181,18 @@ public class FinalDecision extends JFrame{
                     }
                 }
 
-                art.isAccepted();
+                art.setAccepted(true);
 
                 try {
-                    SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                    boolean success = SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                    if (success){
+                        JOptionPane.showMessageDialog(null,"Succesfully Accepted");
+                        ChiefEditorArea back_to_area = new ChiefEditorArea();
+                        back_to_area.setVisible(true);
+                        dispose();
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong");
+                    }
                 } catch (InvalidAuthenticationException e1) {
                     e1.printStackTrace();
                 } catch (ObjectDoesNotExistException e1) {
@@ -229,9 +237,18 @@ public class FinalDecision extends JFrame{
                         break;
                     }
                 }
-                
+                art.setAccepted(false);
+
                 try {
-                    SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                    boolean success = SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                    if (success){
+                        JOptionPane.showMessageDialog(null,"Succesfully Rejected");
+                        ChiefEditorArea back_to_area = new ChiefEditorArea();
+                        back_to_area.setVisible(true);
+                        dispose();
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong");
+                    }
                 } catch (InvalidAuthenticationException e1) {
                     e1.printStackTrace();
                 } catch (ObjectDoesNotExistException e1) {

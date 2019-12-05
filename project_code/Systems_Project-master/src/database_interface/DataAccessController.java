@@ -780,6 +780,11 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
+        return null;
+    }
+
 
     @Override
     public ArrayList<Article> articlesNeedingContributions(User user) throws UserDoesNotExistException, InvalidAuthenticationException, SQLException {
@@ -1631,6 +1636,11 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
 
     @Override
     //to be tested
@@ -1650,7 +1660,7 @@ public class DataAccessController implements DatabaseInterface {
 
         try {
             openConnection();
-            String sqlQuery = "SELECT articleID, title FROM Articles WHERE Articles.ISSN = ? AND Articles.isAccepted = true AND" +
+            String sqlQuery = "SELECT articleID, title FROM Articles WHERE Articles.ISSN = ? AND Articles.isAccepted = true AND " +
                     "Articles.articleID not in (SELECT articleID FROM EditionArticles)";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, journal.getISSN());
@@ -1674,6 +1684,16 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
 
+    }
+
+    @Override
+    public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
+        return null;
+    }
+
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
     }
 
 
@@ -1772,14 +1792,13 @@ public class DataAccessController implements DatabaseInterface {
             statement.setInt(1, article.getArticleID());
             statement.setInt(2, article.getArticleID());
             statement.setInt(3, article.getArticleID());
-            statement.setInt(4, article.getArticleID());
             statement.execute();
 
             String lastQuery;
             if (article.isAccepted()) {
                 lastQuery = "UPDATE Articles SET Articles.isAccepted = true WHERE Articles.articleID = ?";
             } else {
-                lastQuery = "DELETE * FROM Articles WHERE Articles.articleID = ?";
+                lastQuery = "DELETE FROM Articles WHERE Articles.articleID = ?";
             }
             statement = connection.prepareStatement(lastQuery);
             statement.setInt(1, article.getArticleID());
