@@ -31,7 +31,14 @@ public class LogIn extends JFrame{
 
                     User input = new User();
                     input.setEmail(email);
-                    input.setPassword(password);
+                    try {
+                        input.setPassword(password);
+                    } catch(Exception ee) {
+                        JOptionPane.showMessageDialog(null, "The password you have entered is incorrect");
+                        return;
+                    }
+
+
 
                     try {
                         boolean success = SessionData.db.validCredentials(input);

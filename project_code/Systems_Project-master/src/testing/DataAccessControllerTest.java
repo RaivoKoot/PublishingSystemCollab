@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runners.MethodSorters;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test1RegisterBaseUser() throws SQLException, UserAlreadyExistsException, IncompleteInformationException {
+    public void test1RegisterBaseUser() throws SQLException, UserAlreadyExistsException, IncompleteInformationException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
 
         assertTrue(db.registerBaseUser(chiefEditor));
         assertTrue(db.registerBaseUser(user));
@@ -112,13 +113,7 @@ public class DataAccessControllerTest {
             db.registerBaseUser(incompleteInfo);
         });
 
-        incompleteInfo.setPassword("Hi");
-        assertThrows(IncompleteInformationException.class, () -> {
-            db.registerBaseUser(incompleteInfo);
-        });
-
-        incompleteInfo.setPassword("");
-
+        incompleteInfo.setPassword("Hiiiiirriiiii5i");
         assertThrows(IncompleteInformationException.class, () -> {
             db.registerBaseUser(incompleteInfo);
         });

@@ -1,13 +1,11 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import database_interface.*;
 import com.mysql.cj.Session;
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.*;
 import main.*;
 
@@ -116,7 +114,28 @@ public class Appoint extends JFrame {
                     else {
                         target.setUniversity(uni);
                         target.setForenames(fname);
-                        target.setPassword(te_password);
+
+
+                        try {
+                            target.setPassword(te_password);
+                        } catch (PasswordToLongException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered is too long!");
+                            e1.printStackTrace();
+                            return;
+                        } catch (PasswordTooShortException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered is too short!");
+                            e1.printStackTrace();
+                            return;
+                        } catch (NoSuchAlgorithmException e1) {
+                            JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
+                            e1.printStackTrace();
+                            return;
+                        } catch (NoDigitInPasswordException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
+                            e1.printStackTrace();
+                            return;
+                        }
+
                         target.setSurname(sname);
                         target.setTitle((String) comboBox2.getSelectedItem());
                         boolean success3 = SessionData.db.registerBaseUser(target);

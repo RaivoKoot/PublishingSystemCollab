@@ -1,12 +1,11 @@
-import exceptions.IncompleteInformationException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.User;
 import main.SessionData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class SubscribeForm extends JFrame {
@@ -54,7 +53,29 @@ public class SubscribeForm extends JFrame {
 
                 User input = new User();
                 input.setEmail(e_mail);
-                input.setPassword(spassword);
+
+
+                try {
+                    input.setPassword(spassword);
+                } catch (PasswordToLongException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered is too long!");
+                    e1.printStackTrace();
+                    return;
+                } catch (PasswordTooShortException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered is too short!");
+                    e1.printStackTrace();
+                    return;
+                } catch (NoSuchAlgorithmException e1) {
+                    JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
+                    e1.printStackTrace();
+                    return;
+                } catch (NoDigitInPasswordException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
+                    e1.printStackTrace();
+                    return;
+                }
+
+
                 input.setUniversity(uni);
                 input.setForenames(fname);
                 input.setSurname(sname);

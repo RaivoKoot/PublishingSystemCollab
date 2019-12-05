@@ -89,13 +89,13 @@ CREATE TABLE Reviews (
 	verdict VARCHAR(25),
 	isFinal BOOL DEFAULT FALSE,
 	
-	submissionID INT NOT NULL,
+	submissionID INT,
 	articleOfReviewerID INT,
 	reviewerEmail VARCHAR(80) NOT NULL,
 	hasResponse BOOL DEFAULT FALSE,
 	
 	FOREIGN KEY(submissionID) REFERENCES Articles(articleID)
-		ON DELETE CASCADE,
+		ON DELETE SET NULL,
 	FOREIGN KEY(reviewerEmail) REFERENCES Users(email)
 		ON DELETE NO ACTION,
 	FOREIGN KEY(articleOfReviewerID) REFERENCES Articles(articleID)
