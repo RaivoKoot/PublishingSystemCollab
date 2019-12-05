@@ -1457,26 +1457,6 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-    @Override
-    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-
-    }
-
-    @Override
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-
-    }
-
-    @Override
-    public Edition getLatestEdition(Journal journal, User editor) {
-        return null;
-    }
-
-    @Override
-    public EditionArticle assignArticleToEdition(Article article, User editor) {
-        return null;
-    }
-
 
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
@@ -1663,6 +1643,17 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    /**
+     * checks if edition has at least 3 articles, checks if user is main editor for journal
+     * and then set isPublished to true
+     *
+     * @param edition
+     * @param mainEditor
+     */
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
 
 
     @Override
@@ -1708,6 +1699,32 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
 
+    }
+
+    /**
+     * gets the latest Edition of the specified journal
+     * use max function to return the biggest page number of all the EditionArticles of that journal
+     * set currentLastPage of the edition object to the max
+     *
+     * @param journal
+     * @param editor
+     * @return
+     */
+    @Override
+    public Edition getLatestEdition(Journal journal, User editor) {
+        return null;
+    }
+
+    /**
+     * creates an EditionArticle object
+     * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
+     *
+     * @param article
+     * @param editor
+     */
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
     }
 
 
@@ -1775,6 +1792,54 @@ public class DataAccessController implements DatabaseInterface {
             if(set != null)
                 set.close();
 
+            closeConnection();
+        }
+
+    }
+
+
+
+    @Override
+    //to be tested
+    public void setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(article.getIssn());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+
+        try{
+            openConnection();
+
+                String sqlQuery = "DELETE FROM Authorships WHERE Authorships.articleID = ?;\n" +
+                        "                        UPDATE Reviews SET Reviews.submissionID = null WHERE Reviews.submissionID = ?;\n" +
+                        "                        UPDATE Reviews SET Reviews.articleOfReviewerID = null WHERE Reviews.articleOfReviewerID = ?;\n" +
+                        "                        DELETE FROM Reviews WHERE Reviews.submissionID is null AND Reviews.articleOfReviewerID is null;";
+
+                statement = connection.prepareStatement(sqlQuery);
+                statement.setInt(1, article.getArticleID());
+                statement.setInt(2, article.getArticleID());
+                statement.setInt(3, article.getArticleID());
+                statement.setInt(4, article.getArticleID());
+                statement.execute();
+
+                String lastQuery;
+                if (article.isAccepted()) {
+                    lastQuery = "UPDATE Articles SET Articles.isAccepted = true WHERE Articles.articleID = ?";
+                }
+                else {
+                    lastQuery = "DELETE * FROM Articles WHERE Articles.articleID = ?";
+                }
+                statement = connection.prepareStatement(lastQuery);
+                statement.setInt(1, article.getArticleID());
+                statement.executeUpdate();
+        }
+        finally {
             closeConnection();
         }
 
