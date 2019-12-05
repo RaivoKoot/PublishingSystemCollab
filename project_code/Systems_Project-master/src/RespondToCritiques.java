@@ -81,6 +81,8 @@ public class RespondToCritiques extends JFrame {
                     JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
+                JOptionPane.showMessageDialog(null,"The reviewer noted the following typos :\n\n" + our_review.getTypos());
+
                     Review response = new Review();
                     for (int i = 0; i < critiques_list.size(); i++) {
                         JScrollPane pane = new JScrollPane();
@@ -96,7 +98,6 @@ public class RespondToCritiques extends JFrame {
                         frame.setVisible(true);
                         ta.setLineWrap(true);
                         int n = JOptionPane.showConfirmDialog(null, ta, "Respond!", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION);
-
                         Critique crit = new Critique();
                         if(!ta.getText().isEmpty()){
                         crit.setReply(ta.getText());

@@ -22,6 +22,7 @@ public class ChooseReview extends JFrame {
     private JButton getContentOfChosenButton;
     private JTextField chosenarticletitle;
     private JTextArea chosenarticleabstract;
+    private JTextArea typo_errors;
 
     private ArrayList<Critique> critiques;
     private Review selected = null;
@@ -33,6 +34,7 @@ public class ChooseReview extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         summary.setLineWrap(true);
         critique_field.setLineWrap(true);
+        typo_errors.setLineWrap(true);
 
         String[] verdicts = {"Strong Accept (champion)", "Weak Accept", "Weak Reject", "Strong Reject (detractor)"};
 
@@ -102,6 +104,7 @@ public class ChooseReview extends JFrame {
                         if (dialogResult == 1) { // if no
                             selected.setSummary(summary.getText());
                             selected.setVerdict((String) comboBox1.getSelectedItem());
+                            selected.setTypos(typo_errors.getText());
 
                             try {
                                 for (Critique crit : selected.getCritiques())

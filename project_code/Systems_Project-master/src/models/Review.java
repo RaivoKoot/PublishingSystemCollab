@@ -17,6 +17,16 @@ public class Review {
 	private String articleName;
 	private ArrayList<Critique> critiques;
 
+	private String typos;
+
+	public String getTypos() {
+		return typos;
+	}
+
+	public void setTypos(String typos) {
+		this.typos = typos;
+	}
+
 	public Review()
 	{
 		critiques = new ArrayList<>();
