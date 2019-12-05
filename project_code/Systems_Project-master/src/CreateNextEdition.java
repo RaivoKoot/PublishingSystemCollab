@@ -31,13 +31,10 @@ public class CreateNextEdition extends JFrame{
 
         try {
             journal_list = SessionData.db.getJournalsByUser(SessionData.currentUser).toArray(new Journal[0]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
+
         for(int i = 0; i<= journal_list.length-1 ; i++) {
             JournalCB.addItem(journal_list[i].getName());
         }

@@ -27,22 +27,14 @@ public class AppointReview extends JFrame{
 
         try {
             reviews_list = SessionData.db.articlesNeedingContributions(SessionData.currentUser).toArray(new Article[0]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         try {
             reviews2_list = SessionData.db.getUnaffiliatedArticlesToReview(SessionData.currentUser).toArray(new Article[0]);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i<= reviews_list.length-1 ; i++) {
@@ -71,22 +63,14 @@ public class AppointReview extends JFrame{
 
                 try {
                     reviews_list = SessionData.db.articlesNeedingContributions(SessionData.currentUser).toArray(new Article[0]);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 try {
                     reviews2_list = SessionData.db.getUnaffiliatedArticlesToReview(SessionData.currentUser).toArray(new Article[0]);
-                } catch (UserDoesNotExistException e2) {
-                    e2.printStackTrace();
-                } catch (InvalidAuthenticationException e2) {
-                    e2.printStackTrace();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article article_to_review = null;
@@ -122,12 +106,8 @@ public class AppointReview extends JFrame{
                     else{
                         JOptionPane.showMessageDialog(null, "Sorry, something went!");
                     }
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
 

@@ -33,12 +33,8 @@ public class PublishEdition extends JFrame {
 
         try {
             journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i< journals_list.size() ; i++) {
@@ -64,12 +60,8 @@ public class PublishEdition extends JFrame {
 
                 try {
                     journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Journal own_journal = null;
@@ -105,12 +97,8 @@ public class PublishEdition extends JFrame {
 
                 try {
                     journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Journal own_journal = null;

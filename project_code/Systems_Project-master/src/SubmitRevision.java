@@ -30,14 +30,8 @@ public class SubmitRevision extends JFrame{
 
         try {
             articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (ObjectDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i< articles_for_revision.size() ; i++) {
@@ -67,14 +61,8 @@ public class SubmitRevision extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 try {
                     articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for(int i = 0; i< articles_for_revision.size() ; i++) {
@@ -101,14 +89,8 @@ public class SubmitRevision extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 try {
                     articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article tar = null;

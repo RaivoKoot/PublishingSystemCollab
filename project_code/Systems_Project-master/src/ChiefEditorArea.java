@@ -81,12 +81,8 @@ public class ChiefEditorArea extends JFrame{
 
                 try {
                     list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for (int i = 0; i<list.size(); i++){
@@ -260,12 +256,8 @@ public class ChiefEditorArea extends JFrame{
 
                 try {
                     list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for (int i = 0; i<list.size(); i++){
