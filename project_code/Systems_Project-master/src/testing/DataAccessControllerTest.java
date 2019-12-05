@@ -3,6 +3,7 @@ package testing;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.*;
+import helpers.ChoosePDF;
 import models.*;
 import org.junit.*;
 import org.junit.jupiter.api.MethodOrderer;
@@ -10,6 +11,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runners.MethodSorters;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -77,6 +81,8 @@ public class DataAccessControllerTest {
         submission.setSummary("summary");
         submission.setTitle("Title Paper");
         submission.setIssn(journal.getISSN());
+
+        submission.setPdf(ChoosePDF.choosePDF());
 
         newEditor = new JournalEditor(user);
         chief = new JournalEditor(chiefEditor);
@@ -205,7 +211,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException, FileNotFoundException {
 
         assertTrue(1 == db.submitArticle(submission, user).getArticleID());
         assertTrue(2 == db.submitArticle(submission, user).getArticleID());
@@ -413,7 +419,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test8getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
+    public void test9test8getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, FileNotFoundException {
 
         assertThrows(UserDoesNotExistException.class, () -> {
             db.getUnaffiliatedArticlesToReview(nonexistentUser);

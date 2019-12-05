@@ -3,6 +3,7 @@ DROP TABLE Reviews;
 DROP TABLE Authorships;
 DROP TABLE EditionArticles;
 DROP TABLE Articles;
+DROP TABLE Pdfs;
 DROP TABLE Editions;
 DROP TABLE Volumes;
 DROP TABLE JournalEditors;
