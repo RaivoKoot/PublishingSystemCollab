@@ -16,7 +16,7 @@ public class MainAuthorArea extends JFrame{
     public MainAuthorArea(){
         add(MAPanel);
         setTitle("Main Author Area");
-        setSize(400, 500);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         backward.addActionListener(new ActionListener() {

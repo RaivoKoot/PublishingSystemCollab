@@ -3,6 +3,7 @@ package testing;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
 import exceptions.*;
+import helpers.ChoosePDF;
 import models.*;
 import org.junit.*;
 import org.junit.jupiter.api.MethodOrderer;
@@ -10,6 +11,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runners.MethodSorters;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -78,6 +82,8 @@ public class DataAccessControllerTest {
         submission.setTitle("Title Paper");
         submission.setIssn(journal.getISSN());
 
+        submission.setPdf(ChoosePDF.choosePDF());
+
         newEditor = new JournalEditor(user);
         chief = new JournalEditor(chiefEditor);
         newEditor.setChief(false);
@@ -122,20 +128,20 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test2ChangePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test2ChangePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
 
-        assertTrue(db.changePassword(user, "pswd"));
+        assertTrue(db.changePassword(user, "pswdpswdpswd1"));
 
-        assertThrows(IncompleteInformationException.class, () -> {
+        assertThrows(PasswordTooShortException.class, () -> {
             db.changePassword(incompleteInfo, "");
         });
 
         assertThrows(UserDoesNotExistException.class, () -> {
-            db.changePassword(nonexistentUser, "new");
+            db.changePassword(nonexistentUser, "newnewnew1");
         });
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.changePassword(badPasswordUser, "new");
+            db.changePassword(badPasswordUser, "newnewnew1newnew");
         });
 
     }
@@ -205,7 +211,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test6SubmitArticle() throws SQLException, IncompleteInformationException, UserDoesNotExistException, InvalidAuthenticationException, FileNotFoundException {
 
         assertTrue(1 == db.submitArticle(submission, user).getArticleID());
         assertTrue(2 == db.submitArticle(submission, user).getArticleID());
@@ -266,10 +272,9 @@ public class DataAccessControllerTest {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        assertEquals(2, volumes.size());
+        assertEquals(1, volumes.size());
 
         assertEquals(1, volumes.get(0).getVolNum());
-        assertEquals(2, volumes.get(1).getVolNum());
 
     }
 
@@ -278,10 +283,10 @@ public class DataAccessControllerTest {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
 
         assertThrows(LastEditionNotFinishedException.class, () -> {
-            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+            db.createNextEdition(volumes.get(0), chief, "JANUARY");
         });
 
         /*
@@ -296,7 +301,7 @@ public class DataAccessControllerTest {
         */
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.createNextEdition(volumes.get(1), newEditor, "JANUARY");
+            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
         });
 
         /*
@@ -312,7 +317,7 @@ public class DataAccessControllerTest {
     public void test9test2GetAllVolumeEditions() throws SQLException {
         Volume volume = new Volume();
         volume.setISSN(journal.getISSN());
-        volume.setVolNum(2);
+        volume.setVolNum(1);
 
         ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
 
@@ -414,7 +419,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test8getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException {
+    public void test9test8getArticlesToReviewUnaffiliated() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, FileNotFoundException {
 
         assertThrows(UserDoesNotExistException.class, () -> {
             db.getUnaffiliatedArticlesToReview(nonexistentUser);
@@ -495,7 +500,7 @@ public class DataAccessControllerTest {
     public void test9test9test2getArticlesAndStatus() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         List<Article> articles = db.getOwnArticleWithStatus(thirdUser);
         Article article = articles.get(0);
-        assertEquals(3, article.getReviewsReceived());
+        assertEquals(1, article.getReviewsReceived());
         assertEquals(0,article.getReviewsContributed());
 
         assertEquals(1, articles.size());

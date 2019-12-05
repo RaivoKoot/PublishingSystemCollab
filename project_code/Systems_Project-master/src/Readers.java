@@ -81,11 +81,11 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                } else if(userObject instanceof Edition){
+                } /*else if(userObject instanceof Edition){
                     Edition edition = (Edition) currentNode.getUserObject();
                     Article[] articles = null;
                     try {
-                        articles = SessionData.db.getallEditionArticles(edition).toArray(new Article[0]);
+                        articles = SessionData.db.getAllEditionArticles(edition).toArray(new Article[0]);
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
@@ -94,10 +94,13 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                } else if(userObject instanceof Article){
+                }*/ else if(userObject instanceof Article){
                     Article article = (Article) userObject;
-
-
+                    ArticleTreeDisplay info_box = new ArticleTreeDisplay();
+                    info_box.title_field.setText((article.getTitle()));
+                    info_box.summary_field.setText(article.getSummary());
+                    info_box.content_field.setText(article.getContent());
+                    info_box.setVisible(true);
                 }
 
             }

@@ -26,7 +26,7 @@ public class JournalForm extends JFrame{
     public JournalForm(){
         add(JournalPanel);
         setTitle("Journal Form Screen");
-        setSize(450, 500);
+        setSize(650, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 

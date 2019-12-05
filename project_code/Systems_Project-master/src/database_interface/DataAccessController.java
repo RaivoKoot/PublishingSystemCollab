@@ -1,11 +1,18 @@
 package database_interface;
 
+import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.Month;
 import java.util.ArrayList;
 
+import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
 import exceptions.*;
+import helpers.Encryption;
+import helpers.StreamToPDF;
 import models.*;
+
+import javax.swing.*;
 
 public class DataAccessController implements DatabaseInterface {
 
@@ -98,9 +105,8 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException {
-        if (newPassword.equals(""))
-            throw new IncompleteInformationException();
+    public boolean changePassword(User user, String newPassword) throws UserDoesNotExistException, InvalidAuthenticationException, IncompleteInformationException, SQLException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
+        newPassword = Encryption.encryptPassword(newPassword);
 
         if (!userExists(user))
             throw new UserDoesNotExistException(user.getEmail());
@@ -369,7 +375,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public Article submitArticle(Article submission, User author)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException {
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException, FileNotFoundException {
 
         if (!validCredentials(author))
             throw new InvalidAuthenticationException();
@@ -384,6 +390,8 @@ public class DataAccessController implements DatabaseInterface {
             throw new IncompleteInformationException();
         }
 
+        int fileID = saveFile(submission.getPdf());
+
         PreparedStatement statementTwo = null;
         ResultSet rs = null;
         try {
@@ -391,13 +399,14 @@ public class DataAccessController implements DatabaseInterface {
             connection.setAutoCommit(false);
 
             // Insert the new submission into the table
-            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN) VALUES\n" +
-                    "\t(?,?,?,?);";
+            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN, pdfID) VALUES\n" +
+                    "\t(?,?,?,?, ?);";
             statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, submission.getTitle());
             statement.setString(2, submission.getSummary());
             statement.setString(3, submission.getContent());
             statement.setString(4, submission.getIssn());
+            statement.setInt(5, fileID);
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -542,14 +551,16 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?)";
+            String sqlQuery = "SELECT COUNT(editionID), IFNULL((SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?), 0) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn=?)";
 
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, journal.getISSN());
+            statement.setString(2, journal.getISSN());
             rs = statement.executeQuery();
 
-            if(!rs.next() || rs.getInt(1) < 4)
+            if(!rs.next() || (rs.getInt(1) < 4) && rs.getInt(2) != 0) {
                 throw new LastVolumeNotEnoughEditionsExceptions();
+            }
 
 
             // SELECT COUNT(editionID) FROM Editions WHERE volumeNum = (SELECT MAX(Volumes.volumeNum) FROM Volumes WHERE issn='raivoissn')
@@ -887,12 +898,12 @@ public class DataAccessController implements DatabaseInterface {
     }
 
     @Override
-    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException {
+    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException, IOException {
         ResultSet res = null;
         try {
             openConnection();
 
-            String sqlQuery = "SELECT * FROM Articles WHERE articleID=?";
+            String sqlQuery = "SELECT title, abstract, content, pdf, articleID FROM Articles, Pdfs WHERE articleID=? AND Articles.pdfID = Pdfs.pdfID";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, articleID);
 
@@ -901,9 +912,18 @@ public class DataAccessController implements DatabaseInterface {
             Article article = new Article();
 
             if (res.next()) {
-                article.setTitle(res.getString(2));
-                article.setSummary(res.getString(3));
-                article.setContent(res.getString(4));
+                article.setTitle(res.getString(1));
+                article.setSummary(res.getString(2));
+                article.setContent(res.getString(3));
+
+                InputStream binaryStream = res.getBinaryStream(4);
+
+
+                article.setArticleID(res.getInt(5));
+
+                article.setPdfData(StreamToPDF.streamToBytes(binaryStream));
+                article.savePdfToPC();
+
             } else {
                 throw new ObjectDoesNotExistException("An article with that ID does not exist");
             }
@@ -1857,14 +1877,14 @@ public class DataAccessController implements DatabaseInterface {
     @Override
     //to be tested
     public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException {
-        if (!edition.isPublic())
-            throw new InvalidAuthenticationException();
+
 
         ResultSet rs = null;
         try {
             openConnection();
-            String sqlQuery = "SELECT editionArticleID, Articles.articleID, editionID, startingPage, endingPage, title, abstract, content" +
-                    "  FROM EditionArticles, Articles WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?";
+            String sqlQuery = "SELECT editionArticleID, Articles.articleID, EditionArticles.editionID, startingPage, endingPage, title, abstract, content" +
+                    "  FROM EditionArticles, Articles, Editions WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?" +
+                    " AND Editions.editionID = EditionArticles.editionID AND Editions.isPublic=true";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
@@ -1888,7 +1908,7 @@ public class DataAccessController implements DatabaseInterface {
             }
             return list;
         } finally {
-            if (rs == null) {
+            if (rs != null) {
                 rs.close();
             }
             closeConnection();
@@ -1899,7 +1919,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     //to be tested
-    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, NotEnoughArticlesInEditionException {
 
         if (!validCredentials(mainEditor))
             throw new InvalidAuthenticationException();
@@ -1919,6 +1939,10 @@ public class DataAccessController implements DatabaseInterface {
             statement = connection.prepareStatement(sqlCheck);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
+
+            if(!rs.next())
+                throw new SQLException();
+
             if (rs.getInt(1) < 3) {
                 throw new NotEnoughArticlesInEditionException();
             } else {
@@ -1928,13 +1952,10 @@ public class DataAccessController implements DatabaseInterface {
                 statement.executeUpdate();
                 return true;
             }
-        } catch (Exception e) {
-            return false;
-        } finally {
+        }
+        finally {
             closeConnection();
         }
-
-
     }
 
 
@@ -1971,6 +1992,11 @@ public class DataAccessController implements DatabaseInterface {
             else {
                 String sqlString = "INSERT INTO EditionArticles (articleID, editionID, startingPage, endingPage) VALUES (?, ?, ?, ?)";
                 statement = connection.prepareStatement(sqlString);
+                System.out.println("Auisdhfgnlksdf");
+                System.out.println(article.getArticleID());
+                System.out.println(article.getEditionID());
+                System.out.println(article.getStartingPage());
+                System.out.println(article.getEndingPage());
                 statement.setInt(1, article.getArticleID());
                 statement.setInt(2, article.getEditionID());
                 statement.setInt(3, article.getStartingPage());
@@ -1979,9 +2005,6 @@ public class DataAccessController implements DatabaseInterface {
                 return true;
             }
         }
-        catch (Exception e){
-            return false;
-        }
         finally{
             if (rs == null) {
                 rs.close();
@@ -1989,6 +2012,7 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
+
 
 
 
@@ -2026,6 +2050,42 @@ public class DataAccessController implements DatabaseInterface {
             if (res != null)
                 res.close();
 
+            closeConnection();
+        }
+    }
+
+
+    private int saveFile(File file) throws FileNotFoundException, SQLException {
+        ResultSet rs = null;
+        try {
+            FileInputStream input = new FileInputStream(file);
+            openConnection();
+
+            String sqlCheck = "INSERT INTO Pdfs (pdf) VALUES (?)";
+
+            statement = connection.prepareStatement(sqlCheck, Statement.RETURN_GENERATED_KEYS);
+            statement.setBinaryStream(1, input);
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException();
+            }
+
+            rs = statement.getGeneratedKeys();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else
+                throw new SQLException();
+        }
+        catch (PacketTooBigException e){
+            JOptionPane.showMessageDialog(null,"The pdf file you selected is too large. It must be smaller than a Mb.");
+            throw e;
+        }
+        finally{
+            if (rs != null) {
+                rs.close();
+            }
             closeConnection();
         }
     }

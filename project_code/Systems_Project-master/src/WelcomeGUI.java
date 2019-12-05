@@ -19,7 +19,7 @@ public class WelcomeGUI extends JFrame{
         add(rootPanel);
 
         setTitle("Welcome Page");
-        setSize(650,500);
+        setSize(750,500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
