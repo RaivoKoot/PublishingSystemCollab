@@ -85,7 +85,7 @@ public class Readers extends TreePath {
                     Edition edition = (Edition) currentNode.getUserObject();
                     Article[] articles = null;
                     try {
-                        articles = SessionData.db.getallEditionArticles(edition).toArray(new Article[0]);
+                        articles = SessionData.db.getAllEditionArticles(edition).toArray(new Article[0]);
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
