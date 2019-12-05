@@ -3,8 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import database_interface.*;
-import com.mysql.cj.Session;
 import exceptions.*;
 import models.*;
 import main.*;
@@ -19,14 +17,11 @@ public class Appoint extends JFrame {
     private JButton backward;
     private JLabel Success;
     private JTextField university;
-    private JComboBox comboBox1;
     private JPanel first_view;
     private JPanel second_view;
+    private JComboBox comboBox1;
     private JComboBox comboBox2;
     public Journal[] journal_list;
-    Connection con = null; // a Connection object
-    Statement stmt = null;
-    Statement stmt2 = null;
 
     public Appoint() {
         add(AppointPanel);

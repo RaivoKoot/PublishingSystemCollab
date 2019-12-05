@@ -23,10 +23,10 @@ public class EditionArticle extends Article {
 	public EditionArticle(Article article)
 	{
 		super();
+		super.setArticleID(article.getArticleID());
 		super.setTitle(article.getTitle());
 		super.setSummary(article.getSummary());
 		super.setContent(article.getContent());
-		super.setArticleID(article.getArticleID());
 		super.setFinal(article.isFinal());
 		super.setAccepted(article.isAccepted());
 		super.setIssn(article.getIssn());
