@@ -312,7 +312,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @throws SQLException
      */
-    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, FileNotFoundException;
 
     /**
      * Gets a list of articles submitted to the specified journal that need to be accepted or rejected by an editor afer they have been fully reviewed by reviewers
