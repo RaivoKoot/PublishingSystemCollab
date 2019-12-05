@@ -1793,4 +1793,88 @@ public class DataAccessController implements DatabaseInterface {
         }
 
     }
+
+
+    /**
+     * gets the latest Edition of the specified journal
+     * use max function to return the biggest page number of all the EditionArticles of that journal
+     * set currentLastPage of the edition object to the max
+     *
+     * @param journal
+     * @param editor
+     * @return
+     */
+    @Override
+    //to be tested
+    public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(journal.getISSN());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+        ResultSet rs = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT Editions.editionID, Editions.editionNum, Editions.volumeNum, IFNULL(MAX(EditionArticles.endingPage), 0) FROM Editions\n" +
+                    "\tLEFT JOIN EditionArticles on EditionArticles.editionID = Editions.editionID\n" +
+                    "\tWHERE Editions.editionID = (SELECT MAX(Editions.editionID) FROM Editions WHERE ISSN=?)";
+
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, journal.getISSN());
+
+            rs = statement.executeQuery();
+
+            Edition edition = new Edition();
+
+            edition.setEditionID(rs.getInt(1));
+            edition.setEditionNum(rs.getInt(2));
+            edition.setVolumeNum(rs.getInt(3));
+            edition.setCurrentLastPage(rs.getInt(4));
+
+            return edition;
+
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * @param edition must include volumeNum and editionNum
+     * @return a list of all articles in this edition
+     * @throws ObjectDoesNotExistException
+     * @precondition the given edition exists
+     */
+    @Override
+    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
+        return null;
+    }
+
+    /**
+     * checks if edition has at least 3 articles, checks if user is main editor for journal
+     * and then set isPublished to true
+     *
+     * @param edition
+     * @param mainEditor
+     */
+    @Override
+    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+    }
+
+    /**
+     * creates an EditionArticle object
+     * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
+     *
+     * @param article
+     * @param editor
+     */
+    @Override
+    public EditionArticle assignArticleToEdition(Article article, User editor) {
+        return null;
+    }
 }
