@@ -346,7 +346,7 @@ public interface DatabaseInterface {
      * @throws SQLException
      * @throws UserDoesNotExistException
      */
-    public void setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public boolean setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
     /**
      * delete user if they dont have an authorship, an editorship and no non-final reviews
@@ -385,7 +385,7 @@ public interface DatabaseInterface {
      * @param editor
      * @return
      */
-    public Edition getLatestEdition(Journal journal, User editor);
+    public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException;
 
     /**
      * creates an EditionArticle object
