@@ -1989,4 +1989,45 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
     }
+
+
+
+    @Override
+    public ArrayList<Edition> getAllVolumePublicEditions(Volume volume) throws SQLException {
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT * FROM Editions WHERE ISSN=? AND volumeNum=? AND isPublic = true";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, volume.getISSN());
+            statement.setInt(2, volume.getVolNum());
+
+            res = statement.executeQuery();
+
+            ArrayList<Edition> editions = new ArrayList<>();
+
+            while (res.next()) {
+                Edition edition = new Edition();
+                edition.setEditionID(res.getInt(1));
+                edition.setEditionNum(res.getInt(2));
+                edition.setPublicationMonth(res.getInt(3));
+                edition.setVolumeNum(res.getInt(4));
+                edition.setPublic(res.getBoolean(5));
+                edition.setIssn(res.getString(6));
+
+                editions.add(edition);
+            }
+
+            return editions;
+
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
 }
