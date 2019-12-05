@@ -96,8 +96,11 @@ public class Readers extends TreePath {
 
                 }*/ else if(userObject instanceof Article){
                     Article article = (Article) userObject;
-
-
+                    ArticleTreeDisplay info_box = new ArticleTreeDisplay();
+                    info_box.title_field.setText((article.getTitle()));
+                    info_box.summary_field.setText(article.getSummary());
+                    info_box.content_field.setText(article.getContent());
+                    info_box.setVisible(true);
                 }
 
             }

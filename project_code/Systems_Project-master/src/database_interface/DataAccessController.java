@@ -1860,14 +1860,14 @@ public class DataAccessController implements DatabaseInterface {
     @Override
     //to be tested
     public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException {
-        if (!edition.isPublic())
-            throw new InvalidAuthenticationException();
+
 
         ResultSet rs = null;
         try {
             openConnection();
-            String sqlQuery = "SELECT editionArticleID, Articles.articleID, editionID, startingPage, endingPage, title, abstract, content" +
-                    "  FROM EditionArticles, Articles WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?";
+            String sqlQuery = "SELECT editionArticleID, Articles.articleID, EditionArticles.editionID, startingPage, endingPage, title, abstract, content" +
+                    "  FROM EditionArticles, Articles, Editions WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?" +
+                    " AND Editions.editionID = EditionArticles.editionID AND Editions.isPublic=true";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
@@ -1891,7 +1891,7 @@ public class DataAccessController implements DatabaseInterface {
             }
             return list;
         } finally {
-            if (rs == null) {
+            if (rs != null) {
                 rs.close();
             }
             closeConnection();
@@ -1975,6 +1975,11 @@ public class DataAccessController implements DatabaseInterface {
             else {
                 String sqlString = "INSERT INTO EditionArticles (articleID, editionID, startingPage, endingPage) VALUES (?, ?, ?, ?)";
                 statement = connection.prepareStatement(sqlString);
+                System.out.println("Auisdhfgnlksdf");
+                System.out.println(article.getArticleID());
+                System.out.println(article.getEditionID());
+                System.out.println(article.getStartingPage());
+                System.out.println(article.getEndingPage());
                 statement.setInt(1, article.getArticleID());
                 statement.setInt(2, article.getEditionID());
                 statement.setInt(3, article.getStartingPage());
@@ -1982,9 +1987,6 @@ public class DataAccessController implements DatabaseInterface {
                 statement.executeUpdate();
                 return true;
             }
-        }
-        catch (Exception e){
-            return false;
         }
         finally{
             if (rs == null) {
