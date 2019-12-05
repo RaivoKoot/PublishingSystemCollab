@@ -73,7 +73,7 @@ public class MainAuthorArea extends JFrame{
                 SubmitRevision revise_article = new SubmitRevision();
                 if(revise_article.comboBox1.getItemCount() == 0){
                     JOptionPane.showMessageDialog(null, "Sorry you do not have any artcile that needs revision, " +
-                            "try submitting an article");
+                            "try submitting an article or wait until one of your articles has received 3 reviews");
                 }else{
                 revise_article.setVisible(true);
                 dispose();}

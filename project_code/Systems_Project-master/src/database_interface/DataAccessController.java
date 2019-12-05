@@ -922,7 +922,6 @@ public class DataAccessController implements DatabaseInterface {
                 article.setArticleID(res.getInt(5));
 
                 article.setPdfData(StreamToPDF.streamToBytes(binaryStream));
-                article.savePdfToPC();
 
             } else {
                 throw new ObjectDoesNotExistException("An article with that ID does not exist");
@@ -1454,7 +1453,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    public boolean submitFinalArticleVersion(Article article, User mainAuthor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, FileNotFoundException {
         if (!validCredentials(mainAuthor))
             throw new InvalidAuthenticationException();
 
@@ -1462,16 +1461,19 @@ public class DataAccessController implements DatabaseInterface {
             throw new InvalidAuthenticationException();
         }
 
+        int fileID = saveFile(article.getPdf());
+
         try {
             openConnection();
-            String sqlQuery = "UPDATE Articles SET title = ?, abstract = ?, content = ?, isFinal = true WHERE Articles.articleID = ? AND Articles.isFinal = false";
+            String sqlQuery = "UPDATE Articles SET title = ?, abstract = ?, content = ?, isFinal = true, pdfID = ? WHERE Articles.articleID = ? AND Articles.isFinal = false";
 
             statement = connection.prepareStatement(sqlQuery);
 
             statement.setString(1, article.getTitle());
             statement.setString(2, article.getSummary());
             statement.setString(3, article.getContent());
-            statement.setInt(4, article.getArticleID());
+            statement.setInt(5, article.getArticleID());
+            statement.setInt(4, fileID);
 
             int result = statement.executeUpdate();
             if (result != 1) throw new ObjectDoesNotExistException("Final article could not be submitted");
@@ -1483,7 +1485,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-    public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+    public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, IOException {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
@@ -1492,11 +1494,12 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT Articles.articleID, Reviews.reviewID, title, Articles.abstract, content FROM Articles, Reviews, Critiques WHERE\n" +
+            String sqlQuery = "SELECT Articles.articleID, Reviews.reviewID, title, Articles.abstract, content, pdf FROM Articles, Reviews, Critiques, Pdfs WHERE\n" +
                     "\tArticles.articleID = Reviews.submissionID AND Reviews.reviewerEmail = ?\n" +
                     "\tAND Articles.isFinal = true\n" +
                     "\tAND Critiques.reviewID = Reviews.reviewID AND Critiques.reply is not null\n" +
                     "\tAND Reviews.isFinal = false" +
+                    "\tAND Pdfs.pdfID = Articles.pdfID" +
                     "\t\n" +
                     "\t\n" +
                     "\tGROUP BY Reviews.reviewID";
@@ -1516,7 +1519,14 @@ public class DataAccessController implements DatabaseInterface {
 
                 article.setContent(res.getString(5));
 
+                InputStream binaryStream = res.getBinaryStream(6);
+
+
+                article.setPdfData(StreamToPDF.streamToBytes(binaryStream));
+
                 articles.add(article);
+
+
             }
 
             return articles;
@@ -1738,7 +1748,7 @@ public class DataAccessController implements DatabaseInterface {
 
     }
 
-    public ArrayList<Article> getArticlesNeedingRevision(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    public ArrayList<Article> getArticlesNeedingRevision(User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, IOException {
 
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
@@ -1747,14 +1757,15 @@ public class DataAccessController implements DatabaseInterface {
 
         try {
             openConnection();
-            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, COUNT(Reviews.verdict) as reviews\n" +
-                    "FROM Articles, Reviews, Authorships\n" +
-                    "WHERE Articles.articleID = Reviews.submissionID AND Articles.isFinal = false\n" +
-                    "\tAND Authorships.articleID = Articles.articleID\n" +
-                    "\tAND Authorships.email = ? AND Authorships.isMain=true\n" +
-                    "\n" +
-                    "GROUP BY Articles.articleID\n" +
-                    "HAVING reviews = 3";
+            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, COUNT(Reviews.verdict) as reviews, pdf\n" +
+                    "                    FROM Articles, Reviews, Authorships, Pdfs\n" +
+                    "                    WHERE Articles.articleID = Reviews.submissionID AND Articles.isFinal = false\n" +
+                    "                    AND Authorships.articleID = Articles.articleID\n" +
+                    "                    AND Authorships.email = ? AND Authorships.isMain=true\n" +
+                    "                    AND Articles.pdfID = Pdfs.pdfID\n" +
+                    "                    \n" +
+                    "                    GROUP BY Articles.articleID\n" +
+                    "                    HAVING reviews = 3";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
             set = statement.executeQuery();
@@ -1767,6 +1778,11 @@ public class DataAccessController implements DatabaseInterface {
                 article.setTitle(set.getString(2));
                 article.setSummary(set.getString(3));
                 article.setContent(set.getString(4));
+
+                InputStream binaryStream = set.getBinaryStream(6);
+
+
+                article.setPdfData(StreamToPDF.streamToBytes(binaryStream));
 
                 list.add(article);
             }

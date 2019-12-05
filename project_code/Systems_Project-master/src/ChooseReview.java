@@ -21,7 +21,6 @@ public class ChooseReview extends JFrame {
     private JTextArea critique_field;
     private JButton getContentOfChosenButton;
     private JTextField chosenarticletitle;
-    private JTextArea chosen_article_content;
     private JTextArea chosenarticleabstract;
 
     private ArrayList<Critique> critiques;
@@ -162,9 +161,14 @@ public class ChooseReview extends JFrame {
                     return;
                 }
 
-
+                try {
+                    abc.savePdfToPC();
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null, "Something went wrong.");
+                    e1.printStackTrace();
+                    return;
+                }
                 chosenarticletitle.setText(abc.getTitle());
-                chosen_article_content.setText(abc.getContent());
                 chosenarticleabstract.setText(abc.getSummary());
 
             }});

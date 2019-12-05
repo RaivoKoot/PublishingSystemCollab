@@ -1,11 +1,15 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import exceptions.InvalidAuthenticationException;
 import exceptions.ObjectDoesNotExistException;
 import exceptions.UserDoesNotExistException;
+import helpers.ChoosePDF;
 import main.*;
 import models.*;
 
@@ -16,7 +20,6 @@ public class SubmitRevision extends JFrame{
     private JTextArea textArea1;
     private JButton submitRevisionButton;
     private JButton backward;
-    private JTextArea content;
     private JButton getInfoButton;
     private ArrayList<Article> articles_for_revision;
 
@@ -26,12 +29,14 @@ public class SubmitRevision extends JFrame{
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         textArea1.setLineWrap(true);
-        content.setLineWrap(true);
 
         try {
             articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-        } catch (Exception ee){
-            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Something went wrong");
+
         }
 
         for(int i = 0; i< articles_for_revision.size() ; i++) {
@@ -61,8 +66,11 @@ public class SubmitRevision extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 try {
                     articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-                } catch (Exception ee){
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null,"Sorry, something went wrong");
+
                 }
 
                 for(int i = 0; i< articles_for_revision.size() ; i++) {
@@ -80,7 +88,12 @@ public class SubmitRevision extends JFrame{
 
                 textField1.setText(tar.getTitle());
                 textArea1.setText(tar.getSummary());
-                content.setText(tar.getContent());
+
+                try {
+                    tar.savePdfToPC();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -89,8 +102,11 @@ public class SubmitRevision extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 try {
                     articles_for_revision = SessionData.db.getArticlesNeedingRevision(SessionData.currentUser);
-                } catch (Exception ee){
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null,"Sorry, something went wrong");
+
                 }
 
                 Article tar = null;
@@ -103,8 +119,16 @@ public class SubmitRevision extends JFrame{
                 }
 
                 tar.setTitle(textField1.getText());
-                tar.setContent(content.getText());
+                tar.setContent("PLACEHOLDER");
                 tar.setSummary(textArea1.getText());
+
+
+                File pdf = ChoosePDF.choosePDF();
+
+                if(pdf == null){
+                    return;
+                }
+                tar.setPdf(pdf);
 
                 try {
                     boolean success = SessionData.db.submitFinalArticleVersion(tar,SessionData.currentUser);
@@ -118,16 +142,7 @@ public class SubmitRevision extends JFrame{
                         JOptionPane.showMessageDialog(null,"Sorry, Something Went Wrong!");
 
                     }
-                } catch (InvalidAuthenticationException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry, Something Went Wrong!");
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry, Something Went Wrong!");
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    JOptionPane.showMessageDialog(null,"Sorry, Something Went Wrong!");
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
+                } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null,"Sorry, Something Went Wrong!");
                     e1.printStackTrace();
                 }

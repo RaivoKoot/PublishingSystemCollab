@@ -13,6 +13,7 @@ import org.junit.runners.MethodSorters;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -572,7 +573,7 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test9test9test7getArticlesNeedingRevision() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException {
+    public void test9test9test7getArticlesNeedingRevision() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException, ObjectDoesNotExistException, IOException {
         db.getArticlesNeedingRevision(user);
     }
 }

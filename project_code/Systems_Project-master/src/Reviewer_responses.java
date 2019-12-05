@@ -7,6 +7,7 @@ import main.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ public class Reviewer_responses extends JFrame{
     private JTextField summary;
     private JButton getInfoButton;
     private JTextField titre;
-    private JTextArea content;
     private JButton viewCritiquesAndGiveButton;
     private JButton backward;
 
@@ -33,8 +33,10 @@ public class Reviewer_responses extends JFrame{
 
         try {
             lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
+
         } catch (Exception ee){
             JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
         }
 
         for(int i = 0; i< lister.size() ; i++) {
@@ -48,8 +50,12 @@ public class Reviewer_responses extends JFrame{
 
                 try {
                     lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
-                } catch (Exception ee){
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Something went wrong.");
+                    return;
+
                 }
 
                 Article art = null;
@@ -63,7 +69,12 @@ public class Reviewer_responses extends JFrame{
 
                 summary.setText(art.getSummary());
                 titre.setText(art.getTitle());
-                content.setText(art.getContent());
+                try {
+                    art.savePdfToPC();
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null, "Something went wrong.");
+                    e1.printStackTrace();
+                }
             }
         });
 
@@ -85,8 +96,11 @@ public class Reviewer_responses extends JFrame{
 
                 try {
                     lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
-                } catch (Exception ee){
-                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null,"Something went wrong.");
+
                 }
 
                 Article art = null;

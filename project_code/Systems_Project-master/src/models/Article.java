@@ -2,6 +2,7 @@ package models;
 
 import helpers.StreamToPDF;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,6 +35,7 @@ public class Article {
 
     public void savePdfToPC() throws IOException {
         StreamToPDF.saveToPDF(pdfData, title);
+        JOptionPane.showMessageDialog(null, "The PDF file of this article has been downloaded. You can find it in the folder where this app is run from.");
     }
 
     public byte[] getPdfData() {
