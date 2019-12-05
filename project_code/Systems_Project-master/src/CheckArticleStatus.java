@@ -28,7 +28,7 @@ public class CheckArticleStatus extends JFrame {
     public CheckArticleStatus(){
         add(CheckPanel);
         setTitle("Check Status View");
-        setSize(400, 500);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         ArrayList<Article> articles_list = null;

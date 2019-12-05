@@ -24,7 +24,7 @@ public class RespondToCritiques extends JFrame {
     public RespondToCritiques(){
         add(RespondToCritiques);
         setTitle("Respond to Critiques Area");
-        setSize(400, 500);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ArrayList<Article> articles_list = null;
 

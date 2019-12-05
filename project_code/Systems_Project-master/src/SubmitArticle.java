@@ -29,7 +29,7 @@ public class SubmitArticle extends JFrame {
     public SubmitArticle() {
         add(SubmitArticle);
         setTitle("Subscription Form");
-        setSize(600, 500);
+        setSize(800, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         Journal[] journal_list = new Journal[0];

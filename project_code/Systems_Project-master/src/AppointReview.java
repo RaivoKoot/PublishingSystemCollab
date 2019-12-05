@@ -19,7 +19,7 @@ public class AppointReview extends JFrame{
     AppointReview(){
         add(AppointReview);
         setTitle("Appoint Review Page");
-        setSize(600, 500);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         Article[] reviews_list = new Article[0];
