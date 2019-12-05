@@ -1899,7 +1899,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     //to be tested
-    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, NotEnoughArticlesInEditionException {
 
         if (!validCredentials(mainEditor))
             throw new InvalidAuthenticationException();
@@ -1919,6 +1919,10 @@ public class DataAccessController implements DatabaseInterface {
             statement = connection.prepareStatement(sqlCheck);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
+
+            if(!rs.next())
+                throw new SQLException();
+
             if (rs.getInt(1) < 3) {
                 throw new NotEnoughArticlesInEditionException();
             } else {
@@ -1928,13 +1932,10 @@ public class DataAccessController implements DatabaseInterface {
                 statement.executeUpdate();
                 return true;
             }
-        } catch (Exception e) {
-            return false;
-        } finally {
+        }
+        finally {
             closeConnection();
         }
-
-
     }
 
 

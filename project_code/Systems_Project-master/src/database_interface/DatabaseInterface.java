@@ -363,7 +363,7 @@ public interface DatabaseInterface {
      * @param edition
      * @param mainEditor
      */
-    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException, NotEnoughArticlesInEditionException;
 
 
     /**
