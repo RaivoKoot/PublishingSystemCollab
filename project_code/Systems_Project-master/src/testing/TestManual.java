@@ -27,7 +27,7 @@ public class TestManual {
         */
 
         try {
-            System.out.println(Encryption.encryptPassword("HIiiffff5gggggggggggggggggggi"));
+            System.out.println(Encryption.encryptPassword("12345678"));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (PasswordTooShortException e) {

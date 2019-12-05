@@ -110,7 +110,7 @@ public interface DatabaseInterface {
      * @throws InvalidAuthenticationException
      */
     public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException, LastVolumeNotEnoughEditionsExceptions;
 
     /**
      * Using the credentials of editor, creates a new edition with the next in line
