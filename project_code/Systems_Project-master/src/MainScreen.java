@@ -24,7 +24,7 @@ public class MainScreen extends JFrame{
     public MainScreen() {
         add(MainScreenPanel);
         setTitle("Main Screen");
-        setSize(600, 500);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         updatePasswordButton.addActionListener(new ActionListener() {

@@ -26,7 +26,7 @@ public class Reviewer_responses extends JFrame{
     public Reviewer_responses(){
         add(Responses);
         setTitle("Reviewer Responses Area");
-        setSize(600, 700);
+        setSize(700, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ArrayList<Article> lister = null;
         String[] verdicts = {"Strong Accept (champion)", "Weak Accept", "Weak Reject", "Strong Reject (detractor)"};
