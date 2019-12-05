@@ -1795,15 +1795,7 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-    /**
-     * gets the latest Edition of the specified journal
-     * use max function to return the biggest page number of all the EditionArticles of that journal
-     * set currentLastPage of the edition object to the max
-     *
-     * @param journal
-     * @param editor
-     * @return
-     */
+
     @Override
     //to be tested
     public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
@@ -1843,6 +1835,9 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+
+
+
     /**
      * @param edition must include volumeNum and editionNum
      * @return a list of all articles in this edition
@@ -1850,19 +1845,53 @@ public class DataAccessController implements DatabaseInterface {
      * @precondition the given edition exists
      */
     @Override
-    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
+    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
         return null;
     }
 
-    /**
-     * checks if edition has at least 3 articles, checks if user is main editor for journal
-     * and then set isPublished to true
-     *
-     * @param edition
-     * @param mainEditor
-     */
+
+
+
     @Override
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    //to be tested
+    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+
+        if (!validCredentials(mainEditor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(mainEditor);
+        editorship.setIssn(edition.getIssn());
+
+        if (!isChiefEditor(editorship)) {
+            throw new InvalidAuthenticationException();
+        }
+
+        ResultSet rs = null;
+
+        try {
+            openConnection();
+            String sqlCheck = "SELECT COUNT(editionID) FROM EditionArticles WHERE EditionArticles.editionID = ?";
+            statement = connection.prepareStatement(sqlCheck));
+            statement.setInt(1, edition.getEditionID());
+            rs = statement.executeQuery();
+            if (rs.getInt(1) < 3) {
+                throw new NotEnoughArticlesInEditionException();
+            }
+            else {
+                String sqlQuery = "UPDATE Editions SET Editions.isPublic = true WHERE editionID = ?";
+                statement = connection.prepareStatement(sqlQuery);
+                statement.setInt(1, edition.getEditionID());
+                statement.executeUpdate();
+                return true;
+            }
+        }
+        catch (Exception e){
+            return false;
+        }
+        finally {
+            closeConnection();
+        }
+
 
     }
 

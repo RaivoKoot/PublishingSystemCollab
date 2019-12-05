@@ -1,6 +1,5 @@
 package database_interface;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -66,7 +65,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @precondition the given edition exists
      */
-    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException;
+    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException;
 
     /**
      * Creates a new journal and appoints chiefEditor as the main and first editor
@@ -364,7 +363,7 @@ public interface DatabaseInterface {
      * @param edition
      * @param mainEditor
      */
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public boolean publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
 
     /**
