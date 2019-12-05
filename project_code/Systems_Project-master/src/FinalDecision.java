@@ -38,13 +38,10 @@ public class FinalDecision extends JFrame{
 
         try {
             journal_list = SessionData.db.getJournalsByUser(SessionData.currentUser).toArray(new Journal[0]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
+
         for(int i = 0; i<= journal_list.length-1 ; i++) {
             comboBox1.addItem(journal_list[i].getName());
         }
@@ -66,14 +63,8 @@ public class FinalDecision extends JFrame{
 
                 try {
                     articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for(int i = 0; i < articles_list.size() ; i++) {
@@ -101,14 +92,8 @@ public class FinalDecision extends JFrame{
 
                 try {
                     articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article art = null;
@@ -163,14 +148,8 @@ public class FinalDecision extends JFrame{
 
                 try {
                     articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article art = null;
@@ -193,14 +172,8 @@ public class FinalDecision extends JFrame{
                     }else{
                         JOptionPane.showMessageDialog(null,"Sorry something went wrong");
                     }
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
             }
         });
@@ -220,14 +193,8 @@ public class FinalDecision extends JFrame{
 
                 try {
                     articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article art = null;
@@ -249,14 +216,8 @@ public class FinalDecision extends JFrame{
                     }else{
                         JOptionPane.showMessageDialog(null,"Sorry something went wrong");
                     }
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
             }
         });
