@@ -1856,16 +1856,47 @@ public class DataAccessController implements DatabaseInterface {
 
 
 
-
-    /**
-     * @param edition must include volumeNum and editionNum
-     * @return a list of all articles in this edition
-     * @throws ObjectDoesNotExistException
-     * @precondition the given edition exists
-     */
     @Override
-    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
-        return null;
+    //to be tested
+    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException {
+        if (!edition.isPublic())
+            throw new InvalidAuthenticationException();
+
+        ResultSet rs = null;
+        try {
+            openConnection();
+            String sqlQuery = "SELECT editionArticleID, Articles.articleID, editionID, startingPage, endingPage, title, abstract, content" +
+                    "  FROM EditionArticles, Articles WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, edition.getEditionID());
+            rs = statement.executeQuery();
+
+            ArrayList<EditionArticle> list = new ArrayList<EditionArticle>();
+
+            while (rs.next()) {
+
+                EditionArticle editionArticle = new EditionArticle();
+
+                editionArticle.setEditionArticleID(rs.getInt(1));
+                editionArticle.setArticleID(rs.getInt(2));
+                editionArticle.setEditionID(rs.getInt(3));
+                editionArticle.setStartingPage(rs.getInt(4));
+                editionArticle.setEndingPage(rs.getInt(5));
+                editionArticle.setTitle(rs.getString(6));
+                editionArticle.setSummary(rs.getString(7));
+                editionArticle.setContent(rs.getString(8));
+
+                list.add(editionArticle);
+            }
+            return list;
+        }
+        finally {
+            if (rs == null) {
+                rs.close();
+            }
+            closeConnection();
+        }
+
     }
 
 
@@ -1890,7 +1921,7 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
             String sqlCheck = "SELECT COUNT(editionID) FROM EditionArticles WHERE EditionArticles.editionID = ?";
-            statement = connection.prepareStatement(sqlCheck));
+            statement = connection.prepareStatement(sqlCheck);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
             if (rs.getInt(1) < 3) {
@@ -1925,4 +1956,6 @@ public class DataAccessController implements DatabaseInterface {
     public EditionArticle assignArticleToEdition(Article article, User editor) {
         return null;
     }
+
+
 }
