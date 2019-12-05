@@ -1810,7 +1810,6 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
     @Override
     //to be tested
     public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
@@ -1855,7 +1854,6 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
     @Override
     //to be tested
     public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException {
@@ -1889,8 +1887,7 @@ public class DataAccessController implements DatabaseInterface {
                 list.add(editionArticle);
             }
             return list;
-        }
-        finally {
+        } finally {
             if (rs == null) {
                 rs.close();
             }
@@ -1898,8 +1895,6 @@ public class DataAccessController implements DatabaseInterface {
         }
 
     }
-
-
 
 
     @Override
@@ -1926,11 +1921,60 @@ public class DataAccessController implements DatabaseInterface {
             rs = statement.executeQuery();
             if (rs.getInt(1) < 3) {
                 throw new NotEnoughArticlesInEditionException();
-            }
-            else {
+            } else {
                 String sqlQuery = "UPDATE Editions SET Editions.isPublic = true WHERE editionID = ?";
                 statement = connection.prepareStatement(sqlQuery);
                 statement.setInt(1, edition.getEditionID());
+                statement.executeUpdate();
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        } finally {
+            closeConnection();
+        }
+
+
+    }
+
+
+
+
+    @Override
+    //to be tested
+    public boolean assignArticleToEdition(EditionArticle article, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException, EditionFullException {
+
+        if (!validCredentials(editor))
+            throw new InvalidAuthenticationException();
+
+        JournalEditor editorship = new JournalEditor(editor);
+        editorship.setIssn(article.getIssn());
+
+        if (getEditorship(editorship) == null)
+            throw new InvalidAuthenticationException();
+
+
+        ResultSet rs = null;
+
+        try {
+            openConnection();
+
+            String sqlCheck = "SELECT COUNT(editionID) FROM EditionArticles WHERE EditionArticles.editionID = ?";
+
+            statement = connection.prepareStatement(sqlCheck);
+            statement.setInt(1, article.getEditionID());
+            rs = statement.executeQuery();
+
+            if (!rs.next() || rs.getInt(1) > 7) {
+                throw new EditionFullException();
+            }
+            else {
+                String sqlString = "INSERT INTO EditionArticles (articleID, editionID, startingPage, endingPage) VALUES (?, ?, ?, ?)";
+                statement = connection.prepareStatement(sqlString);
+                statement.setInt(1, article.getArticleID());
+                statement.setInt(2, article.getEditionID());
+                statement.setInt(3, article.getStartingPage());
+                statement.setInt(4, article.getEndingPage());
                 statement.executeUpdate();
                 return true;
             }
@@ -1938,24 +1982,11 @@ public class DataAccessController implements DatabaseInterface {
         catch (Exception e){
             return false;
         }
-        finally {
+        finally{
+            if (rs == null) {
+                rs.close();
+            }
             closeConnection();
         }
-
-
     }
-
-    /**
-     * creates an EditionArticle object
-     * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
-     *
-     * @param article
-     * @param editor
-     */
-    @Override
-    public EditionArticle assignArticleToEdition(Article article, User editor) {
-        return null;
-    }
-
-
 }
