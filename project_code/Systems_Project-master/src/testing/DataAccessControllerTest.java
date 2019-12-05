@@ -122,20 +122,20 @@ public class DataAccessControllerTest {
     }
 
     @Test
-    public void test2ChangePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+    public void test2ChangePassword() throws IncompleteInformationException, SQLException, UserDoesNotExistException, InvalidAuthenticationException, PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
 
-        assertTrue(db.changePassword(user, "pswd"));
+        assertTrue(db.changePassword(user, "pswdpswdpswd1"));
 
-        assertThrows(IncompleteInformationException.class, () -> {
+        assertThrows(PasswordTooShortException.class, () -> {
             db.changePassword(incompleteInfo, "");
         });
 
         assertThrows(UserDoesNotExistException.class, () -> {
-            db.changePassword(nonexistentUser, "new");
+            db.changePassword(nonexistentUser, "newnewnew1");
         });
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.changePassword(badPasswordUser, "new");
+            db.changePassword(badPasswordUser, "newnewnew1newnew");
         });
 
     }
@@ -266,10 +266,9 @@ public class DataAccessControllerTest {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        assertEquals(2, volumes.size());
+        assertEquals(1, volumes.size());
 
         assertEquals(1, volumes.get(0).getVolNum());
-        assertEquals(2, volumes.get(1).getVolNum());
 
     }
 
@@ -278,10 +277,10 @@ public class DataAccessControllerTest {
 
         ArrayList<Volume> volumes = db.getAllJournalVolumes(journal);
 
-        db.createNextEdition(volumes.get(1), chief, "JANUARY");
+        db.createNextEdition(volumes.get(0), chief, "JANUARY");
 
         assertThrows(LastEditionNotFinishedException.class, () -> {
-            db.createNextEdition(volumes.get(1), chief, "JANUARY");
+            db.createNextEdition(volumes.get(0), chief, "JANUARY");
         });
 
         /*
@@ -296,7 +295,7 @@ public class DataAccessControllerTest {
         */
 
         assertThrows(InvalidAuthenticationException.class, () -> {
-            db.createNextEdition(volumes.get(1), newEditor, "JANUARY");
+            db.createNextEdition(volumes.get(0), newEditor, "JANUARY");
         });
 
         /*
@@ -312,7 +311,7 @@ public class DataAccessControllerTest {
     public void test9test2GetAllVolumeEditions() throws SQLException {
         Volume volume = new Volume();
         volume.setISSN(journal.getISSN());
-        volume.setVolNum(2);
+        volume.setVolNum(1);
 
         ArrayList<Edition> editions = db.getAllVolumeEditions(volume);
 
@@ -495,7 +494,7 @@ public class DataAccessControllerTest {
     public void test9test9test2getArticlesAndStatus() throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         List<Article> articles = db.getOwnArticleWithStatus(thirdUser);
         Article article = articles.get(0);
-        assertEquals(3, article.getReviewsReceived());
+        assertEquals(1, article.getReviewsReceived());
         assertEquals(0,article.getReviewsContributed());
 
         assertEquals(1, articles.size());

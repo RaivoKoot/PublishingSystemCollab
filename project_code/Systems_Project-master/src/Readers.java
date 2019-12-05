@@ -81,7 +81,7 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                } else if(userObject instanceof Edition){
+                } /*else if(userObject instanceof Edition){
                     Edition edition = (Edition) currentNode.getUserObject();
                     Article[] articles = null;
                     try {
@@ -94,7 +94,7 @@ public class Readers extends TreePath {
                         currentNode.add(volumeNode);
                     }
 
-                } else if(userObject instanceof Article){
+                }*/ else if(userObject instanceof Article){
                     Article article = (Article) userObject;
 
 
