@@ -7,6 +7,7 @@ import models.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -82,7 +83,27 @@ public class RegisterCoAuthors extends JFrame {
                     target.setEmail(e_address);
                     target.setUniversity(uni);
                     target.setForenames(fname);
-                    target.setPassword(te_password);
+
+                    try {
+                        target.setPassword(te_password);
+                    } catch (PasswordToLongException e1) {
+                        JOptionPane.showMessageDialog(null,"The password you entered is too long!");
+                        e1.printStackTrace();
+                        return;
+                    } catch (PasswordTooShortException e1) {
+                        JOptionPane.showMessageDialog(null,"The password you entered is too short!");
+                        e1.printStackTrace();
+                        return;
+                    } catch (NoSuchAlgorithmException e1) {
+                        JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
+                        e1.printStackTrace();
+                        return;
+                    } catch (NoDigitInPasswordException e1) {
+                        JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
+                        e1.printStackTrace();
+                        return;
+                    }
+
                     target.setSurname(sname);
                     target.setTitle((String) comboBox2.getSelectedItem());
                     boolean exist = SessionData.db.userExists(target);

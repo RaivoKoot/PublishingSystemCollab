@@ -1,5 +1,12 @@
 package models;
 
+import exceptions.NoDigitInPasswordException;
+import exceptions.PasswordToLongException;
+import exceptions.PasswordTooShortException;
+import helpers.Encryption;
+
+import java.security.NoSuchAlgorithmException;
+
 public class User {
 	private String email;
 	private String title;
@@ -53,13 +60,12 @@ public class User {
 		return password;
 	}
 
-	public void setPassword(char[] password)
-	{
-		this.password = String.valueOf(password);
+	public void setPassword(char[] password) throws PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
+		this.password = Encryption.encryptPassword(String.valueOf(password));
 	}
 
-	public void setPassword(String password){
-		this.password = password;
+	public void setPassword(String password) throws PasswordToLongException, PasswordTooShortException, NoSuchAlgorithmException, NoDigitInPasswordException {
+		this.password = Encryption.encryptPassword(password);
 	}
 
 	public String toString()

@@ -1,14 +1,12 @@
 //import com.mysql.cj.Session;
 import database_interface.DataAccessController;
 import database_interface.DatabaseConstants;
-import exceptions.IncompleteInformationException;
-import exceptions.InvalidAuthenticationException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserDoesNotExistException;
+import exceptions.*;
 import models.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import main.SessionData;
 
@@ -39,7 +37,25 @@ public class MainScreen extends JFrame{
                 User input = new User();
 
                 input.setEmail(SessionData.currentUser.getEmail());
-                input.setPassword(correct);
+                try {
+                    input.setPassword(correct);
+                } catch (PasswordToLongException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered is too long!");
+                    e1.printStackTrace();
+                    return;
+                } catch (PasswordTooShortException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered is too short!");
+                    e1.printStackTrace();
+                    return;
+                } catch (NoSuchAlgorithmException e1) {
+                    JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
+                    e1.printStackTrace();
+                    return;
+                } catch (NoDigitInPasswordException e1) {
+                    JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
+                    e1.printStackTrace();
+                    return;
+                }
 
                 if (new_password.equals(confirmation)) {
                     try {
