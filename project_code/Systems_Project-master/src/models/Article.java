@@ -1,6 +1,9 @@
 package models;
 
+import helpers.StreamToPDF;
+
 import java.io.File;
+import java.io.IOException;
 
 public class Article {
 
@@ -19,12 +22,26 @@ public class Article {
 
     private File pdf;
 
+    private byte[] pdfData;
+
     private int reviewID; // Only used in the case that the article of a review wants to be viewed and the user
     // must know later which reivew that article came from
 
 
     public int getReviewID() {
         return reviewID;
+    }
+
+    public void savePdfToPC() throws IOException {
+        StreamToPDF.saveToPDF(pdfData, title);
+    }
+
+    public byte[] getPdfData() {
+        return pdfData;
+    }
+
+    public void setPdfData(byte[] pdfData) {
+        this.pdfData = pdfData;
     }
 
     public File getPdf() {

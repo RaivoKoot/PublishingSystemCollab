@@ -1,6 +1,7 @@
 package database_interface;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -200,7 +201,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @throws SQLException
      */
-    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException;
+    public Article getArticleInfo(int articleID) throws ObjectDoesNotExistException, SQLException, IOException;
 
 
     /**

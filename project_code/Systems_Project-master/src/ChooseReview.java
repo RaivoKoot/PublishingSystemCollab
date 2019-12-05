@@ -7,6 +7,7 @@ import main.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -144,12 +145,10 @@ public class ChooseReview extends JFrame {
 
                 try {
                     lister = SessionData.db.emptyReviews(SessionData.currentUser);
-                } catch (UserDoesNotExistException ex) {
-                    ex.printStackTrace();
-                } catch (InvalidAuthenticationException ex) {
-                    ex.printStackTrace();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, "Something went wrong.");
+                    e1.printStackTrace();
+                    return;
                 }
 
                 for (Review awd : lister){
@@ -161,10 +160,10 @@ public class ChooseReview extends JFrame {
 
                 try {
                     abc = SessionData.db.getArticleInfo(selected.getSubmissionArticleID());
-                } catch (ObjectDoesNotExistException e1) {
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, "Something went wrong.");
                     e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                    return;
                 }
 
 
