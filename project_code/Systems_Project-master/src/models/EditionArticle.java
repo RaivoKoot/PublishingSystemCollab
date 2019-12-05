@@ -3,12 +3,21 @@ package models;
 public class EditionArticle extends Article {
 
 	private int editionArticleID;
+	private int editionID;
 	private int startingPage;
 	private int endingPage;
 
 	public EditionArticle()
 	{
 		super();
+	}
+
+	public int getEditionID() {
+		return editionID;
+	}
+
+	public void setEditionID(int editionID) {
+		this.editionID = editionID;
 	}
 
 	public EditionArticle(Article article)
