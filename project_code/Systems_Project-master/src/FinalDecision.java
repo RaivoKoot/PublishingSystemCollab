@@ -148,6 +148,102 @@ public class FinalDecision extends JFrame{
             }
         });
 
+        acceptButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                articles_list = null;
+
+                Journal joure = null;
+                for (Journal journal : journal_list){
+                    if (journal.getName().equals(comboBox1.getSelectedItem())){
+                        joure = journal;
+                        break;
+                    }
+                }
+
+                try {
+                    articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
+
+                Article art = null;
+                for (Article arti : articles_list ){
+                    if(arti.getTitle().equals(comboBox2.getSelectedItem())){
+                        art = arti;
+                        break;
+                    }
+                }
+
+                art.isAccepted();
+
+                try {
+                    SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        rejectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                articles_list = null;
+
+                Journal joure = null;
+                for (Journal journal : journal_list){
+                    if (journal.getName().equals(comboBox1.getSelectedItem())){
+                        joure = journal;
+                        break;
+                    }
+                }
+
+                try {
+                    articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
+
+                Article art = null;
+                for (Article arti : articles_list ){
+                    if(arti.getTitle().equals(comboBox2.getSelectedItem())){
+                        art = arti;
+                        break;
+                    }
+                }
+                
+                try {
+                    SessionData.db.setIsAcceptedOrRejected(art, SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (ObjectDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
 
 
     }
