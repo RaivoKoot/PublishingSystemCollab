@@ -336,7 +336,7 @@ public interface DatabaseInterface {
     public ArrayList<String> getAllVerdictsForArticle(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
     /**
-     * sets isAccepted to either true or false depending on the Editor's choice
+     * sets isAcceptedOrRejected to either true or false depending on the Editor's choice
      * if accepted or rejected, delete reviews, critiques(should be deleted automatically when reviews deleted) and autorships
      * if rejected also delete article (deleting article should automatically delete authorship, reviews, crritiques)
      * @param article
@@ -346,7 +346,7 @@ public interface DatabaseInterface {
      * @throws SQLException
      * @throws UserDoesNotExistException
      */
-    public void setIsAccepted(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
+    public void setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException;
 
     /**
      * delete user if they dont have an authorship, an editorship and no non-final reviews
