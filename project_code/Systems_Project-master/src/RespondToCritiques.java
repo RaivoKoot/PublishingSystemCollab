@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import exceptions.ObjectDoesNotExistException;
 import main.*;
 import exceptions.InvalidAuthenticationException;
@@ -15,12 +14,13 @@ import database_interface.*;
 
 public class RespondToCritiques extends JFrame {
     private JPanel RespondToCritiques;
-    private JComboBox articles;
+    public JComboBox articles;
     private JComboBox reviews;
     private JButton respondButton;
     private JButton backward;
     private JButton generateReviewsButton;
     private int validity =0;
+
     public RespondToCritiques(){
         add(RespondToCritiques);
         setTitle("Respond to Critiques Area");
@@ -48,8 +48,6 @@ public class RespondToCritiques extends JFrame {
                 ArrayList<Review> reviews_list = new ArrayList<Review>();
                 ArrayList<Article> articles_list = null;
                 ArrayList<Critique> critiques_list = null;
-
-
 
                 try {
                     articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);

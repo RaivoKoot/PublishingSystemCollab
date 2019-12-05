@@ -19,8 +19,9 @@ public class WelcomeGUI extends JFrame{
         add(rootPanel);
 
         setTitle("Welcome Page");
-        setSize(400,500);
+        setSize(650,500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 
 
         youMaySelfRegisterButton.addActionListener(new ActionListener()

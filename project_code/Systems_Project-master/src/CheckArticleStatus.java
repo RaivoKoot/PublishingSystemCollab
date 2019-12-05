@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CheckArticleStatus extends JFrame {
-    private JComboBox comboBox1;
+    public JComboBox comboBox1;
     private JButton getInfoButton;
     private JTextField InitialReviews;
     private JTextField Contributions;
