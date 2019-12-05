@@ -81,4 +81,8 @@ public class User {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public void setPasswordNoEncryption(String string){
+		this.password = string;
+	}
 }
