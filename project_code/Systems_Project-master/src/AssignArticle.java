@@ -20,6 +20,9 @@ public class AssignArticle extends JFrame{
     private JTextField textField1;
     private JButton backward;
     private JButton assignEditionButton;
+    private JLabel label1;
+    private JLabel label2;
+    private JLabel label3;
 
     public AssignArticle(){
         add(AssignArticle);
@@ -108,9 +111,46 @@ public class AssignArticle extends JFrame{
         generateEditionInfoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Edition> edition_info = null;
+                ArrayList<Journal> journals_list =null;
+                Edition my_edition = new Edition();
+                try {
+                    journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
 
-                //edition_info = SessionData.db.g
+                Journal own_journal = null;
+
+                for (Journal tar : journals_list){
+                    if (tar.getName().equals(journals.getSelectedItem())){
+                        own_journal = tar;
+                        break;
+                    }
+                }
+
+
+                try {
+                    my_edition = SessionData.db.getLatestEdition(own_journal,SessionData.currentUser);
+                } catch (InvalidAuthenticationException e1) {
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (UserDoesNotExistException e1) {
+                    e1.printStackTrace();
+                }
+
+                if(my_edition.getVolumeNum() == 0 || my_edition.getEditionNum() == 0){
+                    JOptionPane.showMessageDialog(null,"This journal has currently no available edition in a volume. Either create a new edition or create a new volume and edition.");
+                }
+                else {
+                    label1.setText(String.valueOf(my_edition.getVolumeNum()));
+                    label2.setText(String.valueOf(my_edition.getEditionNum()));
+                    label3.setText(String.valueOf(my_edition.getCurrentLastPage() + 1));
+                }
             }
         });
 

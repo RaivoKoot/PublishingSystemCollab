@@ -780,10 +780,6 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
-    @Override
-    public ArrayList<EditionArticle> getallEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException {
-        return null;
-    }
 
 
     @Override
@@ -1636,10 +1632,7 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
-    @Override
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
-    }
 
 
     @Override
@@ -1684,16 +1677,6 @@ public class DataAccessController implements DatabaseInterface {
             closeConnection();
         }
 
-    }
-
-    @Override
-    public Edition getLatestEdition(Journal journal, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
-        return null;
-    }
-
-    @Override
-    public EditionArticle assignArticleToEdition(Article article, User editor) {
-        return null;
     }
 
 
@@ -1842,10 +1825,14 @@ public class DataAccessController implements DatabaseInterface {
 
             Edition edition = new Edition();
 
-            edition.setEditionID(rs.getInt(1));
-            edition.setEditionNum(rs.getInt(2));
-            edition.setVolumeNum(rs.getInt(3));
-            edition.setCurrentLastPage(rs.getInt(4));
+            if(rs.next()) {
+                edition.setEditionID(rs.getInt(1));
+                edition.setEditionNum(rs.getInt(2));
+                edition.setVolumeNum(rs.getInt(3));
+                edition.setCurrentLastPage(rs.getInt(4));
+            } else{
+                throw new SQLException();
+            }
 
             return edition;
 

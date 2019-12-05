@@ -74,14 +74,6 @@
           <text value="The next article will be assigned to Volume :"/>
         </properties>
       </component>
-      <component id="8f3ab" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="X"/>
-        </properties>
-      </component>
       <component id="be236" class="javax.swing.JLabel">
         <constraints>
           <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -91,14 +83,6 @@
           <text value="Edition :"/>
         </properties>
       </component>
-      <component id="60fcc" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Y"/>
-        </properties>
-      </component>
       <component id="29cb6" class="javax.swing.JLabel">
         <constraints>
           <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -106,14 +90,6 @@
         <properties>
           <foreground color="-1"/>
           <text value="Starting at page :"/>
-        </properties>
-      </component>
-      <component id="64840" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="W"/>
         </properties>
       </component>
       <component id="40cb5" class="javax.swing.JLabel">
@@ -148,6 +124,33 @@
         </constraints>
         <properties>
           <text value="Assign Edition"/>
+        </properties>
+      </component>
+      <component id="24470" class="javax.swing.JLabel" binding="label1">
+        <constraints>
+          <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-1"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="609f4" class="javax.swing.JLabel" binding="label2">
+        <constraints>
+          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-1"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="1b8fc" class="javax.swing.JLabel" binding="label3">
+        <constraints>
+          <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-1"/>
+          <text value=""/>
         </properties>
       </component>
     </children>
