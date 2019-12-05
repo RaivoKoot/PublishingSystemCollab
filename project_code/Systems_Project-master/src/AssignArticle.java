@@ -38,12 +38,8 @@ public class AssignArticle extends JFrame{
 
         try {
             journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i< journals_list.size() ; i++) {
@@ -58,12 +54,8 @@ public class AssignArticle extends JFrame{
 
                 try {
                     journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 own_journal = null;
@@ -77,14 +69,8 @@ public class AssignArticle extends JFrame{
 
                 try {
                     accepted_articles_list = SessionData.db.getAcceptedArticlesByJournal(own_journal,SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for(int i = 0; i< accepted_articles_list.size() ; i++) {
@@ -111,12 +97,8 @@ public class AssignArticle extends JFrame{
                 my_edition = new Edition();
                 try {
                     journals_list = SessionData.db.getJournalsByUser(SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Journal own_journal = null;
@@ -131,12 +113,8 @@ public class AssignArticle extends JFrame{
 
                 try {
                     my_edition = SessionData.db.getLatestEdition(own_journal,SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 if(my_edition.getVolumeNum() == 0 || my_edition.getEditionNum() == 0){
@@ -185,15 +163,13 @@ public class AssignArticle extends JFrame{
                         } else {
                             JOptionPane.showMessageDialog(null, "Something went wrong!");
                         }
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
                     } catch (EditionFullException e1) {
+                        JOptionPane.showMessageDialog(null,"Edition Full!");
                         e1.printStackTrace();
+                    } catch (Exception ee){
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                     }
+
                 } else{JOptionPane.showMessageDialog(null,"Make sure you set the Ending Page!");}
             }
         });

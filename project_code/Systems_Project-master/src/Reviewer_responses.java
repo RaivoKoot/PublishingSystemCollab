@@ -33,14 +33,10 @@ public class Reviewer_responses extends JFrame{
 
         try {
             lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
+
         }
 
         for(int i = 0; i< lister.size() ; i++) {
@@ -54,10 +50,12 @@ public class Reviewer_responses extends JFrame{
 
                 try {
                     lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
+
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Something went wrong.");
                     return;
+
                 }
 
                 Article art = null;
@@ -98,9 +96,11 @@ public class Reviewer_responses extends JFrame{
 
                 try {
                     lister =  SessionData.db.getArticlesNeedingFinalVerdicts(SessionData.currentUser);
+
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(null,"Something went wrong.");
+
                 }
 
                 Article art = null;
@@ -120,14 +120,8 @@ public class Reviewer_responses extends JFrame{
 
                 try {
                     liste = SessionData.db.getReviewCritiques(review, SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for(int i = 0; i<liste.size();i++){
@@ -174,14 +168,8 @@ public class Reviewer_responses extends JFrame{
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (ObjectDoesNotExistException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception ee){
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                     }
                 }
                 else if (final_verdict == 1){
@@ -197,14 +185,8 @@ public class Reviewer_responses extends JFrame{
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (ObjectDoesNotExistException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception ee){
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                     }
                 }
                 else if (final_verdict == 2) {
@@ -220,14 +202,8 @@ public class Reviewer_responses extends JFrame{
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (ObjectDoesNotExistException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception ee){
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                     }
                 }
                 else if (final_verdict == 3){
@@ -243,14 +219,8 @@ public class Reviewer_responses extends JFrame{
                         else{
                             JOptionPane.showMessageDialog(null,"Something went wrong!");
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (UserDoesNotExistException e1) {
-                        e1.printStackTrace();
-                    } catch (InvalidAuthenticationException e1) {
-                        e1.printStackTrace();
-                    } catch (ObjectDoesNotExistException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception ee){
+                        JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                     }
                 }
             }

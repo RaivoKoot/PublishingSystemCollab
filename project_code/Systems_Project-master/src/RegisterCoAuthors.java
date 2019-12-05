@@ -46,12 +46,8 @@ public class RegisterCoAuthors extends JFrame {
 
         try {
             article_list = SessionData.db.getOwnArticles(SessionData.currentUser);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for (int i = 0; i < article_list.size(); i++) {

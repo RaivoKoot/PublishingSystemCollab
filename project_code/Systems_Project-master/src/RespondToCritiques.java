@@ -30,12 +30,8 @@ public class RespondToCritiques extends JFrame {
 
         try {
             articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i< articles_list.size() ; i++) {
@@ -51,12 +47,8 @@ public class RespondToCritiques extends JFrame {
 
                 try {
                     articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article art = null;
@@ -70,12 +62,8 @@ public class RespondToCritiques extends JFrame {
 
                 try {
                     reviews_list = SessionData.db.getInitialReviewsOfArticle(art, SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Review our_review = null;
@@ -89,14 +77,8 @@ public class RespondToCritiques extends JFrame {
 
                 try {
                     critiques_list = SessionData.db.getReviewCritiques(our_review,SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (ObjectDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                     Review response = new Review();
@@ -137,13 +119,10 @@ public class RespondToCritiques extends JFrame {
                             } else {
                                 JOptionPane.showMessageDialog(null, "Sorry something went wrong!");
                             }
-                        } catch (InvalidAuthenticationException e1) {
-                            e1.printStackTrace();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        } catch (UserDoesNotExistException e1) {
-                            e1.printStackTrace();
+                        } catch (Exception ee){
+                            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                         }
+
                     } else{
                         JOptionPane.showMessageDialog(null, "You did not reply to all the critiques.");
                         MainAuthorArea back = new MainAuthorArea();
@@ -163,12 +142,8 @@ public class RespondToCritiques extends JFrame {
 
                 try {
                     articles_list = SessionData.db.getOwnArticles(SessionData.currentUser);
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 Article art = null;
@@ -182,12 +157,8 @@ public class RespondToCritiques extends JFrame {
 
                 try {
                     reviews_list = SessionData.db.getInitialReviewsOfArticle(art, SessionData.currentUser);
-                } catch (InvalidAuthenticationException e1) {
-                    e1.printStackTrace();
-                } catch (UserDoesNotExistException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (Exception ee){
+                    JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
                 for(int i = 0; i< reviews_list.size() ; i++) {

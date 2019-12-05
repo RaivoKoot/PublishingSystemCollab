@@ -44,12 +44,8 @@ public class ChooseReview extends JFrame {
 
         try {
             choose_list = SessionData.db.emptyReviews(SessionData.currentUser);
-        } catch (UserDoesNotExistException e) {
-            e.printStackTrace();
-        } catch (InvalidAuthenticationException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ee){
+            JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
         }
 
         for(int i = 0; i < choose_list.size() ; i++) {

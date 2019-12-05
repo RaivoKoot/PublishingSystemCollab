@@ -395,5 +395,6 @@ public interface DatabaseInterface {
      */
     public boolean assignArticleToEdition(EditionArticle article, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException, EditionFullException;
 
+    ArrayList<Edition> getAllVolumePublicEditions(Volume volume) throws SQLException;
 }
 
