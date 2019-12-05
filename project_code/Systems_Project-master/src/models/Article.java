@@ -1,5 +1,7 @@
 package models;
 
+import java.io.File;
+
 public class Article {
 
     private int articleID;
@@ -15,12 +17,22 @@ public class Article {
     private int responesToReviewsGiven;
     private int finalReviewsReceived;
 
+    private File pdf;
+
     private int reviewID; // Only used in the case that the article of a review wants to be viewed and the user
     // must know later which reivew that article came from
 
 
     public int getReviewID() {
         return reviewID;
+    }
+
+    public File getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(File pdf) {
+        this.pdf = pdf;
     }
 
     public void setReviewID(int reviewID) {

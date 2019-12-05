@@ -45,6 +45,7 @@ public class DatabaseTestingSetup {
                 "DROP TABLE Authorships",
                 "DROP TABLE EditionArticles",
                 "DROP TABLE Articles",
+                "DROP TABLE Pdfs;",
                 "DROP TABLE Editions",
                 "DROP TABLE Volumes",
                 "DROP TABLE JournalEditors",
@@ -82,15 +83,15 @@ public class DatabaseTestingSetup {
                             "\tISSN VARCHAR(20) PRIMARY KEY,\n" +
                             "\tname VARCHAR(100) UNIQUE NOT NULL\n" +
                             "\t\n" +
-                            ")",
+                            ");",
                     "CREATE TABLE Volumes (\n" +
-                            "\tvolumeNum INT AUTO_INCREMENT,\n" +
+                            "\tvolumeNum INT,\n" +
                             "\tISSN VARCHAR(20),\n" +
                             "\tpublicationYear SMALLINT,\n" +
                             "\tPRIMARY KEY (volumeNum, ISSN),\n" +
                             "\tFOREIGN KEY (ISSN) REFERENCES Journals(ISSN)\n" +
                             "\t\tON DELETE CASCADE\n" +
-                            ")",
+                            ");",
                     "CREATE TABLE Editions (\n" +
                             "\teditionID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\teditionNum TINYINT,\n" +
@@ -99,11 +100,13 @@ public class DatabaseTestingSetup {
                             "\tisPublic BOOLEAN DEFAULT FALSE,\n" +
                             "\tISSN VARCHAR(20),\n" +
                             "\tFOREIGN KEY (volumeNum, ISSN) REFERENCES Volumes(volumeNum, ISSN)\n" +
-                            "\t\tON DELETE CASCADE\n" +
+                            "\t\tON DELETE CASCADE,\n" +
+                            "\t\t\n" +
+                            "\tCHECK (editionNum < 7)\n" +
                             ");",
                     "CREATE TABLE Users (\n" +
                             "\temail VARCHAR(80) PRIMARY KEY,\n" +
-                            "\ttitle VARCHAR(4), \n" +
+                            "\ttitle VARCHAR(5), \n" +
                             "\tforenames VARCHAR(150),\n" +
                             "\tsurname VARCHAR(120),\n" +
                             "\tuniversity VARCHAR(100),\n" +
@@ -119,6 +122,10 @@ public class DatabaseTestingSetup {
                             "\tFOREIGN KEY(ISSN) REFERENCES Journals(ISSN)\n" +
                             "\t\tON DELETE CASCADE\n" +
                             ");",
+                    "CREATE TABLE Pdfs (\n" +
+                            "\tpdfID INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            "\tpdf MEDIUMBLOB NOT NULL\n" +
+                            ");",
                     "CREATE TABLE Articles (\n" +
                             "\tarticleID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\ttitle VARCHAR(1000) NOT NULL,\n" +
@@ -127,9 +134,12 @@ public class DatabaseTestingSetup {
                             "\tisFinal BOOL DEFAULT FALSE,\n" +
                             "\tisAccepted BOOL DEFAULT FALSE,\n" +
                             "\tISSN VARCHAR(20),\n" +
+                            "\tpdfID INT NOT NULL,\n" +
                             "\t\n" +
                             "\tFOREIGN KEY(ISSN) REFERENCES Journals(ISSN)\n" +
-                            "\t\tON DELETE CASCADE\n" +
+                            "\t\tON DELETE CASCADE,\n" +
+                            "\tFOREIGN KEY(pdfID) REFERENCES Pdfs(pdfID)\n" +
+                            "\t\tON DELETE NO ACTION\n" +
                             ");",
                     "CREATE TABLE Authorships (\n" +
                             "\temail VARCHAR(80),\n" +
@@ -156,16 +166,16 @@ public class DatabaseTestingSetup {
                             "\treviewID INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "\t\n" +
                             "\tsummary VARCHAR(2000),\n" +
-                            "\tverdict VARCHAR(20),\n" +
+                            "\tverdict VARCHAR(25),\n" +
                             "\tisFinal BOOL DEFAULT FALSE,\n" +
                             "\t\n" +
-                            "\tsubmissionID INT NOT NULL,\n" +
+                            "\tsubmissionID INT,\n" +
                             "\tarticleOfReviewerID INT,\n" +
                             "\treviewerEmail VARCHAR(80) NOT NULL,\n" +
                             "\thasResponse BOOL DEFAULT FALSE,\n" +
                             "\t\n" +
                             "\tFOREIGN KEY(submissionID) REFERENCES Articles(articleID)\n" +
-                            "\t\tON DELETE CASCADE,\n" +
+                            "\t\tON DELETE SET NULL,\n" +
                             "\tFOREIGN KEY(reviewerEmail) REFERENCES Users(email)\n" +
                             "\t\tON DELETE NO ACTION,\n" +
                             "\tFOREIGN KEY(articleOfReviewerID) REFERENCES Articles(articleID)\n" +
@@ -179,7 +189,8 @@ public class DatabaseTestingSetup {
                             "\tFOREIGN KEY(reviewID) REFERENCES Reviews(reviewID)\n" +
                             "\t\tON DELETE CASCADE\n" +
                             ");",
-                    "ALTER TABLE `Editions` ADD UNIQUE `unique_index`(`editionNum`, `volumeNum`, `ISSN`);"
+                    "ALTER TABLE `Editions` ADD UNIQUE `unique_index`(`editionNum`, `volumeNum`, `ISSN`);",
+                    "ALTER TABLE `Volumes` ADD UNIQUE `unique_index2`(`ISSN`, `publicationYear`);"
             };
 
             for (String create : creates) {

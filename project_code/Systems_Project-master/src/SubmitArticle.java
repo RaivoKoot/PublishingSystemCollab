@@ -1,11 +1,16 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
 
 import exceptions.IncompleteInformationException;
 import exceptions.InvalidAuthenticationException;
 import exceptions.UserDoesNotExistException;
+import helpers.ChoosePDF;
 import models.Article;
 import database_interface.DataAccessController;
 import main.SessionData;
@@ -87,6 +92,14 @@ public class SubmitArticle extends JFrame {
                 } else
                     sub.setIssn(jour.getISSN());
 
+
+                File pdf = ChoosePDF.choosePDF();
+
+                if(pdf == null){
+                    return;
+                }
+                sub.setPdf(pdf);
+
                try{
                     Article success = SessionData.db.submitArticle(sub, SessionData.currentUser/*, jour */);
                     if (success != null){
@@ -109,6 +122,9 @@ public class SubmitArticle extends JFrame {
                    e1.printStackTrace();
                } catch (SQLException e1) {
                    JOptionPane.showMessageDialog(null,"Sorry, something went wrong. Please try again or contact an admin");
+                   e1.printStackTrace();
+               } catch (FileNotFoundException e1) {
+                   JOptionPane.showMessageDialog(null,"Sorry, something went wrong submitting the pdf file.");
                    e1.printStackTrace();
                }
             }

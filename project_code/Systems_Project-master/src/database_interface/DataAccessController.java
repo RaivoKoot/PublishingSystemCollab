@@ -1,13 +1,19 @@
 package database_interface;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.Month;
 import java.util.ArrayList;
 
+import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
 import exceptions.*;
 import helpers.Encryption;
 import models.*;
+
+import javax.swing.*;
 
 public class DataAccessController implements DatabaseInterface {
 
@@ -370,7 +376,7 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     public Article submitArticle(Article submission, User author)
-            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException {
+            throws UserDoesNotExistException, InvalidAuthenticationException, SQLException, IncompleteInformationException, FileNotFoundException {
 
         if (!validCredentials(author))
             throw new InvalidAuthenticationException();
@@ -385,6 +391,8 @@ public class DataAccessController implements DatabaseInterface {
             throw new IncompleteInformationException();
         }
 
+        int fileID = saveFile(submission.getPdf());
+
         PreparedStatement statementTwo = null;
         ResultSet rs = null;
         try {
@@ -392,13 +400,14 @@ public class DataAccessController implements DatabaseInterface {
             connection.setAutoCommit(false);
 
             // Insert the new submission into the table
-            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN) VALUES\n" +
-                    "\t(?,?,?,?);";
+            String sqlQuery = "INSERT INTO Articles (title, abstract, content, ISSN, pdfID) VALUES\n" +
+                    "\t(?,?,?,?, ?);";
             statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, submission.getTitle());
             statement.setString(2, submission.getSummary());
             statement.setString(3, submission.getContent());
             statement.setString(4, submission.getIssn());
+            statement.setInt(5, fileID);
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -1988,6 +1997,41 @@ public class DataAccessController implements DatabaseInterface {
         }
         finally{
             if (rs == null) {
+                rs.close();
+            }
+            closeConnection();
+        }
+    }
+
+    private int saveFile(File file) throws FileNotFoundException, SQLException {
+        ResultSet rs = null;
+        try {
+            FileInputStream input = new FileInputStream(file);
+            openConnection();
+
+            String sqlCheck = "INSERT INTO Pdfs (pdf) VALUES (?)";
+
+            statement = connection.prepareStatement(sqlCheck, Statement.RETURN_GENERATED_KEYS);
+            statement.setBinaryStream(1, input);
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException();
+            }
+
+            rs = statement.getGeneratedKeys();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else
+                throw new SQLException();
+        }
+        catch (PacketTooBigException e){
+            JOptionPane.showMessageDialog(null,"The pdf file you selected is too large. It must be smaller than a Mb.");
+            throw e;
+        }
+        finally{
+            if (rs != null) {
                 rs.close();
             }
             closeConnection();
