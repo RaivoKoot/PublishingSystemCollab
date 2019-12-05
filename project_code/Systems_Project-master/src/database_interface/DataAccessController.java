@@ -600,7 +600,7 @@ public class DataAccessController implements DatabaseInterface {
 
             rs = statement.executeQuery();
 
-            if(!rs.next() || rs.getInt(1) != volume.getVolNum()) {
+            if (!rs.next() || rs.getInt(1) != volume.getVolNum()) {
                 throw new NoMoreEditionsAllowedInVolumeException();
             }
             statement.close();
@@ -630,7 +630,7 @@ public class DataAccessController implements DatabaseInterface {
             Make sure that the previous edition is either full or public
              */
 
-            if(nextEditionNumber != 1) {
+            if (nextEditionNumber != 1) {
 
                 statement = connection.prepareStatement("SELECT Editions.editionID, isPublic, (COUNT(ea.editionID) = 8) AS isFull\n" +
                         "FROM Editions\n" +
@@ -639,7 +639,7 @@ public class DataAccessController implements DatabaseInterface {
                         "WHERE Editions.editionID = ?\n" +
                         "\n" +
                         "GROUP BY Editions.editionID");
-                statement.setInt(1, nextEditionNumber-1);
+                statement.setInt(1, nextEditionNumber - 1);
 
                 rs = statement.executeQuery();
                 if (!rs.next() || (!rs.getBoolean(2) && !rs.getBoolean(3))) {
@@ -778,13 +778,6 @@ public class DataAccessController implements DatabaseInterface {
 
             closeConnection();
         }
-    }
-
-    @Override
-    public ArrayList<EditionArticle> getallEditionArticles(Edition edition)
-            throws ObjectDoesNotExistException, SQLException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 
@@ -1308,7 +1301,7 @@ public class DataAccessController implements DatabaseInterface {
                 review.setVerdict(res.getString(3));
                 review.setSubmissionArticleID(res.getInt(4));
 
-                if(review.getVerdict() == null || res.getBoolean(5) || res.getBoolean(6))
+                if (review.getVerdict() == null || res.getBoolean(5) || res.getBoolean(6))
                     continue;
 
 
@@ -1330,50 +1323,49 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-  
-  public ArrayList<Critique> getReviewCritiques(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-      if(!validCredentials(user)){
-          throw new InvalidAuthenticationException();
-      }
+    public ArrayList<Critique> getReviewCritiques(Review review, User user) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+        if (!validCredentials(user)) {
+            throw new InvalidAuthenticationException();
+        }
 
 
-      ResultSet res = null;
-      try {
-          openConnection();
+        ResultSet res = null;
+        try {
+            openConnection();
 
-          String sqlQuery = "SELECT critiqueID, description, reply FROM Critiques WHERE reviewID = ?";
-          statement = connection.prepareStatement(sqlQuery);
-          statement.setInt(1, review.getReviewID());
+            String sqlQuery = "SELECT critiqueID, description, reply FROM Critiques WHERE reviewID = ?";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, review.getReviewID());
 
-          res = statement.executeQuery();
+            res = statement.executeQuery();
 
-          ArrayList<Critique> critiques = new ArrayList<>();
+            ArrayList<Critique> critiques = new ArrayList<>();
 
 
-          while (res.next()) {
+            while (res.next()) {
 
-              Critique critique = new Critique();
-              critique.setCritiqueID(res.getInt(1));
-              critique.setDescription(res.getString(2));
-              critique.setReply(res.getString(3));
+                Critique critique = new Critique();
+                critique.setCritiqueID(res.getInt(1));
+                critique.setDescription(res.getString(2));
+                critique.setReply(res.getString(3));
 
-              critiques.add(critique);
-          }
+                critiques.add(critique);
+            }
 
-          return critiques;
+            return critiques;
 
-      } finally {
-          if (res != null)
-              res.close();
+        } finally {
+            if (res != null)
+                res.close();
 
-          closeConnection();
-      }
-  }
+            closeConnection();
+        }
+    }
 
 
     public boolean submitReviewResponse(Review review, User user) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException {
 
-      if (!validCredentials(user))
+        if (!validCredentials(user))
             throw new InvalidAuthenticationException();
 
         if (!isMainAuthor(user, review.getSubmissionArticleID())) {
@@ -1457,7 +1449,6 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
     public ArrayList<Article> getArticlesNeedingFinalVerdicts(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
         if (!validCredentials(user))
             throw new InvalidAuthenticationException();
@@ -1513,7 +1504,7 @@ public class DataAccessController implements DatabaseInterface {
 
         ResultSet rs = null;
 
-        try{
+        try {
             openConnection();
             String sqlQuery = "SELECT Articles.articleID, Articles.title, SUM(Reviews.isFinal) AS numberOfFinals, Articles.issn, r2.contributions FROM (Articles, Reviews, Authorships)\n" +
                     "\t\t\t\t\t\tLEFT JOIN \n" +
@@ -1554,9 +1545,8 @@ public class DataAccessController implements DatabaseInterface {
             }
             return list;
 
-        }
-        finally {
-            if(rs != null)
+        } finally {
+            if (rs != null)
                 rs.close();
 
             closeConnection();
@@ -1596,9 +1586,8 @@ public class DataAccessController implements DatabaseInterface {
             }
 
             return list;
-        }
-        finally {
-            if(rs != null)
+        } finally {
+            if (rs != null)
                 rs.close();
 
             closeConnection();
@@ -1634,25 +1623,12 @@ public class DataAccessController implements DatabaseInterface {
                 int result = statement.executeUpdate();
                 if (result != 1) throw new SQLException();
             }
-        }
-        finally {
-            if(rs != null)
+        } finally {
+            if (rs != null)
                 rs.close();
 
             closeConnection();
         }
-    }
-
-    /**
-     * checks if edition has at least 3 articles, checks if user is main editor for journal
-     * and then set isPublished to true
-     *
-     * @param edition
-     * @param mainEditor
-     */
-    @Override
-    public void publishEdition(Edition edition, User mainEditor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
-
     }
 
 
@@ -1691,40 +1667,13 @@ public class DataAccessController implements DatabaseInterface {
             }
             return list;
 
-        }
-        finally {
-            if(set != null)
+        } finally {
+            if (set != null)
                 set.close();
 
             closeConnection();
         }
 
-    }
-
-    /**
-     * gets the latest Edition of the specified journal
-     * use max function to return the biggest page number of all the EditionArticles of that journal
-     * set currentLastPage of the edition object to the max
-     *
-     * @param journal
-     * @param editor
-     * @return
-     */
-    @Override
-    public Edition getLatestEdition(Journal journal, User editor) {
-        return null;
-    }
-
-    /**
-     * creates an EditionArticle object
-     * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
-     *
-     * @param article
-     * @param editor
-     */
-    @Override
-    public EditionArticle assignArticleToEdition(Article article, User editor) {
-        return null;
     }
 
 
@@ -1741,7 +1690,7 @@ public class DataAccessController implements DatabaseInterface {
 
             statement.setString(1, review.getVerdict());
             statement.setInt(2, review.getReviewID());
-            statement.setString(3,user.getEmail());
+            statement.setString(3, user.getEmail());
 
             int result = statement.executeUpdate();
             if (result != 1) throw new ObjectDoesNotExistException("Final Review verdict could not be submitted");
@@ -1787,9 +1736,8 @@ public class DataAccessController implements DatabaseInterface {
             }
             return list;
 
-        }
-        finally {
-            if(set != null)
+        } finally {
+            if (set != null)
                 set.close();
 
             closeConnection();
@@ -1798,10 +1746,9 @@ public class DataAccessController implements DatabaseInterface {
     }
 
 
-
     @Override
     //to be tested
-    public void setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
+    public boolean setIsAcceptedOrRejected(Article article, User editor) throws InvalidAuthenticationException, ObjectDoesNotExistException, SQLException, UserDoesNotExistException {
 
         if (!validCredentials(editor))
             throw new InvalidAuthenticationException();
@@ -1813,33 +1760,35 @@ public class DataAccessController implements DatabaseInterface {
             throw new InvalidAuthenticationException();
 
 
-        try{
+        try {
             openConnection();
 
-                String sqlQuery = "DELETE FROM Authorships WHERE Authorships.articleID = ?;\n" +
-                        "                        UPDATE Reviews SET Reviews.submissionID = null WHERE Reviews.submissionID = ?;\n" +
-                        "                        UPDATE Reviews SET Reviews.articleOfReviewerID = null WHERE Reviews.articleOfReviewerID = ?;\n" +
-                        "                        DELETE FROM Reviews WHERE Reviews.submissionID is null AND Reviews.articleOfReviewerID is null;";
+            String sqlQuery = "DELETE FROM Authorships WHERE Authorships.articleID = ?;\n" +
+                    "                        UPDATE Reviews SET Reviews.submissionID = null WHERE Reviews.submissionID = ?;\n" +
+                    "                        UPDATE Reviews SET Reviews.articleOfReviewerID = null WHERE Reviews.articleOfReviewerID = ?;\n" +
+                    "                        DELETE FROM Reviews WHERE Reviews.submissionID is null AND Reviews.articleOfReviewerID is null;";
 
-                statement = connection.prepareStatement(sqlQuery);
-                statement.setInt(1, article.getArticleID());
-                statement.setInt(2, article.getArticleID());
-                statement.setInt(3, article.getArticleID());
-                statement.setInt(4, article.getArticleID());
-                statement.execute();
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setInt(1, article.getArticleID());
+            statement.setInt(2, article.getArticleID());
+            statement.setInt(3, article.getArticleID());
+            statement.setInt(4, article.getArticleID());
+            statement.execute();
 
-                String lastQuery;
-                if (article.isAccepted()) {
-                    lastQuery = "UPDATE Articles SET Articles.isAccepted = true WHERE Articles.articleID = ?";
-                }
-                else {
-                    lastQuery = "DELETE * FROM Articles WHERE Articles.articleID = ?";
-                }
-                statement = connection.prepareStatement(lastQuery);
-                statement.setInt(1, article.getArticleID());
-                statement.executeUpdate();
-        }
-        finally {
+            String lastQuery;
+            if (article.isAccepted()) {
+                lastQuery = "UPDATE Articles SET Articles.isAccepted = true WHERE Articles.articleID = ?";
+            } else {
+                lastQuery = "DELETE * FROM Articles WHERE Articles.articleID = ?";
+            }
+            statement = connection.prepareStatement(lastQuery);
+            statement.setInt(1, article.getArticleID());
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
             closeConnection();
         }
 
