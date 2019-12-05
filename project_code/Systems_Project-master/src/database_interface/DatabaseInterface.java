@@ -109,7 +109,7 @@ public interface DatabaseInterface {
      * @throws InvalidAuthenticationException
      */
     public boolean createNextVolume(Journal journal, JournalEditor editor, int publicationYear)
-            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException;
+            throws ObjectDoesNotExistException, InvalidAuthenticationException, SQLException, LastVolumeNotEnoughEditionsExceptions;
 
     /**
      * Using the credentials of editor, creates a new edition with the next in line
@@ -390,7 +390,7 @@ public interface DatabaseInterface {
      * creates an EditionArticle object
      * check whether the current edition is full (throw exception saying that the chief editor needs to create new edition)
      */
-    public EditionArticle assignArticleToEdition(Article article, User editor);
+    public boolean assignArticleToEdition(EditionArticle article, User editor) throws InvalidAuthenticationException, SQLException, UserDoesNotExistException, EditionFullException;
 
 }
 
