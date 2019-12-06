@@ -80,30 +80,32 @@ public class RegisterCoAuthors extends JFrame {
                     target.setUniversity(uni);
                     target.setForenames(fname);
 
-                    try {
-                        target.setPassword(te_password);
-                    } catch (PasswordToLongException e1) {
-                        JOptionPane.showMessageDialog(null,"The password you entered is too long!");
-                        e1.printStackTrace();
-                        return;
-                    } catch (PasswordTooShortException e1) {
-                        JOptionPane.showMessageDialog(null,"The password you entered is too short!");
-                        e1.printStackTrace();
-                        return;
-                    } catch (NoSuchAlgorithmException e1) {
-                        JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
-                        e1.printStackTrace();
-                        return;
-                    } catch (NoDigitInPasswordException e1) {
-                        JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
-                        e1.printStackTrace();
-                        return;
-                    }
-
                     target.setSurname(sname);
                     target.setTitle((String) comboBox2.getSelectedItem());
                     boolean exist = SessionData.db.userExists(target);
+
                     if (!exist){
+                        try {
+                            target.setPassword(te_password);
+                        } catch (PasswordToLongException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered is too long!");
+                            e1.printStackTrace();
+                            return;
+                        } catch (PasswordTooShortException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered is too short!");
+                            e1.printStackTrace();
+                            return;
+                        } catch (NoSuchAlgorithmException e1) {
+                            JOptionPane.showMessageDialog(null,"Something went wrong. Please contact an administrator.");
+                            e1.printStackTrace();
+                            return;
+                        } catch (NoDigitInPasswordException e1) {
+                            JOptionPane.showMessageDialog(null,"The password you entered needs to contain at least one digit!");
+                            e1.printStackTrace();
+                            return;
+                        }
+
+
                         boolean register = SessionData.db.registerBaseUser(target);
 
                         if(!register)

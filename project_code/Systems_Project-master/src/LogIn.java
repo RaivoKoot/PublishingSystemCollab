@@ -62,6 +62,7 @@ public class LogIn extends JFrame{
                         JOptionPane.showMessageDialog(null, "Something went wrong. Please try again or contact an administrator");
 
                     } catch (InvalidAuthenticationException e1) {
+                        JOptionPane.showMessageDialog(null, "You have entered incorrect login info.");
                         e1.printStackTrace();
                     }
 
