@@ -7,7 +7,6 @@ public class ArticleTreeDisplay extends JFrame{
     private JPanel TreeShow;
     public JTextField title_field;
     public JTextArea summary_field;
-    public JTextArea content_field;
 
     public ArticleTreeDisplay(){
         add(TreeShow);
@@ -16,6 +15,5 @@ public class ArticleTreeDisplay extends JFrame{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         summary_field.setLineWrap(true);
-        content_field.setLineWrap(true);
     }
 }
