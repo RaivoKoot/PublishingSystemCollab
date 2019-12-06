@@ -773,7 +773,7 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT * FROM Editions WHERE ISSN=? AND volumeNum=?";
+            String sqlQuery = "SELECT * FROM Editions WHERE ISSN=? AND volumeNum=? AND isPublic=false";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, volume.getISSN());
             statement.setInt(2, volume.getVolNum());
@@ -1106,13 +1106,14 @@ public class DataAccessController implements DatabaseInterface {
             connection.setAutoCommit(false);
 
             // Insert the new submission into the table
-            String sqlQuery = "UPDATE Reviews SET summary=?, verdict=? WHERE\n" +
+            String sqlQuery = "UPDATE Reviews SET summary=?, verdict=?, typos=? WHERE\n" +
                     "\treviewID = ? AND reviewerEmail=?";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, review.getSummary());
             statement.setString(2, review.getVerdict());
-            statement.setInt(3, review.getReviewID());
-            statement.setString(4, user.getEmail());
+            statement.setString(3, review.getTypos());
+            statement.setInt(4, review.getReviewID());
+            statement.setString(5, user.getEmail());
             int res1 = statement.executeUpdate();
 
             if (res1 != 1) {
@@ -1314,7 +1315,7 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT reviewID, summary, verdict, submissionID, isFinal, hasResponse FROM Reviews WHERE \n" +
+            String sqlQuery = "SELECT reviewID, summary, verdict, submissionID, isFinal, hasResponse, typos FROM Reviews WHERE \n" +
                     "\tsubmissionID = ? "; // AND verdict is not null AND isFinal = false and hasResponse=false";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, article.getArticleID());
@@ -1333,6 +1334,8 @@ public class DataAccessController implements DatabaseInterface {
                 review.setSummary(res.getString(2));
                 review.setVerdict(res.getString(3));
                 review.setSubmissionArticleID(res.getInt(4));
+
+                review.setTypos(res.getString(7));
 
                 if (review.getVerdict() == null || res.getBoolean(5) || res.getBoolean(6))
                     continue;
@@ -1892,15 +1895,16 @@ public class DataAccessController implements DatabaseInterface {
 
     @Override
     //to be tested
-    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException {
+    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException, IOException {
 
 
         ResultSet rs = null;
         try {
             openConnection();
-            String sqlQuery = "SELECT editionArticleID, Articles.articleID, EditionArticles.editionID, startingPage, endingPage, title, abstract, content" +
-                    "  FROM EditionArticles, Articles, Editions WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?" +
-                    " AND Editions.editionID = EditionArticles.editionID AND Editions.isPublic=true";
+            String sqlQuery = "SELECT editionArticleID, Articles.articleID, EditionArticles.editionID, startingPage, endingPage, title, abstract, content, pdf" +
+                    "  FROM EditionArticles, Articles, Editions, Pdfs WHERE EditionArticles.articleID = Articles.articleID AND EditionArticles.editionID = ?" +
+                    " AND Editions.editionID = EditionArticles.editionID AND Editions.isPublic=true" +
+                    " AND Pdfs.pdfID = Articles.pdfID";
             statement = connection.prepareStatement(sqlQuery);
             statement.setInt(1, edition.getEditionID());
             rs = statement.executeQuery();
@@ -1919,6 +1923,13 @@ public class DataAccessController implements DatabaseInterface {
                 editionArticle.setTitle(rs.getString(6));
                 editionArticle.setSummary(rs.getString(7));
                 editionArticle.setContent(rs.getString(8));
+
+                InputStream binaryStream = rs.getBinaryStream(9);
+
+
+                editionArticle.setPdfData(StreamToPDF.streamToBytes(binaryStream));
+
+
 
                 list.add(editionArticle);
             }

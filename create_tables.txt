@@ -101,6 +101,7 @@ CREATE TABLE Reviews (
 	articleOfReviewerID INT,
 	reviewerEmail VARCHAR(80) NOT NULL,
 	hasResponse BOOL DEFAULT FALSE,
+	typos VARCHAR(1000) DEFAULT NULL,
 	
 	FOREIGN KEY(submissionID) REFERENCES Articles(articleID)
 		ON DELETE SET NULL,

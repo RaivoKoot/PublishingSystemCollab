@@ -68,7 +68,7 @@ public interface DatabaseInterface {
      * @throws ObjectDoesNotExistException
      * @precondition the given edition exists
      */
-    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException;
+    public ArrayList<EditionArticle> getAllEditionArticles(Edition edition) throws ObjectDoesNotExistException, SQLException, InvalidAuthenticationException, IOException;
 
     /**
      * Creates a new journal and appoints chiefEditor as the main and first editor

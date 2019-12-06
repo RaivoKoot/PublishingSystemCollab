@@ -7,6 +7,7 @@ import database_interface.*;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JTree;
@@ -99,7 +100,14 @@ public class Readers extends TreePath {
                     ArticleTreeDisplay info_box = new ArticleTreeDisplay();
                     info_box.title_field.setText((article.getTitle()));
                     info_box.summary_field.setText(article.getSummary());
-                    info_box.content_field.setText(article.getContent());
+
+                    try {
+                        article.savePdfToPC();
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(null, "Sorry, something went wrong downloading the pdf");
+                        e1.printStackTrace();
+                    }
+
                     info_box.setVisible(true);
                 }
 

@@ -64,8 +64,8 @@ public class EditionArticle extends Article {
 
 	public String toString()
 	{
-		return "Article starting at page " + startingPage + " and ending at page " + endingPage
-				+ " with following information: " + super.toString();
+		return "Page " + startingPage + " to " + endingPage
+				+ " with title '" + super.getTitle() +"'";
 	}
 
 }
