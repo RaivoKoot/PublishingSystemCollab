@@ -31,7 +31,7 @@ public class AssignArticle extends JFrame{
 
     public AssignArticle(){
         add(AssignArticle);
-        setTitle("Assign an Edition Form");
+        setTitle("Assign an Article to Edition Form");
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ArrayList<Journal> journals_list =null;
