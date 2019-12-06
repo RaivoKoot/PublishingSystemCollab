@@ -31,7 +31,7 @@ public class FinalDecision extends JFrame{
     public FinalDecision(){
         add(FinalDecision);
         setTitle("Final Decision Page");
-        setSize(950, 500);
+        setSize(1150, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         journal_list = new Journal[0];
