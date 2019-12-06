@@ -1611,7 +1611,9 @@ public class DataAccessController implements DatabaseInterface {
                     "                    AND Authorships.email not in\n" +
                     "                    (SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email= ?)\n" +
                     "                    union\n" +
-                    "                    SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email= ?))\n" +
+                    "                    SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email= ?)" +
+                    "                    union " +
+                    "                    SELECT email FROM Users WHERE university = ?)\n" +
                     "                    AND r2.contributions = 3\n" +
                     "                    \n" +
                     "                    AND Reviews.isFinal = true\n" +
@@ -1623,6 +1625,7 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(1, journal.getISSN());
             statement.setString(2, editor.getEmail());
             statement.setString(3, editor.getEmail());
+            statement.setString(3, editor.getUniversity());
 
             rs = statement.executeQuery();
 
