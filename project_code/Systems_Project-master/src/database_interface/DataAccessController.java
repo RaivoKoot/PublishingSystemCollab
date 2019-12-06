@@ -1628,7 +1628,7 @@ public class DataAccessController implements DatabaseInterface {
             statement.setString(1, journal.getISSN());
             statement.setString(2, editor.getEmail());
             statement.setString(3, editor.getEmail());
-            statement.setString(3, editor.getUniversity());
+            statement.setString(4, editor.getUniversity());
 
             rs = statement.executeQuery();
 

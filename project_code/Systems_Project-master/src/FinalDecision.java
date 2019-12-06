@@ -64,6 +64,7 @@ public class FinalDecision extends JFrame{
                 try {
                     articles_list = SessionData.db.getJournalArticlesNeedingEditorDecision(joure,SessionData.currentUser);
                 } catch (Exception ee){
+                    ee.printStackTrace();
                     JOptionPane.showMessageDialog(null,"Sorry something went wrong!");
                 }
 
