@@ -1,3 +1,4 @@
+import exceptions.InvalidAuthenticationException;
 import exceptions.UserDoesNotExistException;
 import models.User;
 import main.SessionData;
@@ -41,10 +42,10 @@ public class LogIn extends JFrame{
 
 
                     try {
-                        boolean success = SessionData.db.validCredentials(input);
+                        User user = SessionData.db.attemptLogin(input);
 
-                        if (success) {
-                            SessionData.currentUser = input;
+                        if (user != null) {
+                            SessionData.currentUser = user;
 
                             MainScreen themainscreen = new MainScreen();
                             themainscreen.setVisible(true);
@@ -62,12 +63,12 @@ public class LogIn extends JFrame{
                         exception.printStackTrace();
                         JOptionPane.showMessageDialog(null, "Something went wrong. Please try again or contact an administrator");
 
+                    } catch (InvalidAuthenticationException e1) {
+                        e1.printStackTrace();
                     }
 
 
-
-
-        }});
+            }});
 
         backward.addActionListener(new ActionListener() {
             @Override

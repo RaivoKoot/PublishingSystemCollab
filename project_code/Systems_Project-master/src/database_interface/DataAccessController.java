@@ -143,6 +143,36 @@ public class DataAccessController implements DatabaseInterface {
         }
     }
 
+    public User attemptLogin(User user) throws SQLException, UserDoesNotExistException, InvalidAuthenticationException {
+        if(!validCredentials(user))
+            throw new InvalidAuthenticationException();
+
+        ResultSet res = null;
+        try {
+            openConnection();
+
+            String sqlQuery = "SELECT university FROM Users WHERE email=?)";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.setString(1, user.getEmail());
+
+            res = statement.executeQuery();
+            res.next();
+            String university = res.getString(1);
+
+            if(university.equals(""))
+                throw new SQLException();
+
+            user.setUniversity(university);
+
+            return user;
+        } finally {
+            if (res != null)
+                res.close();
+
+            closeConnection();
+        }
+    }
+
     @Override
     public boolean validCredentials(User user) throws SQLException, UserDoesNotExistException {
 
@@ -998,7 +1028,9 @@ public class DataAccessController implements DatabaseInterface {
                     "WHERE Authorships.email not in\n" +
                     "\t(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email=?)\n" +
                     "\tunion\n" +
-                    "\tSELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?))\n" +
+                    "\tSELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?)" +
+                    "\tunion " +
+                    "\tSELECT email FROM Users WHERE university = ?)\n" +
                     "\n" +
                     "AND Articles.articleID not in (SELECT submissionID FROM Reviews WHERE reviewerEmail=?)" +
                     "GROUP BY Articles.articleID\n" +
@@ -1006,7 +1038,8 @@ public class DataAccessController implements DatabaseInterface {
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getEmail());
+            statement.setString(3, user.getUniversity());
+            statement.setString(4, user.getEmail());
 
             res = statement.executeQuery();
 
