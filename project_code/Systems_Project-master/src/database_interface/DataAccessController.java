@@ -151,7 +151,7 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT university FROM Users WHERE email=?)";
+            String sqlQuery = "SELECT university FROM Users WHERE email=?";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
 

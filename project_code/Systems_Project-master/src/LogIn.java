@@ -39,8 +39,6 @@ public class LogIn extends JFrame{
                         return;
                     }
 
-
-
                     try {
                         User user = SessionData.db.attemptLogin(input);
 

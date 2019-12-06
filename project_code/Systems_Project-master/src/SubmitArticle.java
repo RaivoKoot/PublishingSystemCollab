@@ -20,20 +20,15 @@ import database_interface.DataAccessController;
 public class SubmitArticle extends JFrame {
     private JPanel SubmitArticle;
     private JTextField abstracte;
-    private JTextField pdflink;
     private JButton backward;
     private JButton submitButton;
     private JTextField Titre;
     private JComboBox comboBox1;
-    Connection con = null; // a Connection object
-    Statement stmt = null;
-    Statement stmt2 = null;
-    Statement stmt3 = null;
 
 
     public SubmitArticle() {
         add(SubmitArticle);
-        setTitle("Subscription Form");
+        setTitle("Submit Article Form");
         setSize(800, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -71,7 +66,7 @@ public class SubmitArticle extends JFrame {
             public void actionPerformed(ActionEvent e) {
                String title = Titre.getText();
                String abs = abstracte.getText();
-               String pdfLink = pdflink.getText();
+               String pdfLink = "placeholder";
                Article sub = new Article();
                sub.setTitle(title);
                sub.setSummary(abs);
@@ -106,7 +101,6 @@ public class SubmitArticle extends JFrame {
                         JOptionPane.showMessageDialog(null,"Submission successful");
                         Titre.setText("");
                         abstracte.setText("");
-                        pdflink.setText("");
                     }
                     else{
                         JOptionPane.showMessageDialog(null,"Submission not successfull");

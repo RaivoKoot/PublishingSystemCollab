@@ -29,7 +29,7 @@ public class ChooseReview extends JFrame {
 
     ChooseReview() {
         add(ChooseReview);
-        setTitle("Choose Review Page");
+        setTitle("Submit Review Page");
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         summary.setLineWrap(true);
