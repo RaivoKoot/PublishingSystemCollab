@@ -25,7 +25,7 @@ public class SubmitRevision extends JFrame{
 
     public SubmitRevision(){
         add(SubmitRevision);
-        setTitle("Chief Editor Area");
+        setTitle("Submit Revision Area");
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         textArea1.setLineWrap(true);

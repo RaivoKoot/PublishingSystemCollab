@@ -52,7 +52,7 @@
         </constraints>
         <properties>
           <foreground color="-3815995"/>
-          <text value="Register as a base-user, every role relation will be done established logged-in "/>
+          <text value="Register as a base-user, every role relation will be established once logged-in "/>
         </properties>
       </component>
     </children>
