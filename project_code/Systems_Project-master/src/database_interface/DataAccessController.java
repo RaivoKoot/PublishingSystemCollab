@@ -1021,25 +1021,28 @@ public class DataAccessController implements DatabaseInterface {
         try {
             openConnection();
 
-            String sqlQuery = "SELECT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.submissionID) as reviews FROM (Articles)\n" +
-                    "LEFT JOIN Reviews on Reviews.submissionID = Articles.articleID\n" +
-                    "INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
+            String sqlQuery = "SELECT DISTINCT Articles.articleID, title, abstract, content, ISSN, COUNT(Reviews.reviewerEmail) as reviews FROM (Articles)\n" +
+                    "                    LEFT JOIN Reviews on Reviews.submissionID = Articles.articleID\n" +
+                    "                    INNER JOIN Authorships on Authorships.articleID = Articles.articleID\n" +
+                    "                    \n" +
+                    "                    \n" +
+                    "                    AND Articles.articleID not in (SELECT submissionID FROM Reviews WHERE reviewerEmail=?)\n" +
+                    "                    AND Articles.articleID not in (SELECT articleID FROM Authorships WHERE email in \n" +
+                    "                    \n" +
+                    "                    (SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email=?)\n" +
+                    "                    union\n" +
+                    "                    SELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?)\n" +
+                    "                    union\n" +
+                    "                    SELECT email FROM Users WHERE university = ?)\n" +
+                    "                    )\n" +
                     "\n" +
-                    "WHERE Authorships.email not in\n" +
-                    "\t(SELECT DISTINCT email FROM Authorships WHERE articleID in (SELECT articleID FROM Authorships WHERE email=?)\n" +
-                    "\tunion\n" +
-                    "\tSELECT DISTINCT email FROM JournalEditors WHERE issn in (SELECT issn FROM JournalEditors WHERE email=?)" +
-                    "\tunion " +
-                    "\tSELECT email FROM Users WHERE university = ?)\n" +
-                    "\n" +
-                    "AND Articles.articleID not in (SELECT submissionID FROM Reviews WHERE reviewerEmail=?)" +
-                    "GROUP BY Articles.articleID\n" +
-                    "HAVING reviews < 3;";
+                    "                    GROUP BY Articles.articleID, Authorships.email\n" +
+                    "                    HAVING reviews < 3;";
             statement = connection.prepareStatement(sqlQuery);
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getEmail());
-            statement.setString(3, user.getUniversity());
-            statement.setString(4, user.getEmail());
+            statement.setString(4, user.getUniversity());
+            statement.setString(3, user.getEmail());
 
             res = statement.executeQuery();
 
