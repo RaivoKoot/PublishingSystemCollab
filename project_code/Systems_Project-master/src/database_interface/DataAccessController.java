@@ -1296,14 +1296,27 @@ public class DataAccessController implements DatabaseInterface {
                 try {
                     openConnection();
 
-                    String sqlQuery = "SELECT COUNT(*) FROM JournalEditors WHERE JournalEditors.issn = ?";
+                    String sqlQuery = "SELECT COUNT(*) FROM JournalEditors WHERE JournalEditors.issn = ? and isChief=true";
 
                     statement = connection.prepareStatement(sqlQuery);
                     statement.setString(1, journalEditor.getIssn());
 
                     rs = statement.executeQuery();
                     if (rs.next()) {
-                        if (rs.getInt(1) < 2) throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                        if (rs.getInt(1) < 2){
+
+
+                            sqlQuery = "UPDATE JournalEditors SET isChief=true WHERE email not in (?) and issn=? LIMIT 1";
+                            statement = connection.prepareStatement(sqlQuery);
+                            statement.setString(1,journalEditor.getEmail());
+                            statement.setString(2,journalEditor.getIssn());
+
+                            int otherEditorExists = statement.executeUpdate();
+
+                            if(otherEditorExists == 0) {
+                                throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
+                            }
+                        }
                     } else throw new CantRemoveLastChiefEditorException(journalEditor.getIssn());
 
                 } finally {
