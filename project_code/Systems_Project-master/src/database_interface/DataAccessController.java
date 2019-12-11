@@ -1621,7 +1621,7 @@ public class DataAccessController implements DatabaseInterface {
                     "                    \n" +
                     "                    AND Reviews.isFinal = true\n" +
                     "                    GROUP BY Reviews.submissionID\n" +
-                    "                    HAVING numberOfFinals = 3;";
+                    "                    HAVING numberOfFinals > 2;";
 
             statement = connection.prepareStatement(sqlQuery);
 
